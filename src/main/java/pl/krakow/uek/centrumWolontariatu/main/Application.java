@@ -3,8 +3,13 @@ package pl.krakow.uek.centrumWolontariatu.main;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 
@@ -12,6 +17,9 @@ import java.util.Arrays;
  * Created by MSI DRAGON on 2017-12-03.
  */
 @SpringBootApplication(scanBasePackages={"pl.krakow.uek"})
+@ComponentScan({"pl.krakow.uek"})
+@EntityScan("pl.krakow.uek.centrumWolontariatu.domain")
+@EnableJpaRepositories("pl.krakow.uek.centrumWolontariatu.domain.repository")
 public class Application {
 
     public static void main(String[] args) {
@@ -31,5 +39,10 @@ public class Application {
             }
 
         };
+    }
+    @Bean(name = "bcryptPasswordEncoder")
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder;
     }
 }
