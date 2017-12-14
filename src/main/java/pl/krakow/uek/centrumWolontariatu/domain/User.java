@@ -1,65 +1,73 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
-/**
- * Created by MSI DRAGON on 2017-12-10.
- */
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.data.annotation.Transient;
+/**
+ * Created by MSI DRAGON on 2017-12-11.
+ */
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name="APP_USER")
+public class User implements Serializable{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private int id;
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Integer id;
 
-    @Column(name = "email", nullable = false, unique = true)
-    @Email(message = "Proszę podać poprawny adres e-mail")
-    @NotEmpty(message = "Proszę podać adres e-mail")
-    private String email;
+    @NotEmpty
+    @Column(name="SSO_ID", unique=true, nullable=false)
+    private String ssoId;
 
-    @Column(name = "password")
-    @Transient
+    @NotEmpty
+    @Column(name="PASSWORD", nullable=false)
     private String password;
 
-    @Column(name = "first_name")
-    @NotEmpty(message = "Proszę podać swoje imię")
+    @NotEmpty
+    @Column(name="FIRST_NAME", nullable=false)
     private String firstName;
 
-    @Column(name = "last_name")
-    @NotEmpty(message = "Proszę podać swoje nazwisko")
+    @NotEmpty
+    @Column(name="LAST_NAME", nullable=false)
     private String lastName;
 
-    @Column(name = "enabled")
-    private boolean enabled;
+    @NotEmpty
+    @Column(name="EMAIL", nullable=false)
+    private String email;
 
-    @Column(name = "confirmation_token")
-    private String confirmationToken;
+    @NotEmpty
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "APP_USER_USER_PROFILE",
+            joinColumns = { @JoinColumn(name = "USER_ID") },
+            inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
+    private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
 
-    public String getConfirmationToken() {
-        return confirmationToken;
-    }
-
-    public void setConfirmationToken(String confirmationToken) {
-        this.confirmationToken = confirmationToken;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getSsoId() {
+        return ssoId;
+    }
+
+    public void setSsoId(String ssoId) {
+        this.ssoId = ssoId;
     }
 
     public String getPassword() {
@@ -94,26 +102,56 @@ public class User {
         this.email = email;
     }
 
-    public boolean getEnabled() {
-        return enabled;
+    public Set<UserProfile> getUserProfiles() {
+        return userProfiles;
     }
 
-    public void setEnabled(boolean value) {
-        this.enabled = value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-
-        User user = (User) o;
-
-        return getId() == user.getId();
+    public void setUserProfiles(Set<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
     }
 
     @Override
     public int hashCode() {
-        return getId();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((ssoId == null) ? 0 : ssoId.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof User))
+            return false;
+        User other = (User) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (ssoId == null) {
+            if (other.ssoId != null)
+                return false;
+        } else if (!ssoId.equals(other.ssoId))
+            return false;
+        return true;
+    }
+
+    /*
+     * todo usunąć password z toString() w końcowej wersji.
+     *
+     */
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password
+                + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", email=" + email + "]";
+    }
+
+
+
 }
