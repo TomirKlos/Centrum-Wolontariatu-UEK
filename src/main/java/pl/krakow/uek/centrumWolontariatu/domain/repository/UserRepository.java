@@ -1,16 +1,25 @@
 package pl.krakow.uek.centrumWolontariatu.domain.repository;
 
-/**
- * Created by MSI DRAGON on 2017-12-10.
- */
-
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 
+import java.util.List;
 
-@Repository("userRepository")
-public interface UserRepository extends CrudRepository<User, Long> {
-    User findByEmail(String email);
-    User findByConfirmationToken(String confirmationToken);
+/**
+ * Created by MSI DRAGON on 2017-12-11.
+ */
+
+public interface UserRepository {
+
+    User findById(int id);
+
+    User findBySSO(String sso);
+
+    void save(User user);
+
+    void saveCustomerAccount(User user);
+
+    void deleteBySSO(String sso);
+
+    List<User> findAllUsers();
+
 }
