@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +24,12 @@ import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
 
 import pl.krakow.uek.centrumWolontariatu.domain.User;
+import pl.krakow.uek.centrumWolontariatu.domain.UserOLD;
+import pl.krakow.uek.centrumWolontariatu.domain.UserProfile;
+import pl.krakow.uek.centrumWolontariatu.domain.UserProfileType;
 import pl.krakow.uek.centrumWolontariatu.service.EmailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
+import pl.krakow.uek.centrumWolontariatu.service.UserServiceOLD;
 
 /**
  * Created by MSI DRAGON on 2017-12-10.
@@ -36,65 +42,69 @@ public class RegisterController {
     @Qualifier("bcryptPasswordEncoder")
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private UserService userService;
+    private UserServiceOLD userServiceOLD;
     @Autowired
     private EmailService emailService;
 
 
     @RequestMapping(value="/register", method = RequestMethod.GET)
-    public ModelAndView showRegistrationPage(ModelAndView modelAndView, User user){
-        modelAndView.addObject("user", user);
-        modelAndView.setViewName("register");
+    public ModelAndView showRegistrationPage(ModelAndView modelAndView, UserOLD userOLD){
+        modelAndView.addObject("userOLD", userOLD);
+        modelAndView.setViewName("thymeleaf/register");
         return modelAndView;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ModelAndView processRegistrationForm(ModelAndView modelAndView, @Valid User user, BindingResult bindingResult, HttpServletRequest request) {
+    public ModelAndView processRegistrationForm(ModelAndView modelAndView, @Valid UserOLD userOLD, BindingResult bindingResult, HttpServletRequest request) {
 
-        User userExists = userService.findByEmail(user.getEmail());
+        UserOLD userOLDExists = userServiceOLD.findByEmail(userOLD.getEmail());
 
-        if(userExists != null) {
-            modelAndView.addObject("errorMessage", "Konto o podanym adresie e-mail już istnieje. " + user.getEmail());
-            modelAndView.setViewName("register");
+        if(userOLDExists != null) {
+            modelAndView.addObject("errorMessage", "Konto o podanym adresie e-mail już istnieje. " + userOLD.getEmail());
+            modelAndView.setViewName("thymeleaf/register");
             bindingResult.reject("email");
             return modelAndView;
         }
-        if(!user.getEmail().matches("^(.*[@]wizard.uek.krakow.pl)$")) {
+        //wyłapuje e-maile które nie naleza do domeny wizard.uek.krakow.pl
+        /*
+        if(!userOLD.getEmail().matches("^(.*[@]wizard.uek.krakow.pl)$")) {
             modelAndView.addObject("errorMessage", "Konto w systemie można zakładać jedynie za pomocą poczty uczelnianej: [nazwaUzytkownika]@wizard.uek.krakow.pl ");
-            modelAndView.setViewName("register");
+            modelAndView.setViewName("thymeleaf/register");
             bindingResult.reject("email");
             return modelAndView;
-        }/*
-        if(user.getEmail().matches("^([sS][0-9]{5,7}[@]wizard.uek.krakow.pl)$")){
+        }*/
+
+        /*
+        if(userOLD.getEmail().matches("^([sS][0-9]{5,7}[@]wizard.uek.krakow.pl)$")){
             System.out.println("KONTO STUDENTA");
-        }else if(user.getEmail().matches("^(.*[@]wizard.uek.krakow.pl)$")){
+        }else if(userOLD.getEmail().matches("^(.*[@]wizard.uek.krakow.pl)$")){
             System.out.println("Konto wykladowcy");
         } */
         if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("register");
+            modelAndView.setViewName("thymeleaf/register");
         } else { //Jeśli nie ma błędów, przechodzi do sekcji tworzenia uzytkownika
 
             //Użytkownik nie jest aktywny do momentu kliknięcia w link aktywacyjny oraz ustawienia swojego hasła.
-            user.setEnabled(false);
+            userOLD.setEnabled(false);
 
             // Generuje losowy 36 znakowy string używany do wygenerowania linku aktywacyjnego
-            user.setConfirmationToken(UUID.randomUUID().toString());
+            userOLD.setConfirmationToken(UUID.randomUUID().toString());
 
-            userService.saveUser(user);
+            userServiceOLD.saveUser(userOLD);
 
             String applicationUrl = request.getScheme() + "://" + request.getServerName();
 
             SimpleMailMessage registrationEmail = new SimpleMailMessage();
-            registrationEmail.setTo(user.getEmail());
+            registrationEmail.setTo(userOLD.getEmail());
             registrationEmail.setSubject("Centrum Wolontariatu UEK - potwierdzenie rejestracji");
             registrationEmail.setText("Aby potwierdzić swoj adres e-mail, kliknij w link poniżej:\n"
-                    + applicationUrl + "/confirm?token=" + user.getConfirmationToken());
+                    + applicationUrl + "/confirm?token=" + userOLD.getConfirmationToken());
             registrationEmail.setFrom("noreply.uek.dev.text@gmail.com");
 
             emailService.sendEmail(registrationEmail);
 
-            modelAndView.addObject("confirmationMessage", "E-mail z linkiem potwierdzającym rejestracje został wysłany na adres: " + user.getEmail());
-            modelAndView.setViewName("register");
+            modelAndView.addObject("confirmationMessage", "E-mail z linkiem potwierdzającym rejestracje został wysłany na adres: " + userOLD.getEmail());
+            modelAndView.setViewName("thymeleaf/register");
         }
         return modelAndView;
     }
@@ -103,14 +113,14 @@ public class RegisterController {
     @RequestMapping(value="/confirm", method = RequestMethod.GET)
     public ModelAndView showConfirmationPage(ModelAndView modelAndView, @RequestParam("token") String token) {
 
-        User user = userService.findByConfirmationToken(token);
+        UserOLD userOLD = userServiceOLD.findByConfirmationToken(token);
 
-        if (user == null) { // Token nie został znaleziony
+        if (userOLD == null) { // Token nie został znaleziony
             modelAndView.addObject("invalidToken", "Niepoprawny link aktywacyjny.");
         } else { // Token znaleziony
-            modelAndView.addObject("confirmationToken", user.getConfirmationToken());
+            modelAndView.addObject("confirmationToken", userOLD.getConfirmationToken());
         }
-        modelAndView.setViewName("confirm");
+        modelAndView.setViewName("thymeleaf/confirm");
         return modelAndView;
     }
 
@@ -118,7 +128,7 @@ public class RegisterController {
     @RequestMapping(value="/confirm", method = RequestMethod.POST)
     public ModelAndView processConfirmationForm(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map requestParams, RedirectAttributes redirectAttributes) {
 
-        modelAndView.setViewName("confirm");
+        modelAndView.setViewName("thymeleaf/confirm");
 
         Zxcvbn passwordCheck = new Zxcvbn();
         Strength strength = passwordCheck.measure(String.valueOf(requestParams.get("password")));
@@ -132,10 +142,13 @@ public class RegisterController {
             return modelAndView;
         }
 
-        User user = userService.findByConfirmationToken(String.valueOf(requestParams.get("token")));
-        user.setPassword(bCryptPasswordEncoder.encode((CharSequence) requestParams.get("password")));
-        user.setEnabled(true);
-        userService.saveUser(user);
+        UserOLD userOLD = userServiceOLD.findByConfirmationToken(String.valueOf(requestParams.get("token")));
+        userOLD.setPassword(bCryptPasswordEncoder.encode((CharSequence) requestParams.get("password")));
+        userOLD.setEnabled(true);
+        userServiceOLD.saveUser(userOLD);
+
+
+
 
         modelAndView.addObject("successMessage", "Hasło zostało ustanowione.");
         return modelAndView;
