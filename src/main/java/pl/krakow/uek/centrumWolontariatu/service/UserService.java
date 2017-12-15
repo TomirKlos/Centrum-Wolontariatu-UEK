@@ -1,32 +1,30 @@
 package pl.krakow.uek.centrumWolontariatu.service;
 
-/**
- * Created by MSI DRAGON on 2017-12-10.
- */
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
-import pl.krakow.uek.centrumWolontariatu.domain.repository.UserRepository;
+
+import java.util.List;
+
+/**
+ * Created by MSI DRAGON on 2017-12-11.
+ */
 
 
-@Service("userService")
-public class UserService {
+public interface UserService {
 
-    @Autowired
-    @Qualifier("userRepository")
-    private UserRepository userRepository;
+    User findById(int id);
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    User findBySSO(String sso);
 
-    public User findByConfirmationToken(String confirmationToken) {
-        return userRepository.findByConfirmationToken(confirmationToken);
-    }
+    void saveUser(User user);
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
+    void saveCustomerAccount(User user);
+
+    void updateUser(User user);
+
+    void deleteUserBySSO(String sso);
+
+    List<User> findAllUsers();
+
+    boolean isUserSSOUnique(Integer id, String sso);
 
 }
