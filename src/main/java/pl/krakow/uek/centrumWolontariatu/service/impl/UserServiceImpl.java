@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         up.setId(1);
         up.setType("USER");
         profile.add(up);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
         user.setUserProfiles(profile);
         userRepository.save(user);
     }
