@@ -1,0 +1,5 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="authbar" th:fragment="auth">
+    <span>Witaj  <strong th:text="${loggedinuser}"></strong>. Panel zarządzania użytkownikami</span> <span class="floatRight"><a th:href="@{/logout}">Wyloguj</a></span>
+</div>

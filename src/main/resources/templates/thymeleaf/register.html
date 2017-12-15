@@ -13,7 +13,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
+          crossorigin="anonymous"/>
 
     <link th:href="@{css/style.css}" rel="stylesheet" />
 </head>
@@ -25,11 +25,11 @@
         <h4>Rejestracja nowego użytkownika.</h4>
 
         <form autocomplete="off" action="#" th:action="@{/register}"
-              th:object="${user}" method="post" class="m-t" role="form"
+              th:object="${userOLD}" method="post" class="m-t" role="form"
               data-toggle="validator">
 
             <div th:if="${confirmationMessage}" class="alert alert-success"
-                 role="alert" th:text=${confirmationMessage}></div>
+                 role="alert" th:text="${confirmationMessage}"></div>
 
             <div th:if="${errorMessage}"
                  class="alert alert-danger" role="alert"
@@ -51,20 +51,20 @@
                 <label th:if="${#fields.hasErrors('firstName')}"
                        th:errors="*{firstName}" class="validation-message"></label>
                 <span class="input-group-addon">
-            <span class="glyphicon glyphicon-user"></span>
+            <span class="glyphicon glyphicon-userOLD"></span>
           </span>
                 <input type="text" th:field="*{firstName}"
-                       placeholder="Imię" class="form-control" required />
+                       placeholder="Imię" class="form-control" required="required" />
                 <span class="glyphicon form-control-feedback"
                       aria-hidden="true"></span>
             </div>
 
             <div class="form-group input-group has-feedback">
           <span class="input-group-addon">
-            <span class="glyphicon glyphicon-user"></span>
+            <span class="glyphicon glyphicon-userOLD"></span>
           </span>
                 <input type="text" th:field="*{lastName}"
-                       placeholder="Nazwisko" class="form-control" required />
+                       placeholder="Nazwisko" class="form-control" required="required" />
                 <span class="glyphicon form-control-feedback"
                       aria-hidden="true"></span>
             </div>
@@ -75,7 +75,7 @@
           </span>
                 <input type="email" th:field="*{email}"
                        placeholder="Adres e-mail" class="form-control"
-                       data-error="Ten adres e-mail jest niepoprawny." required />
+                       data-error="Ten adres e-mail jest niepoprawny." required="required" />
                 <span class="glyphicon form-control-feedback"
                       aria-hidden="true"></span>
 

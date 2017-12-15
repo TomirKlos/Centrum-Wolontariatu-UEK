@@ -12,7 +12,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
+          crossorigin="anonymous"/>
 
     <link th:href="@{css/style.css}" rel="stylesheet" />
     <link th:href="@{css/fv.css}" rel="stylesheet" />
@@ -27,25 +27,25 @@
         <h4>Ustaw swoje hasło.</h4>
 
         <div th:if="${successMessage}" class="alert alert-success"
-             role="alert" th:text=${successMessage}></div>
+             role="alert" th:text="${successMessage}"></div>
 
         <div th:if="${errorMessage}" class="alert alert-danger"
-             role="alert" th:text=${errorMessage}></div>
+             role="alert" th:text="${errorMessage}"></div>
 
         <div th:if="${invalidToken}" class="alert alert-danger"
-             role="alert" th:text=${invalidToken}></div>
+             role="alert" th:text="${invalidToken}"></div>
 
         <form th:if="!${invalidToken}" class="m-t" id="passwordForm" role="form" action="#"
               th:object="${setPassword}" th:action="@{/confirm}" method="post">
 
-            <input type="hidden" name="token" th:value=${confirmationToken}  >
+            <input type="hidden" name="token" th:value="${confirmationToken}"  >
 
             <div class="form-group input-group">
           <span class="input-group-addon">
             <span class="glyphicon glyphicon-lock"></span>
           </span>
                 <input name="password" type="password" id="password"
-                       placeholder="Hasło" class="form-control" required />
+                       placeholder="Hasło" class="form-control" required="required" />
                 <span class="glyphicon"
                       aria-hidden="true"></span>
             </div>
@@ -66,7 +66,7 @@
             <button type="submit"
                     class="btn btn-primary block full-width m-b">Zapisz
             </button>
-
+            </input>
         </form>
 
     </div>

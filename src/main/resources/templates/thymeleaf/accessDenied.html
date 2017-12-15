@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>Brak uprawnień</title>
+    <link th:href="@{css/bootstrap.css}" rel="stylesheet" />
+    <link th:href="@{css/app.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="generic-container">
+    <div class="authbar">
+        <span>Błąd!  <strong th:text="${loggedinuser}"></strong>, nie masz uprawnień do przeglądania tej strony.</span> <span class="floatRight"><a th:href="@{/logout}">Wyloguj</a></span>
+    </div>
+</div>
+</body>
+</html>
