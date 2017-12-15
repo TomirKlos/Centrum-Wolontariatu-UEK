@@ -45,6 +45,8 @@ public class RegisterController {
     private UserServiceOLD userServiceOLD;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private UserService userService;
 
 
     @RequestMapping(value="/register", method = RequestMethod.GET)
@@ -133,7 +135,7 @@ public class RegisterController {
         Zxcvbn passwordCheck = new Zxcvbn();
         Strength strength = passwordCheck.measure(String.valueOf(requestParams.get("password")));
 
-        if (strength.getScore() < 2) {
+        if (strength.getScore() < 1) {
             bindingResult.reject("password");
 
             redirectAttributes.addFlashAttribute("errorMessage", "Hasło jest zbyt słabe.");
@@ -146,6 +148,14 @@ public class RegisterController {
         userOLD.setPassword(bCryptPasswordEncoder.encode((CharSequence) requestParams.get("password")));
         userOLD.setEnabled(true);
         userServiceOLD.saveUser(userOLD);
+
+        User user = new User();
+        user.setFirstName(userOLD.getFirstName());
+        user.setLastName(userOLD.getLastName());
+        user.setEmail(userOLD.getEmail());
+        user.setSsoId(userOLD.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode((CharSequence) requestParams.get("password")));
+        userService.saveCustomerAccount(user);
 
 
 
