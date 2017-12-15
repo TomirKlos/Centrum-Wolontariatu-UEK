@@ -8,9 +8,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Resources;
+import javax.persistence.EntityManagerFactory;
 import java.util.Arrays;
 
 /**
@@ -20,7 +23,7 @@ import java.util.Arrays;
 @ComponentScan({"pl.krakow.uek"})
 @EntityScan("pl.krakow.uek.centrumWolontariatu.domain")
 @EnableJpaRepositories("pl.krakow.uek.centrumWolontariatu.domain.repository")
-public class Application {
+public class Application  {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -40,9 +43,9 @@ public class Application {
 
         };
     }
-    @Bean(name = "bcryptPasswordEncoder")
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder;
-    }
+
+
+
+
+
 }
