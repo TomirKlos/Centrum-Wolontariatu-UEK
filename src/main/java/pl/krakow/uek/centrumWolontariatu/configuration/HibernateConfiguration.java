@@ -55,5 +55,5 @@ public class HibernateConfiguration {
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
         return properties;
     }
-    
+
 }
