@@ -4,6 +4,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by MSI DRAGON on 2017-12-19.
@@ -21,6 +22,15 @@ public class VolunteerRequest {
 
     private User user;
 
+    public VolunteerRequest() {
+    }
+
+    public VolunteerRequest(String description, int numberOfRequestedVolunteers, User user) {
+        this.description = description;
+        this.numberOfRequestedVolunteers = numberOfRequestedVolunteers;
+        this.user = user;
+    }
+
     public int getId() {
         return id;
     }
@@ -35,5 +45,20 @@ public class VolunteerRequest {
 
     public User getUser() {
         return user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VolunteerRequest that = (VolunteerRequest) o;
+        return id == that.id &&
+                Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, user);
     }
 }

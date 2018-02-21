@@ -1,4 +1,6 @@
 package pl.krakow.uek.centrumWolontariatu.service;
 
-public interface VolunteerRequestService {
+import pl.krakow.uek.centrumWolontariatu.domain.repository.VolunteerRequestRepository;
+
+public interface VolunteerRequestService extends VolunteerRequestRepository {
 }

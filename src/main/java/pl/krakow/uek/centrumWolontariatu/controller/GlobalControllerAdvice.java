@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  */
 @ControllerAdvice
 public class GlobalControllerAdvice {
+    /*
 
     @Autowired
     AuthenticationTrustResolver authenticationTrustResolver;
@@ -41,5 +42,6 @@ public class GlobalControllerAdvice {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authenticationTrustResolver.isAnonymous(authentication);
     }
+    */
 
 }
