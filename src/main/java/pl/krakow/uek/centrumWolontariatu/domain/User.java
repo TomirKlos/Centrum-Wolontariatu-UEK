@@ -1,73 +1,73 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
+import pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.NotEmpty;
-/**
- * Created by MSI DRAGON on 2017-12-11.
- */
-
 @Entity
-@Table(name="APP_USER")
-public class User implements Serializable{
+@Table(name = "cw_users")
+public class User implements Serializable {
 
-    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer id;
+    private static final long serialVersionUID = 1L;
 
-    @NotEmpty
-    @Column(name="SSO_ID", unique=true, nullable=false)
-    private String ssoId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotEmpty
-    @Column(name="PASSWORD", nullable=false)
-    private String password;
-
-    @NotEmpty
-    @Column(name="FIRST_NAME", nullable=false)
-    private String firstName;
-
-    @NotEmpty
-    @Column(name="LAST_NAME", nullable=false)
-    private String lastName;
-
-    @NotEmpty
-    @Column(name="EMAIL", nullable=false)
+    @Email
+    @Size(
+        min = UserConstant.EMAIL_MIN_SIZE,
+        max = UserConstant.EMAIL_MAX_SIZE
+    )
+    @Column(length = UserConstant.EMAIL_MAX_SIZE, unique = true)
     private String email;
 
-    @NotEmpty
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "APP_USER_USER_PROFILE",
-            joinColumns = { @JoinColumn(name = "USER_ID") },
-            inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
-    private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+    @JsonIgnore
+    @NotNull
+    @Size(min = 60, max = 60)
+    @Column(name = "password_hash", length = 60)
+    private String password;
 
-    public Integer getId() {
+    @Size(max = UserConstant.FIRST_NAME_MAX_SIZE)
+    @Column(name = "first_name", length = UserConstant.FIRST_NAME_MAX_SIZE)
+    private String firstName;
+
+    @Size(max = UserConstant.LAST_NAME_MAX_SIZE)
+    @Column(name = "last_name", length = UserConstant.LAST_NAME_MAX_SIZE)
+    private String lastName;
+
+    @NotNull
+    @Column(nullable = false)
+    private boolean activated = false;
+
+
+    //    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "cw_user_authorities",
+        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
+    @BatchSize(size = 20)
+    private Set<Authority> authorities = new HashSet<>();
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getSsoId() {
-        return ssoId;
-    }
-
-    public void setSsoId(String ssoId) {
-        this.ssoId = ssoId;
     }
 
     public String getPassword() {
@@ -102,56 +102,20 @@ public class User implements Serializable{
         this.email = email;
     }
 
-    public Set<UserProfile> getUserProfiles() {
-        return userProfiles;
+    public boolean isActivated() {
+        return activated;
     }
 
-    public void setUserProfiles(Set<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((ssoId == null) ? 0 : ssoId.hashCode());
-        return result;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof User))
-            return false;
-        User other = (User) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (ssoId == null) {
-            if (other.ssoId != null)
-                return false;
-        } else if (!ssoId.equals(other.ssoId))
-            return false;
-        return true;
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
-
-    /*
-     * todo usunąć password z toString() w końcowej wersji.
-     *
-     */
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password
-                + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", email=" + email + "]";
-    }
-
-
 
 }
