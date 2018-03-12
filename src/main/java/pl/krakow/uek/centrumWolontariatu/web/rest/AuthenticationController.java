@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.security.jwt.JWTConfigurer;
 import pl.krakow.uek.centrumWolontariatu.security.jwt.TokenProvider;
-import pl.krakow.uek.centrumWolontariatu.web.rest.vm.LoginVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.UserVM;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -30,6 +30,7 @@ public class AuthenticationController {
         this.authenticationManager = authenticationManager;
     }
 
+    // TODO make this resource necessary or delete
     @GetMapping("/authenticate")
     public String isAuthenticated(HttpServletRequest request) {
         log.debug("REST request to check if the current user is authenticated");
@@ -37,10 +38,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVM loginVM) {
+    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody UserVM userVM) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(loginVM.getEmail(), loginVM.getPassword());
+            new UsernamePasswordAuthenticationToken(userVM.getEmail(), userVM.getPassword());
 
         Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);

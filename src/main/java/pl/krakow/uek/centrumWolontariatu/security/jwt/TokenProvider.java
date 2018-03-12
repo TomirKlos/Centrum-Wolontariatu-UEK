@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Component("tokenProvider")
 public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
@@ -32,8 +32,8 @@ public class TokenProvider {
 
     @PostConstruct
     public void init() {
-        this.secretKey = appProperties.getSecurity().getJwt().getSecret();
-        this.tokenValidityInMilliseconds = 1000 * appProperties.getSecurity().getJwt().getTokenValidityInSeconds();
+        this.secretKey = appProperties.getJwt().getSecret();
+        this.tokenValidityInMilliseconds = 1000 * appProperties.getJwt().getTokenValidityInSeconds();
     }
 
     public String createToken(Authentication authentication) {

@@ -11,46 +11,39 @@ import javax.validation.constraints.Size;
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 @Validated
 public class AppProperties {
-    private final Security security = new Security();
+    private final Jwt jwt = new Jwt();
     private final CorsConfiguration cors = new CorsConfiguration();
 
-    public Security getSecurity() {
-        return security;
+    public Jwt getJwt() {
+        return jwt;
     }
 
     public CorsConfiguration getCors() {
         return cors;
     }
 
-    public static class Security {
-        private final Jwt jwt = new Jwt();
+    public static class Jwt {
+        @NotEmpty
+        @Size(min = 20)
+        private String secret;
+        @NotNull
+        private int tokenValidityInSeconds;
 
-        public Jwt getJwt() {
-            return jwt;
+        public String getSecret() {
+            return secret;
         }
 
-        public static class Jwt {
-            @NotEmpty
-            @Size(min = 20)
-            private String secret;
-            @NotNull
-            private int tokenValidityInSeconds;
-
-            public String getSecret() {
-                return secret;
-            }
-
-            public void setSecret(String secret) {
-                this.secret = secret;
-            }
-
-            public int getTokenValidityInSeconds() {
-                return tokenValidityInSeconds;
-            }
-
-            public void setTokenValidityInSeconds(int tokenValidityInSeconds) {
-                this.tokenValidityInSeconds = tokenValidityInSeconds;
-            }
+        public void setSecret(String secret) {
+            this.secret = secret;
         }
+
+        public int getTokenValidityInSeconds() {
+            return tokenValidityInSeconds;
+        }
+
+        public void setTokenValidityInSeconds(int tokenValidityInSeconds) {
+            this.tokenValidityInSeconds = tokenValidityInSeconds;
+        }
+
     }
 }

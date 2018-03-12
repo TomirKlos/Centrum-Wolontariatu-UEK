@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.zalando.problem.ProblemModule;
+import org.zalando.problem.validation.ConstraintViolationProblemModule;
 
 @Configuration
 public class WebConfigurer {
@@ -26,5 +28,15 @@ public class WebConfigurer {
             source.registerCorsConfiguration("/api/**", config);
         }
         return new CorsFilter(source);
+    }
+
+    @Bean
+    ConstraintViolationProblemModule constraintViolationProblemModule() {
+        return new ConstraintViolationProblemModule();
+    }
+
+    @Bean
+    ProblemModule problemModule() {
+        return new ProblemModule();
     }
 }

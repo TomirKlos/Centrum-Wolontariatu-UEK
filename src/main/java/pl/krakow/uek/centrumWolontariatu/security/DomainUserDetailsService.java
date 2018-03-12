@@ -33,7 +33,7 @@ public class DomainUserDetailsService implements UserDetailsService {
         System.out.println("dupa1");
         String lowerCaseEmail = login.toLowerCase();
 
-        Optional<User> userFromDatabase = userRepository.findOneWithAuthoritiesByEmail(lowerCaseEmail);
+        Optional<User> userFromDatabase = userRepository.findByEmail(lowerCaseEmail);
 
         return userFromDatabase.map(user -> createSpringSecurityUser(lowerCaseEmail, user))
             .orElseThrow(() ->

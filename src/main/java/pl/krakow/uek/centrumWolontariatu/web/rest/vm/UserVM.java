@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 /**
  * View Model object for storing a user's credentials.
  */
-public class LoginVM {
+public class UserVM {
     @NotNull
     private String email;
 
@@ -30,7 +30,7 @@ public class LoginVM {
 
     @Override
     public String toString() {
-        return "LoginVM{" +
+        return "UserVM{" +
             "email='" + email + '\'' +
             ", password='" + password + '\'' +
             '}';
