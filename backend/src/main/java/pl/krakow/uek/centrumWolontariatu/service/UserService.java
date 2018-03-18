@@ -2,18 +2,25 @@ package pl.krakow.uek.centrumWolontariatu.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.krakow.uek.centrumWolontariatu.domain.Authority;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
 import pl.krakow.uek.centrumWolontariatu.security.SecurityUtils;
+import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailNotAllowedException;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class UserService {
+    @Autowired
+    MailDomainToAuthoritiesService mailDomainToAuthoritiesService;
     private final Logger log = LoggerFactory.getLogger(UserService.class);
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -26,6 +33,9 @@ public class UserService {
 
 
     public User registerUser(String email, String password) {
+        if(!mailDomainToAuthoritiesService.emailFromAllowedDomain(email)){
+            throw new EmailNotAllowedException();
+        }
         User newUser = new User();
 
         newUser.setEmail(email);
@@ -45,6 +55,8 @@ public class UserService {
                 // activate given user for the registration key.
                 user.setActivated(true);
                 user.setActivationKey(null);
+                user.setAuthorities(mailDomainToAuthoritiesService.awardAuthoritiesBasedEmail(user.getEmail()));
+
                 userRepository.save(user);
                 log.debug("Activated user: {}", user);
                 return user;
