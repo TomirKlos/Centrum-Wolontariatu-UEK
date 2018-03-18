@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -71,6 +72,10 @@ public class User implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        mappedBy = "user")
+    private Set<VolunteerRequest> volunteerRequests = new HashSet<>();
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -154,5 +159,28 @@ public class User implements Serializable {
 
     public void setResetDate(Instant resetDate) {
         this.resetDate = resetDate;
+    }
+
+    public Set<VolunteerRequest> getVolunteerRequests() {
+        return volunteerRequests;
+    }
+
+    public void setVolunteerRequests(Set<VolunteerRequest> volunteerRequests) {
+        this.volunteerRequests = volunteerRequests;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+            Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, email);
     }
 }
