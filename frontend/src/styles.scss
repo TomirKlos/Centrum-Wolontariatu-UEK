@@ -1,1 +1,45 @@
-/* You can add global styles to this file, and also import other style files */
+@import "my-theme";
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: mat-color($app-primary);
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.warm-color {
+  color: mat-color($app-warn);
+}
+
+form {
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  button {
+    width: 100%;
+    margin: 20px 0;
+  }
+}
+
+snack-bar-container {
+  text-align: center;
+}
+
+.snackbar-error {
+  background: mat-color($app-warn);
+
+  button {
+    color: white;
+  }
+}
+
+
+

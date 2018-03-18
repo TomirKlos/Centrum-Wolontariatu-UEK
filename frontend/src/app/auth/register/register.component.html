@@ -1,0 +1,39 @@
+<form [formGroup]="registerForm" #form="ngForm">
+  <!--<p class="warm-color" *ngIf="errorMessage.display">{{ errorMessage.message }}</p>-->
+  <mat-form-field>
+    <input matInput type="email" placeholder="Email" formControlName="email">
+    <mat-error *ngIf="registerForm.get('email').hasError('email') && !registerForm.get('email').hasError('required')">
+      Proszę podać poprawny adres email
+    </mat-error>
+    <mat-error *ngIf="registerForm.get('email').hasError('required')">
+      Email jest <strong>wymagany</strong>
+    </mat-error>
+    <mat-error *ngIf="registerForm.get('email').hasError('emailexists')">
+      Konto z podanym adresem już istnieje
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field formGroupName="passwords">
+    <input matInput type="password" placeholder="Hasło" formControlName="password">
+    <mat-error *ngIf="registerForm.get('passwords').get('password').hasError('required')">
+      Hasło jest <strong>wymagane</strong>
+    </mat-error>
+    <mat-error *ngIf="registerForm.get('passwords').get('password').hasError('minlength')">
+      Hasło musi mieć co najmniej 8 znaków
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field formGroupName="passwords">
+    <input matInput type="password" placeholder="Powtórz hasło" formControlName="password2">
+    <mat-error *ngIf="registerForm.get('passwords').get('password2').hasError('isEqual')">
+      Podane hasła są różne
+    </mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || signupButtonDisabled"
+          (click)="signup()">
+    Zarejestruj się
+  </button>
+</form>
+
+
