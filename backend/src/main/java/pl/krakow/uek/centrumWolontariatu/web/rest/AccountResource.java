@@ -8,6 +8,7 @@ import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
+import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailAlreadyUsedException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailNotFoundException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InternalServerErrorException;
@@ -63,7 +64,7 @@ public class AccountResource {
     public void activateAccount(@RequestBody ActivationKeyVM activationKeyVM) {
         Optional<User> user = userService.activateRegistration(activationKeyVM.getActivationKey());
         if (!user.isPresent()) {
-            throw new InternalServerErrorException("No user was found for this reset key");
+            throw new BadRequestAlertException("No user was found for this reset key", "userManagement", "nouserfoundforresetkey");
         }
     }
 
