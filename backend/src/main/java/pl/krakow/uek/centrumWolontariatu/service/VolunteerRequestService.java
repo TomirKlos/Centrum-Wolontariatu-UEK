@@ -12,11 +12,15 @@ import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
 
@@ -67,14 +71,22 @@ public class VolunteerRequestService {
                 String fileTypes[] = multipartFile.getOriginalFilename().split("\\.");
                 String fileType = fileTypes[fileTypes.length-1];
 
-                String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex("hash" + user.getId() + System.currentTimeMillis() + multipartFile.getOriginalFilename());
-                Path path = Paths.get(UPLOADED_FOLDER + md5 + "." + fileType);
-                Files.write(path, bytes);
-                log.debug("User id={} uploaded picture: {}", user.getId(), md5 + "." + fileType);
+               // String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex("hash" + user.getId() + System.currentTimeMillis() + multipartFile.getOriginalFilename());
+                MessageDigest salt = MessageDigest.getInstance("SHA-256");
+                salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
+                String hexString = DatatypeConverter.printHexBinary(salt.digest());
 
-                hashPicturesWithReferences.put(md5, multipartFile.getOriginalFilename());
+                Path path = Paths.get(UPLOADED_FOLDER + hexString + "." + fileType);
+                Files.write(path, bytes);
+                log.debug("User id={} uploaded picture: {}", user.getId(), hexString + "." + fileType);
+
+                hashPicturesWithReferences.put(hexString, multipartFile.getOriginalFilename());
+
+
 
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e){
                 e.printStackTrace();
             }
         }

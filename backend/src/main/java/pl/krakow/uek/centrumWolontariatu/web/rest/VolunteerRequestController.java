@@ -18,14 +18,13 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlert
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
 import javax.validation.Valid;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.security.MessageDigest;
+import java.util.*;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
 
@@ -55,6 +54,7 @@ public class VolunteerRequestController {
     public void addVolunteerRequest(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam int numberVolunteers) {
 
         volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, file);
+
 
     }
 }

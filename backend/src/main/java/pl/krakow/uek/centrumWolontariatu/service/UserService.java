@@ -49,6 +49,7 @@ public class UserService {
         userRepository.save(newUser);
 
         return newUser;
+        
     }
 
     public Optional<User> activateRegistration(String key) {
