@@ -1,5 +1,8 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,13 +20,7 @@ public class Authority implements Serializable {
     @Size(max = 50)
     @Id
     @Column(length = 50)
+    @Getter @Setter
     private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

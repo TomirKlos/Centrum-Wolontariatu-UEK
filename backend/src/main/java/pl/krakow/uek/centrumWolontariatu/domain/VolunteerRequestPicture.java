@@ -1,65 +1,37 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+
+
 
 @Entity
 @Table(name = "cw_volunteer_request_pictures")
+@EqualsAndHashCode
 public class VolunteerRequestPicture implements Serializable {
-
+    @Getter
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
 
-    @Column(name="reference_to_picture")
-    private String[] referenceToPicture;
+    @Column(name="reference_to_picture") @Lob
+    @Getter @Setter
+    private HashMap<String, String> referenceToPicture;
 
-    @Column(name="original_picture_name")
-    private String[] originalpicturename;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @MapsId
+    @OneToOne(fetch = FetchType.LAZY) @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "volunteerRequest_id")
+    @Getter @Setter
     private VolunteerRequest volunteerRequest;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String[] getReferenceToPicture() {
-        return referenceToPicture;
-    }
-
-    public void setReferenceToPicture(String[] referenceToPicture) {
-        this.referenceToPicture = referenceToPicture;
-    }
-
-    public String[] getOriginalpicturename() {
-        return originalpicturename;
-    }
-
-    public void setOriginalpicturename(String[] originalpicturename) {
-        this.originalpicturename = originalpicturename;
-    }
-
-    public VolunteerRequest getVolunteerRequest() {
-        return volunteerRequest;
-    }
-
-    public void setVolunteerRequest(VolunteerRequest volunteerRequest) {
-        this.volunteerRequest = volunteerRequest;
-    }
 }
