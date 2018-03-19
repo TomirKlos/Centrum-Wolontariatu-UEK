@@ -1,18 +1,16 @@
 package pl.krakow.uek.centrumWolontariatu.service;
 
 import net.coobird.thumbnailator.Thumbnails;
-import net.coobird.thumbnailator.geometry.Positions;
-import net.coobird.thumbnailator.name.Rename;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
@@ -135,13 +133,13 @@ public class VolunteerRequestService {
 
     }
 
-    public List<VolunteerRequest> getVolunteerRequests(int page, int numberOfResultsPerPage, boolean isDescending){
+    public List<VolunteerRequestDTO> getVolunteerRequests(int page, int numberOfResultsPerPage, boolean isDescending){
         Sort.Direction sort;
         if(isDescending)
             sort = Sort.Direction.DESC;
         else
             sort = Sort.Direction.ASC;
-        return volunteerRequestRepository.findAll(new PageRequest(page, numberOfResultsPerPage, sort, "id")).getContent();
+        return volunteerRequestRepository.findAllBy(new PageRequest(page, numberOfResultsPerPage, sort, "id")).getContent();
     }
 
 }

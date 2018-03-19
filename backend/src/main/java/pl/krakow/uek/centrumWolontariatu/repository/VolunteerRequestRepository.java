@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,5 +14,6 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
 
     Optional<VolunteerRequest> findByUser(User user);
     List<VolunteerRequest> findFirst2ByOrderByIdDesc();
-    Page<VolunteerRequest> findAll(Pageable pageable);
+    //Page<VolunteerRequest> findAll(Pageable pageable);
+    Page<VolunteerRequestDTO> findAllBy(Pageable pageable);
 }
