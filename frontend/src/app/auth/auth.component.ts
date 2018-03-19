@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'app-auth',
@@ -9,11 +11,20 @@ import { ActivatedRoute } from '@angular/router';
 export class AuthComponent implements OnInit {
   title: string;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {
-    this.route.firstChild.data.subscribe(d => this.title = d.title);
+    this.getTitle();
+    this.router.events
+      .filter(e => e instanceof NavigationEnd)
+      .subscribe(d => this.getTitle());
+  }
+
+  private getTitle() {
+    this.route.firstChild.data
+      .first()
+      .subscribe(d => this.title = d.title);
   }
 
 }

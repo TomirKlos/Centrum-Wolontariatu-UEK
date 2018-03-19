@@ -1,13 +1,24 @@
 <mat-progress-bar mode="indeterminate" *ngIf="displayProgresBar" id="app-progress-bar"></mat-progress-bar>
 
-<mat-toolbar color="primary">
-  <span>Centrum Wolontariatu UEK</span>
+<mat-toolbar color="primary" id="toolbar" fxLayout="row" fxLayoutAlign="space-between center">
+  <button routerLink="/" mat-button>
+    <mat-icon>home</mat-icon>
+  </button>
+
+  <div>
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon>person</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/auth/login">Logowanie</button>
+      <button mat-menu-item routerLink="/auth/signup">Rejestracja</button>
+    </mat-menu>
+  </div>
+
+
 </mat-toolbar>
 
 <router-outlet></router-outlet>
 
 
-<!--<div class="temp-padding">-->
-<!--<app-login></app-login>-->
-<!--</div>-->
 

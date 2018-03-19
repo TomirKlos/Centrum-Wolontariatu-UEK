@@ -1,12 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [
-  // {
-  //   path: 'auth',
-  //   loadChildren: 'app/auth/auth.module#AuthModule'
-  // }
-];
+const routes: Routes = [];
 
 @NgModule({
   imports: [

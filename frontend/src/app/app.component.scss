@@ -1,11 +1,15 @@
-
-.temp-padding {
-  padding: 10px;
-  margin: 10px;
-}
-
 #app-progress-bar {
   position: fixed;
   top: 0;
   left: 0;
+}
+
+mat-toolbar {
+  margin-bottom: 40px;
+}
+
+button {
+  height: 80%;
+  font-size: 19px;
+  min-width: 60px;
 }

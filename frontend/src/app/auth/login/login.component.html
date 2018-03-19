@@ -1,5 +1,4 @@
 <form [formGroup]="loginForm" #form="ngForm">
-  <p class="warm-color" *ngIf="errorMessage.display">{{ errorMessage.message }}</p>
   <mat-form-field>
     <input matInput type="email" placeholder="Email" formControlName="email">
     <mat-error *ngIf="loginForm.get('email').hasError('email') && !loginForm.get('email').hasError('required')">

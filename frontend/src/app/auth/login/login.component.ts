@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../shared/auth/authentication.service';
 import { Router } from '@angular/router';
-
+import { SnackBarService } from '../../shared/snack-bar.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   loginForm = new FormGroup({
@@ -21,12 +20,8 @@ export class LoginComponent implements OnInit {
   });
 
   loginButtonDisabled = false;
-  errorMessage = {
-    display: false,
-    message: ''
-  };
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) {
+  constructor(private authenticationService: AuthenticationService, private router: Router, private snackBarService: SnackBarService) {
   }
 
   ngOnInit() {
@@ -38,19 +33,17 @@ export class LoginComponent implements OnInit {
     this.authenticationService.login(this.loginForm.value).subscribe(d => {
         switch (d) {
           case 200: {
-            console.log('ok');
+            this.snackBarService.open('Pomyślnie zalogowano :d');
             this.router.navigateByUrl('/').then();
             break;
           }
           case 401: {
             this.loginButtonDisabled = false;
-            this.errorMessage.message = 'Nieprawidłowy email lub hasło';
-            this.errorMessage.display = true;
+            this.snackBarService.openError('Nieprawidłowy email lub hasło', { duration: 5000 });
             break;
           }
           default: {
-            this.errorMessage.message = 'Wystąpił błąd, proszę spróbować ponownie';
-            this.errorMessage.display = true;
+            this.snackBarService.openError(null, { duration: 5000 });
           }
         }
       }

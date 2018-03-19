@@ -4,7 +4,9 @@ import {
   MatButtonModule,
   MatCardModule,
   MatFormFieldModule,
+  MatIconModule,
   MatInputModule,
+  MatMenuModule,
   MatProgressBarModule,
   MatSnackBarModule,
   MatToolbarModule
@@ -19,7 +21,9 @@ const modules = [
   MatButtonModule,
   MatProgressBarModule,
   MatCardModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatMenuModule,
+  MatIconModule
 ];
 
 @NgModule({

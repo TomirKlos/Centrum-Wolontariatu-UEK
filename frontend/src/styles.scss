@@ -1,20 +1,10 @@
 @import "my-theme";
+@import "variables";
+@import "my-mat-card";
 
 body, html {
   margin: 0;
   padding: 0;
-}
-
-a {
-  color: mat-color($app-primary);
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.warm-color {
-  color: mat-color($app-warn);
 }
 
 form {
@@ -34,12 +24,10 @@ snack-bar-container {
 }
 
 .snackbar-error {
-  background: mat-color($app-warn);
+  background: mat-color($warn);
 
   button {
     color: white;
   }
 }
-
-
 
