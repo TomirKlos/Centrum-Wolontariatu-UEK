@@ -1,5 +1,8 @@
 package pl.krakow.uek.centrumWolontariatu.service;
 
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
+import net.coobird.thumbnailator.name.Rename;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,8 +15,10 @@ import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 
+import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,7 +76,6 @@ public class VolunteerRequestService {
                 String fileTypes[] = multipartFile.getOriginalFilename().split("\\.");
                 String fileType = fileTypes[fileTypes.length-1];
 
-               // String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex("hash" + user.getId() + System.currentTimeMillis() + multipartFile.getOriginalFilename());
                 MessageDigest salt = MessageDigest.getInstance("SHA-256");
                 salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
                 String hexString = DatatypeConverter.printHexBinary(salt.digest());
@@ -82,8 +86,8 @@ public class VolunteerRequestService {
 
                 hashPicturesWithReferences.put(hexString, multipartFile.getOriginalFilename());
 
-
-
+                createThumbnailFromPicture(bytes, hexString, fileType);
+                
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e){
@@ -93,6 +97,22 @@ public class VolunteerRequestService {
         volunteerRequestPicture.setReferenceToPicture(hashPicturesWithReferences);
         volunteerRequestPicture.setVolunteerRequest(volunteerRequest);
         return volunteerRequestPicture;
+    }
+
+    private void createThumbnailFromPicture(byte[] bytes, String hexString, String fileType){
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        Path pathThumbnail = Paths.get(UPLOADED_FOLDER + hexString + "_thumbnail." + fileType);
+        try {
+            BufferedImage img = Thumbnails.of(bis)
+                .size(400, 400)
+                .asBufferedImage();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(img, fileType, baos);
+            Files.write(pathThumbnail, baos.toByteArray());
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
 }
