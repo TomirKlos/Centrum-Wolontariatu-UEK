@@ -1,13 +1,13 @@
 package pl.krakow.uek.centrumWolontariatu.web.rest.vm;
 
 public class MailVM {
-    private String mail;
+    private String email;
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

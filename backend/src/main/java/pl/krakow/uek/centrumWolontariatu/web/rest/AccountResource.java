@@ -103,7 +103,7 @@ public class AccountResource {
     @PostMapping(path = "/reset-password/init") // TODO test it
     public void requestPasswordReset(@RequestBody MailVM mailVM) {
         mailService.sendPasswordResetMail(
-            userService.requestPasswordReset(mailVM.getMail())
+            userService.requestPasswordReset(mailVM.getEmail())
                 .orElseThrow(EmailNotFoundException::new)
         );
     }
