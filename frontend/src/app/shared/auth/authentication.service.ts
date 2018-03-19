@@ -15,7 +15,7 @@ export class AuthenticationService {
   }
 
   login(loginCredentials: LoginCredentials): Observable<number> {
-    return this.http.post(environment.apiEndpoint + 'authenticate', loginCredentials, {observe: 'response'}).pipe(
+    return this.http.post(environment.apiEndpoint + 'authenticate', loginCredentials, { observe: 'response' }).pipe(
       map((res: HttpResponse<JWTToken>) => {
         this.setSession(res.body);
         return res.status;

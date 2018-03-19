@@ -15,7 +15,7 @@ form {
 
   button {
     width: 100%;
-    margin: 20px 0;
+    margin: 20px 0 !important;
   }
 }
 
@@ -29,5 +29,9 @@ snack-bar-container {
   button {
     color: white;
   }
+}
+
+.tac {
+  text-align: center;
 }
 

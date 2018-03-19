@@ -6,8 +6,8 @@ import { LoginComponent } from './login/login.component';
 import { LayoutModule } from '../shared/layout.module';
 import { SignupComponent } from './signup/signup.component';
 import { ActivateComponent } from './activate/activate.component';
-import { PasswordResetInitComponent } from './password-reset-init/password-reset-init.component';
-import { PasswordResetFinishComponent } from './password-reset-finish/password-reset-finish.component';
+import { ResetPasswordInitComponent } from './reset-password-init/reset-password-init.component';
+import { ResetPasswordFinishComponent } from './reset-password-finish/reset-password-finish.component';
 
 @NgModule({
   imports: [
@@ -19,8 +19,8 @@ import { PasswordResetFinishComponent } from './password-reset-finish/password-r
     LoginComponent,
     SignupComponent,
     ActivateComponent,
-    PasswordResetInitComponent,
-    PasswordResetFinishComponent
+    ResetPasswordInitComponent,
+    ResetPasswordFinishComponent
   ]
 })
 export class AuthModule {

@@ -4,8 +4,8 @@ import { LoginComponent } from './login/login.component';
 import { AuthComponent } from './auth.component';
 import { SignupComponent } from './signup/signup.component';
 import { ActivateComponent } from './activate/activate.component';
-import { PasswordResetInitComponent } from './password-reset-init/password-reset-init.component';
-import { PasswordResetFinishComponent } from './password-reset-finish/password-reset-finish.component';
+import { ResetPasswordInitComponent } from './reset-password-init/reset-password-init.component';
+import { ResetPasswordFinishComponent } from './reset-password-finish/reset-password-finish.component';
 
 const routes: Routes = [
   {
@@ -35,14 +35,14 @@ const routes: Routes = [
       },
       {
         path: 'reset-password',
-        component: PasswordResetInitComponent,
+        component: ResetPasswordInitComponent,
         data: {
           title: 'Reset hasła'
         }
       },
       {
         path: 'reset-password/:reset-key',
-        component: PasswordResetFinishComponent,
+        component: ResetPasswordFinishComponent,
         data: {
           title: 'Wprowadź nowe hasło'
         }
@@ -57,8 +57,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forChild(routes) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class AuthRoutingModule {
 }
