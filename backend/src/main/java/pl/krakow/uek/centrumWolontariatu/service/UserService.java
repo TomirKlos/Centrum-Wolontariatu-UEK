@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.krakow.uek.centrumWolontariatu.domain.Authority;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
+import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.security.SecurityUtils;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailNotAllowedException;
 
@@ -24,11 +25,13 @@ public class UserService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final VolunteerRequestRepository volunteerRequestRepository;
 
 
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, VolunteerRequestRepository volunteerRequestRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.volunteerRequestRepository = volunteerRequestRepository;
     }
 
 
