@@ -5,6 +5,9 @@ import net.coobird.thumbnailator.geometry.Positions;
 import net.coobird.thumbnailator.name.Rename;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
@@ -24,8 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
 
@@ -46,6 +48,7 @@ public class VolunteerRequestService {
     }
 
     public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, MultipartFile[] file){
+        boolean isImageUploaded = file.length>0;
         User user = userService.getUserWithAuthorities().get();
         VolunteerRequest volunteerRequest = new VolunteerRequest();
         volunteerRequest.setDescription(description);
@@ -53,11 +56,13 @@ public class VolunteerRequestService {
         volunteerRequest.setVolunteersAmount(numberVolunteers);
         volunteerRequest.setUser(user);
 
-       VolunteerRequestPicture volunteerRequestPicture = addPicturesToVolunteerRequest(file, user, volunteerRequest);
         volunteerRequestRepository.save(volunteerRequest);
         log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
 
-        volunteerRequestPictureRepository.save(volunteerRequestPicture);
+        if(isImageUploaded){
+            VolunteerRequestPicture volunteerRequestPicture = addPicturesToVolunteerRequest(file, user, volunteerRequest);
+            volunteerRequestPictureRepository.save(volunteerRequestPicture);
+        }
         return volunteerRequest;
     }
 
@@ -84,10 +89,10 @@ public class VolunteerRequestService {
                 Files.write(path, bytes);
                 log.debug("User id={} uploaded picture: {}", user.getId(), hexString + "." + fileType);
 
-                hashPicturesWithReferences.put(hexString, multipartFile.getOriginalFilename());
+                hashPicturesWithReferences.put(hexString + "." + fileType, multipartFile.getOriginalFilename());
 
                 createThumbnailFromPicture(bytes, hexString, fileType);
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e){
@@ -113,6 +118,30 @@ public class VolunteerRequestService {
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    public HashMap<String, String> getImagesFromVolunteerRequest(long volunteerRequestId){
+        VolunteerRequestPicture volunteerRequestPicture;
+        try {
+            volunteerRequestPicture =
+                volunteerRequestPictureRepository.findByVolunteerRequestId(volunteerRequestId)
+                    .get();
+        }catch(NoSuchElementException e){
+            throw new BadRequestAlertException("No image found for this volunteer request", "volunteerManagement", "noimagefoundforvolunteerid");
+
+        }
+
+      return volunteerRequestPicture.getReferenceToPicture();
+
+    }
+
+    public List<VolunteerRequest> getVolunteerRequests(int page, int numberOfResultsPerPage, boolean isDescending){
+        Sort.Direction sort;
+        if(isDescending)
+            sort = Sort.Direction.DESC;
+        else
+            sort = Sort.Direction.ASC;
+        return volunteerRequestRepository.findAll(new PageRequest(page, numberOfResultsPerPage, sort, "id")).getContent();
     }
 
 }
