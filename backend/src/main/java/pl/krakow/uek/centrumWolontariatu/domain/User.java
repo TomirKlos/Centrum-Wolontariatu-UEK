@@ -1,6 +1,8 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant;
 
@@ -13,10 +15,11 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
+@Getter @Setter
 @Entity
 @Table(name = "cw_users")
 public class User implements Serializable {
+
 
     private static final long serialVersionUID = 1L;
 
@@ -72,102 +75,8 @@ public class User implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL,
-        fetch = FetchType.LAZY,
-        mappedBy = "user")
-    private Set<VolunteerRequest> volunteerRequests = new HashSet<>();
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
-    public String getActivationKey() {
-        return activationKey;
-    }
-
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public String getResetKey() {
-        return resetKey;
-    }
-
-    public void setResetKey(String resetKey) {
-        this.resetKey = resetKey;
-    }
-
-    public Instant getResetDate() {
-        return resetDate;
-    }
-
-    public void setResetDate(Instant resetDate) {
-        this.resetDate = resetDate;
-    }
-
-    public Set<VolunteerRequest> getVolunteerRequests() {
-        return volunteerRequests;
-    }
-
-    public void setVolunteerRequests(Set<VolunteerRequest> volunteerRequests) {
-        this.volunteerRequests = volunteerRequests;
-    }
 
     @Override
     public boolean equals(Object o) {
