@@ -3,30 +3,14 @@ package pl.krakow.uek.centrumWolontariatu.web.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
-import pl.krakow.uek.centrumWolontariatu.security.jwt.TokenProvider;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
-import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
-import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
-import javax.validation.Valid;
-import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.util.*;
-
-import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
 
 @RestController
 @RequestMapping("/api")

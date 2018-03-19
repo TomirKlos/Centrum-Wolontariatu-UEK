@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.krakow.uek.centrumWolontariatu.domain.Authority;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
@@ -13,9 +12,7 @@ import pl.krakow.uek.centrumWolontariatu.security.SecurityUtils;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailNotAllowedException;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -49,7 +46,7 @@ public class UserService {
         userRepository.save(newUser);
 
         return newUser;
-        
+
     }
 
     public Optional<User> activateRegistration(String key) {
