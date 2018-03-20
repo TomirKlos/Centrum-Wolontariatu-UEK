@@ -1,12 +1,15 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "cw_volunteer_requests")
@@ -31,6 +34,34 @@ public class VolunteerRequest implements Serializable {
 
     @Column(name = "volunteers_amount")
     private int volunteersAmount;
+
+    @Temporal(TemporalType.DATE)
+    private Date date;
+
+    @Temporal(TemporalType.TIME)
+    private Date time;
+
+    @Column(name = "is_for_students")
+    private boolean isForStudents;
+
+    @Column(name = "is_for_tutors")
+    private boolean isForTutors;
+
+    @ManyToMany
+    @JoinTable(
+        name = "cw_volunteer_requests_categories",
+        joinColumns = {@JoinColumn(name = "volunteerRequest_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "category_name", referencedColumnName = "name")})
+    @BatchSize(size = 20)
+    private Set<VolunteerRequestCategory> categories = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "cw_volunteer_requests_types",
+        joinColumns = {@JoinColumn(name = "volunteerRequest_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "type_name", referencedColumnName = "name")})
+    @BatchSize(size = 20)
+    private Set<VolunteerRequestType> volunteerRequestTypes = new HashSet<>();
 
 
     @Override

@@ -16,6 +16,7 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InvalidPassw
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -126,6 +127,11 @@ public class AccountResource {
         if (!user.isPresent()) {
             throw new InternalServerErrorException("No user was found for this reset key");
         }
+    }
+
+    @GetMapping("/users/getAll")
+    public List<User> findAllUsers(){
+        return userRepository.findAll();
     }
 
 

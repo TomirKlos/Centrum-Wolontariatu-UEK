@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
@@ -38,8 +40,8 @@ public class VolunteerRequestController {
 
     @PostMapping(path = "/vrequest/create", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerRequest(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam int numberVolunteers) {
-        volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, file);
+    public void addVolunteerRequest(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam int numberVolunteers, @RequestParam boolean isForStudents, @RequestParam boolean isForTutors, @RequestParam Set<String> categories, @RequestParam Set<String> types) {
+        volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, isForStudents, isForTutors, categories, types, file);
     }
 
     @GetMapping("/vrequest/getimage")
@@ -50,6 +52,28 @@ public class VolunteerRequestController {
     @GetMapping("/vrequest/getVolunteerRequests")
     public List<VolunteerRequestDTO> getVolunteerRequests(@RequestParam int page, @RequestParam int numberOfResultsPerPage, @RequestParam boolean isDescending){
        return volunteerRequestService.getVolunteerRequests(page, numberOfResultsPerPage, isDescending);
+    }
+
+    @PostMapping("/vrequest/category/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createNewCategory(@RequestParam String categoryName) {
+        volunteerRequestService.createVolunteerRequestCategory(categoryName);
+    }
+
+    @GetMapping("/vrequest/category/get")
+    public List<VolunteerRequestCategory> getAllVolunteerRequestCategory(){
+        return volunteerRequestService.getAllCategories();
+    }
+
+    @PostMapping("/vrequest/type/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createNewType(@RequestParam String typeName) {
+        volunteerRequestService.createVolunteerRequestType(typeName);
+    }
+
+    @GetMapping("/vrequest/type/get")
+    public List<VolunteerRequestType> getAllVolunteerRequestType(){
+        return volunteerRequestService.getAllTypes();
     }
 
 }

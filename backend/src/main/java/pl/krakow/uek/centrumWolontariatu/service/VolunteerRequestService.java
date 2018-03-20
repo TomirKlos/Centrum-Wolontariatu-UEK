@@ -5,18 +5,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.krakow.uek.centrumWolontariatu.domain.User;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
+import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
+import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestCategoryRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
+import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestTypeRepository;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 
 import javax.imageio.ImageIO;
+import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -37,31 +39,66 @@ public class VolunteerRequestService {
     private final MailService mailService;
     private final VolunteerRequestRepository volunteerRequestRepository;
     private final VolunteerRequestPictureRepository volunteerRequestPictureRepository;
+    private final VolunteerRequestCategoryRepository volunteerRequestCategoryRepository;
+    private final VolunteerRequestTypeRepository volunteerRequestTypeRepository;
 
-    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository) {
+    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository) {
         this.userService = userService;
         this.mailService = mailService;
         this.volunteerRequestRepository = volunteerRequestRepository;
         this.volunteerRequestPictureRepository = volunteerRequestPictureRepository;
+        this.volunteerRequestCategoryRepository = volunteerRequestCategoryRepository;
+        this.volunteerRequestTypeRepository = volunteerRequestTypeRepository;
     }
+    /*
+    * don't refactor!!,
+    * split creating process into 2 methods:GenerateVolunteerRequest + createVolunteerRequest
+    * to provide integrity between tables in database: cw_volunteer_request_category, cw_volunteer_request_type and the table
+    * cw_volunteer_request. Without spliting into 2 methods, it was allowed to insert to database not permitted values in type/category fields.
+     */
 
-    public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, MultipartFile[] file){
-        boolean isImageUploaded = file.length>0;
-        User user = userService.getUserWithAuthorities().get();
+    public long GenerateVolunteerRequest(){
         VolunteerRequest volunteerRequest = new VolunteerRequest();
-        volunteerRequest.setDescription(description);
-        volunteerRequest.setTitle(title);
-        volunteerRequest.setVolunteersAmount(numberVolunteers);
+        User user = userService.getUserWithAuthorities().get();
         volunteerRequest.setUser(user);
 
         volunteerRequestRepository.save(volunteerRequest);
-        log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
+        return volunteerRequest.getId();
+    }
 
-        if(isImageUploaded){
-            VolunteerRequestPicture volunteerRequestPicture = addPicturesToVolunteerRequest(file, user, volunteerRequest);
-            volunteerRequestPictureRepository.save(volunteerRequestPicture);
-        }
-        return volunteerRequest;
+    public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, boolean isForStudents, boolean isForTutors, Set<String> categories, Set<String> types,  MultipartFile[] file){
+        boolean isImageUploaded = file.length>0;
+        long id = GenerateVolunteerRequest();
+        try{
+        return volunteerRequestRepository.findById(id)
+            .map(volunteerRequest -> {
+                Date now = new Date();
+                volunteerRequest.setDescription(description);
+                volunteerRequest.setTitle(title);
+                volunteerRequest.setVolunteersAmount(numberVolunteers);
+                volunteerRequest.setDate(now);
+                volunteerRequest.setTime(now);
+                volunteerRequest.setForTutors(isForTutors);
+                volunteerRequest.setForStudents(isForStudents);
+
+                User user = userService.getUserWithAuthorities().get();
+
+                volunteerRequest.setCategories(getCategoriesFromRequest(categories));
+                volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(types));
+
+                volunteerRequestRepository.save(volunteerRequest);
+                log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
+
+                if(isImageUploaded){
+                    VolunteerRequestPicture volunteerRequestPicture = addPicturesToVolunteerRequest(file, user, volunteerRequest);
+                    volunteerRequestPictureRepository.save(volunteerRequestPicture);
+                }
+                return volunteerRequest;
+            }).get();}
+            catch(JpaObjectRetrievalFailureException e){
+                volunteerRequestRepository.deleteById(id);
+                throw new BadRequestAlertException("Unable to find category/type of volunteerRequest in database", "volunteerRequestManagement", "nocategoryortypelinkstodatabase");
+            }
     }
 
     private VolunteerRequestPicture addPicturesToVolunteerRequest(MultipartFile[] file, User user, VolunteerRequest volunteerRequest){
@@ -141,5 +178,42 @@ public class VolunteerRequestService {
             sort = Sort.Direction.ASC;
         return volunteerRequestRepository.findAllBy(new PageRequest(page, numberOfResultsPerPage, sort, "id")).getContent();
     }
+
+    public void createVolunteerRequestCategory(String name){
+        VolunteerRequestCategory volunteerRequestCategory = new VolunteerRequestCategory();
+        volunteerRequestCategory.setName(name);
+        volunteerRequestCategoryRepository.save(volunteerRequestCategory);
+    }
+
+    public List<VolunteerRequestCategory> getAllCategories(){
+        return volunteerRequestCategoryRepository.findAll();
+    }
+
+    public void createVolunteerRequestType(String name){
+        VolunteerRequestType volunteerRequestType = new VolunteerRequestType();
+        volunteerRequestType.setName(name);
+        volunteerRequestTypeRepository.save(volunteerRequestType);
+    }
+
+    public List<VolunteerRequestType> getAllTypes(){
+        return volunteerRequestTypeRepository.findAll();
+    }
+
+    private Set<VolunteerRequestCategory> getCategoriesFromRequest(Set<String> categories){
+        HashSet<VolunteerRequestCategory> volunteerRequestCategories = new HashSet<>();
+        for(String string: categories){
+            volunteerRequestCategories.add(new VolunteerRequestCategory(string));
+        }
+        return volunteerRequestCategories;
+    }
+
+    private Set<VolunteerRequestType> getTypesFromRequest(Set<String> types){
+        HashSet<VolunteerRequestType> volunteerRequestTypes = new HashSet<>();
+        for(String string: types){
+            volunteerRequestTypes.add(new VolunteerRequestType(string));
+        }
+        return volunteerRequestTypes;
+    }
+
 
 }
