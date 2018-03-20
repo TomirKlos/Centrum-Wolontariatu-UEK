@@ -20,7 +20,8 @@ public class Authority implements Serializable {
     @Size(max = 50)
     @Id
     @Column(length = 50)
-    @Getter @Setter
+    @Getter
+    @Setter
     private String name;
 
 }

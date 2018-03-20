@@ -4,10 +4,10 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlert
 
 public class EmailNotAllowedException extends BadRequestAlertException {
 
-        public EmailNotAllowedException() {
-            super(null, "Email address not allowed from this domain", "userManagement", "emailbaddomain");
+    public EmailNotAllowedException() {
+        super(null, "Email address not allowed from this domain", "userManagement", "emailbaddomain");
 
-        }
+    }
 }
 
 

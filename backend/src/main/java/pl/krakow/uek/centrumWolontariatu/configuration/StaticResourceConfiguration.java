@@ -10,7 +10,7 @@ import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConst
 public class StaticResourceConfiguration extends WebMvcConfigurerAdapter {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-        "file:"+ UPLOADED_FOLDER };
+        "file:" + UPLOADED_FOLDER};
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

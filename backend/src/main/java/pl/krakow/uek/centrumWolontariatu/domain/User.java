@@ -15,12 +15,12 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-@Getter @Setter
+
+@Getter
+@Setter
 @Entity
 @Table(name = "cw_users")
 public class User implements Serializable {
-
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -74,8 +74,6 @@ public class User implements Serializable {
         inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
-
-
 
 
     @Override
