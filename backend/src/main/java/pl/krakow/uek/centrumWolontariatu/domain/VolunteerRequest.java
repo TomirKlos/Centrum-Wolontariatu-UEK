@@ -27,6 +27,7 @@ public class VolunteerRequest implements Serializable {
     private User user;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "title")
@@ -40,6 +41,12 @@ public class VolunteerRequest implements Serializable {
 
     @Temporal(TemporalType.TIME)
     private Date time;
+
+    @Column(name = "accepted")
+    private boolean accepted;
+
+    @Column(name = "expired")
+    private boolean expired;
 
     @Column(name = "is_for_students")
     private boolean isForStudents;
