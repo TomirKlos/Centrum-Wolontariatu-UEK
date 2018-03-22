@@ -28,6 +28,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
@@ -73,12 +75,13 @@ public class VolunteerRequestService {
         try {
             return volunteerRequestRepository.findById(id)
                 .map(volunteerRequest -> {
-                    Date now = new Date();
+                    ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+                    Date date = Date.from(utc.toInstant());
+                    long epochMillis = utc.toEpochSecond() * 1000;
+                    volunteerRequest.setTimestamp(epochMillis);
                     volunteerRequest.setDescription(description);
                     volunteerRequest.setTitle(title);
                     volunteerRequest.setVolunteersAmount(numberVolunteers);
-                    volunteerRequest.setDate(now);
-                    volunteerRequest.setTime(now);
                     volunteerRequest.setForTutors(isForTutors);
                     volunteerRequest.setForStudents(isForStudents);
 

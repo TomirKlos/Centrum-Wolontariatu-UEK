@@ -37,11 +37,8 @@ public class VolunteerRequest implements Serializable {
     @Column(name = "volunteers_amount")
     private int volunteersAmount;
 
-    @Temporal(TemporalType.DATE)
-    private Date date;
-
-    @Temporal(TemporalType.TIME)
-    private Date time;
+    @Column(name= "timestamp")
+    private long timestamp;
 
     @Column(name = "accepted")
     private boolean accepted;

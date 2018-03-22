@@ -1,5 +1,8 @@
 package pl.krakow.uek.centrumWolontariatu.web.rest;
 
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.StringUtils;
@@ -9,6 +12,7 @@ import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
+import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailAlreadyUsedException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailNotFoundException;
@@ -140,5 +144,13 @@ public class AccountResource {
         return !StringUtils.isEmpty(password) &&
             password.length() >= UserConstant.PASSWORD_MIN_LENGTH &&
             password.length() <= UserConstant.PASSWORD_MAX_LENGTH;
+    }
+
+    @GetMapping("/users/getAllByRsql")
+    @ResponseBody
+    public List<User> findAllByRsql(@RequestParam(value = "search") String search) {
+        Node rootNode = new RSQLParser().parse(search);
+        Specification<User> spec = rootNode.accept(new CustomRsqlVisitor<User>());
+        return userRepository.findAll(spec);
     }
 }
