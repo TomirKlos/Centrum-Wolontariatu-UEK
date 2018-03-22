@@ -17,12 +17,12 @@ import java.util.UUID;
 
 @Service
 public class UserService {
-    @Autowired
-    MailDomainToAuthoritiesService mailDomainToAuthoritiesService;
     private final Logger log = LoggerFactory.getLogger(UserService.class);
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VolunteerRequestRepository volunteerRequestRepository;
+    @Autowired
+    MailDomainToAuthoritiesService mailDomainToAuthoritiesService;
 
 
     public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, VolunteerRequestRepository volunteerRequestRepository) {
@@ -33,7 +33,7 @@ public class UserService {
 
 
     public User registerUser(String email, String password) {
-        if(!mailDomainToAuthoritiesService.emailFromAllowedDomain(email)){
+        if (!mailDomainToAuthoritiesService.emailFromAllowedDomain(email)) {
             throw new EmailNotAllowedException();
         }
         User newUser = new User();

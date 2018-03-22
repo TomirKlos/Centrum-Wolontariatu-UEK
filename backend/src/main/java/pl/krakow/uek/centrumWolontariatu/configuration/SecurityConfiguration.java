@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import pl.krakow.uek.centrumWolontariatu.security.jwt.JWTConfigurer;
 import pl.krakow.uek.centrumWolontariatu.security.jwt.TokenProvider;
@@ -25,10 +27,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final TokenProvider tokenProvider;
     private final SecurityProblemSupport securityProblemSupport;
+    private final CorsFilter corsFilter;
 
-    public SecurityConfiguration(TokenProvider tokenProvider, SecurityProblemSupport securityProblemSupport) {
+    public SecurityConfiguration(TokenProvider tokenProvider, SecurityProblemSupport securityProblemSupport, CorsFilter corsFilter) {
         this.tokenProvider = tokenProvider;
         this.securityProblemSupport = securityProblemSupport;
+        this.corsFilter = corsFilter;
     }
 
     @Bean
@@ -62,7 +66,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authenticationEntryPoint(securityProblemSupport)
             .accessDeniedHandler(securityProblemSupport)
         .and()
-//            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf()
             .disable()
             .headers()

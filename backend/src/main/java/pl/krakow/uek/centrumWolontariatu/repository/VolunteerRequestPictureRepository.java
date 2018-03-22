@@ -6,6 +6,6 @@ import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
 import java.util.Optional;
 
 public interface VolunteerRequestPictureRepository extends JpaRepository<VolunteerRequestPicture, Long> {
-    Optional <VolunteerRequestPicture> findByVolunteerRequestId(long id);
+    Optional<VolunteerRequestPicture> findByVolunteerRequestId(long id);
 
 }

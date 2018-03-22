@@ -14,7 +14,9 @@ import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -45,13 +47,13 @@ public class VolunteerRequestController {
     }
 
     @GetMapping("/vrequest/getimage")
-    public HashMap<String, String> getImagesByVolunteerId(@RequestParam long volunteerRequestId){
-       return volunteerRequestService.getImagesFromVolunteerRequest(volunteerRequestId);
+    public HashMap<String, String> getImagesByVolunteerId(@RequestParam long volunteerRequestId) {
+        return volunteerRequestService.getImagesFromVolunteerRequest(volunteerRequestId);
     }
 
     @GetMapping("/vrequest/getVolunteerRequests")
-    public List<VolunteerRequestDTO> getVolunteerRequests(@RequestParam int page, @RequestParam int numberOfResultsPerPage, @RequestParam boolean isDescending){
-       return volunteerRequestService.getVolunteerRequests(page, numberOfResultsPerPage, isDescending);
+    public List<VolunteerRequestDTO> getVolunteerRequests(@RequestParam int page, @RequestParam int numberOfResultsPerPage, @RequestParam boolean isDescending) {
+        return volunteerRequestService.getVolunteerRequests(page, numberOfResultsPerPage, isDescending);
     }
 
     @PostMapping("/vrequest/category/create")
@@ -61,7 +63,7 @@ public class VolunteerRequestController {
     }
 
     @GetMapping("/vrequest/category/get")
-    public List<VolunteerRequestCategory> getAllVolunteerRequestCategory(){
+    public List<VolunteerRequestCategory> getAllVolunteerRequestCategory() {
         return volunteerRequestService.getAllCategories();
     }
 
@@ -72,7 +74,7 @@ public class VolunteerRequestController {
     }
 
     @GetMapping("/vrequest/type/get")
-    public List<VolunteerRequestType> getAllVolunteerRequestType(){
+    public List<VolunteerRequestType> getAllVolunteerRequestType() {
         return volunteerRequestService.getAllTypes();
     }
 

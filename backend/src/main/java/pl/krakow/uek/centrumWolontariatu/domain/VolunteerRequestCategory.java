@@ -29,5 +29,4 @@ public class VolunteerRequestCategory implements Serializable {
     private String name;
 
 
-
 }

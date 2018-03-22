@@ -13,7 +13,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "cw_volunteer_requests")
-@Getter @Setter
+@Getter
+@Setter
 public class VolunteerRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;

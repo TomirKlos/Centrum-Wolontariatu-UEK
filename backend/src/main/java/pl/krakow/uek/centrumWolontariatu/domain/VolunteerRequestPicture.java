@@ -18,17 +18,22 @@ public class VolunteerRequestPicture implements Serializable {
     @Getter
     private static final long serialVersionUID = 1L;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private Long id;
 
-    @Column(name="reference_to_picture") @Lob
-    @Getter @Setter
+    @Column(name = "reference_to_picture")
+    @Lob
+    @Getter
+    @Setter
     private HashMap<String, String> referenceToPicture;
 
-    @OneToOne(fetch = FetchType.LAZY) @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "volunteerRequest_id")
-    @Getter @Setter
+    @Getter
+    @Setter
     private VolunteerRequest volunteerRequest;
 
 }

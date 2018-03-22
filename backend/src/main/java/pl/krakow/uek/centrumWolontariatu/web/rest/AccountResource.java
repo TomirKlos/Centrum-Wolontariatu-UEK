@@ -1,6 +1,7 @@
 package pl.krakow.uek.centrumWolontariatu.web.rest;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant;
@@ -129,11 +130,11 @@ public class AccountResource {
         }
     }
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/users/getAll")
-    public List<User> findAllUsers(){
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
-
 
     private boolean checkPasswordLength(String password) {
         return !StringUtils.isEmpty(password) &&
