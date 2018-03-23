@@ -2,14 +2,18 @@ package pl.krakow.uek.centrumWolontariatu.web.rest;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
+import graphql.ExecutionResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
+import pl.krakow.uek.centrumWolontariatu.service.GraphQLService;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
@@ -20,6 +24,7 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InternalServ
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InvalidPasswordException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.*;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +36,13 @@ public class AccountResource {
     private final UserRepository userRepository;
     private final UserService userService;
     private final MailService mailService;
+
+    @Autowired
+    EntityManager entityManager;
+
+    @Autowired
+    GraphQLService graphQLService;
+
 
     public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
         this.userRepository = userRepository;
@@ -153,4 +165,12 @@ public class AccountResource {
         Specification<User> spec = rootNode.accept(new CustomRsqlVisitor<User>());
         return userRepository.findAll(spec);
     }
+
+    @PostMapping("/GraphQl")
+    public ResponseEntity<Object> getAllBooks(@RequestBody String query){
+        ExecutionResult executionResult = graphQLService.getGraphQL().execute(query);
+        return new ResponseEntity<>(executionResult, HttpStatus.OK);
+    }
+
+
 }
