@@ -16,6 +16,16 @@ public interface VolunteerRequestDTO {
 
     UserIdDTO getUser();
 
+    long getTimestamp();
+
+    long getExpirationDate();
+
+    boolean isExpired();
+
+    boolean isForStudents();
+
+    boolean isForTutors();
+
     Set<VolunteerRequestCategory> getCategories();
 
     Set<VolunteerRequestType> getVolunteerRequestTypes();

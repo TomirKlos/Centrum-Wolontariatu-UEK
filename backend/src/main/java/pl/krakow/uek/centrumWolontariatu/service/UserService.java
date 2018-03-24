@@ -1,16 +1,24 @@
 package pl.krakow.uek.centrumWolontariatu.service;
 
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.security.SecurityUtils;
+import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailNotAllowedException;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -103,6 +111,24 @@ public class UserService {
                 userRepository.save(user);
                 return user;
             });
+    }
+
+    @Transactional
+    public Page<User> findAllByRsql(int page, int numberOfResultsPerPage, Optional<String> sortBy, Optional<String> search, Optional<Boolean> descending) {
+        Sort.Direction sort = Sort.Direction.DESC;
+        if(descending.isPresent() && !descending.get()) sort = Sort.Direction.ASC;
+        String sortByField = "id";
+        if(sortBy.isPresent()) sortByField=sortBy.get();
+
+        Page<User> result;
+        if(search.isPresent()) {
+            final Node rootNode = new RSQLParser().parse(search.get());
+            Specification<User> spec = rootNode.accept(new CustomRsqlVisitor<User>());
+            result = userRepository.findAll(spec, new PageRequest(page, numberOfResultsPerPage, sort, sortByField));
+        } else {
+            result = userRepository.findAll(new PageRequest(page, numberOfResultsPerPage, sort, sortByField));
+        }
+        return result;
     }
 
 }

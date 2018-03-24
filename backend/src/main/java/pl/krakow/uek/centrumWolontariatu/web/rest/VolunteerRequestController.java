@@ -42,8 +42,8 @@ public class VolunteerRequestController {
 
     @PostMapping(path = "/vrequest/create", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerRequest(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam int numberVolunteers, @RequestParam boolean isForStudents, @RequestParam boolean isForTutors, @RequestParam Set<String> categories, @RequestParam Set<String> types) {
-        volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, isForStudents, isForTutors, categories, types, file);
+    public void addVolunteerRequest(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam int numberVolunteers, @RequestParam boolean isForStudents, @RequestParam boolean isForTutors, @RequestParam Set<String> categories, @RequestParam Set<String> types, @RequestParam long expirationDate) {
+        volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, isForStudents, isForTutors, categories, types,expirationDate,  file);
     }
 
     @GetMapping("/vrequest/getimage")

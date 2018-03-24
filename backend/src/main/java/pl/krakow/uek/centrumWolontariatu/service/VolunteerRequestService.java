@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
@@ -31,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
 
@@ -69,7 +71,7 @@ public class VolunteerRequestService {
         return volunteerRequest.getId();
     }
 
-    public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, boolean isForStudents, boolean isForTutors, Set<String> categories, Set<String> types, MultipartFile[] file) {
+    public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, boolean isForStudents, boolean isForTutors, Set<String> categories, Set<String> types, long expirationDate, MultipartFile[] file) {
         boolean isImageUploaded = file.length > 0;
         long id = GenerateVolunteerRequest();
         try {
@@ -79,6 +81,7 @@ public class VolunteerRequestService {
                     Date date = Date.from(utc.toInstant());
                     long epochMillis = utc.toEpochSecond() * 1000;
                     volunteerRequest.setTimestamp(epochMillis);
+                    volunteerRequest.setExpirationDate(expirationDate);
                     volunteerRequest.setDescription(description);
                     volunteerRequest.setTitle(title);
                     volunteerRequest.setVolunteersAmount(numberVolunteers);
@@ -218,6 +221,5 @@ public class VolunteerRequestService {
         }
         return volunteerRequestTypes;
     }
-
 
 }

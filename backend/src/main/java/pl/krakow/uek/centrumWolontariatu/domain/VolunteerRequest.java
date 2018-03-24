@@ -46,6 +46,9 @@ public class VolunteerRequest implements Serializable {
     @Column(name = "expired")
     private boolean expired;
 
+    @Column(name = "expiration_date")
+    private long expirationDate;
+
     @Column(name = "is_for_students")
     private boolean isForStudents;
 
