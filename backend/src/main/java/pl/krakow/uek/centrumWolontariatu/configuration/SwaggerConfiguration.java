@@ -1,12 +1,15 @@
 package pl.krakow.uek.centrumWolontariatu.configuration;
 
+import com.fasterxml.classmate.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
+import pl.krakow.uek.centrumWolontariatu.configuration.util.PageableParameterBuilderPlugin;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.schema.TypeNameExtractor;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.SecurityReference;
@@ -83,4 +86,10 @@ public class SwaggerConfiguration {
             .build();
     }
 
+    @Bean
+    PageableParameterBuilderPlugin pageableParameterBuilderPlugin(TypeNameExtractor nameExtractor,
+                                                                  TypeResolver resolver) {
+
+        return new PageableParameterBuilderPlugin(nameExtractor, resolver);
+    }
 }

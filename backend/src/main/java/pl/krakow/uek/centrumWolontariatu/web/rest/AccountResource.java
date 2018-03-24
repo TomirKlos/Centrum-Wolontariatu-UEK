@@ -1,16 +1,11 @@
 package pl.krakow.uek.centrumWolontariatu.web.rest;
 
-import graphql.ExecutionResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
-import pl.krakow.uek.centrumWolontariatu.service.GraphQLService;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
@@ -20,9 +15,7 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InternalServ
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InvalidPasswordException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.*;
 
-import javax.persistence.EntityManager;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -32,13 +25,6 @@ public class AccountResource {
     private final UserRepository userRepository;
     private final UserService userService;
     private final MailService mailService;
-
-    @Autowired
-    EntityManager entityManager;
-
-    @Autowired
-    GraphQLService graphQLService;
-
 
     public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
         this.userRepository = userRepository;
@@ -147,30 +133,5 @@ public class AccountResource {
             throw new InternalServerErrorException("No user was found for this reset key");
         }
     }
-
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @GetMapping("/users/getAll")
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
-    }
-
-
-    @GetMapping("/users/getAllByRsql")
-    @ResponseBody
-    public List<User> findAllByRsq(@RequestParam(value = "search") Optional<String> search,
-                                     @RequestParam(value = "descending") Optional<Boolean> descending,
-                                     @RequestParam(value = "sortBy") Optional<String> sortBy,
-                                     @RequestParam(value = "page") int page,
-                                     @RequestParam(value = "numResults") int numberOfResultsPerPage) {
-
-        return userService.findAllByRsql(page, numberOfResultsPerPage, sortBy, search, descending).getContent();
-    }
-
-   /* @PostMapping("/GraphQl")
-    public ResponseEntity<Object> getAllUsers(@RequestBody String query){
-        ExecutionResult executionResult = graphQLService.getGraphQL().execute(query);
-        return new ResponseEntity<>(executionResult, HttpStatus.OK);
-    } */
-
 
 }
