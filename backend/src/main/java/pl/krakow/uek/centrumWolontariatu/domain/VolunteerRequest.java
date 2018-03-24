@@ -3,6 +3,7 @@ package pl.krakow.uek.centrumWolontariatu.domain;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -40,20 +41,21 @@ public class VolunteerRequest implements Serializable {
     @Column(name= "timestamp")
     private long timestamp;
 
+    //accepted set to byte to provide query search in RSQL which not support boolean type.
     @Column(name = "accepted")
-    private boolean accepted;
+    private byte accepted;
 
     @Column(name = "expired")
-    private boolean expired;
+    private byte expired;
 
     @Column(name = "expiration_date")
     private long expirationDate;
 
     @Column(name = "is_for_students")
-    private boolean isForStudents;
+    private byte isForStudents;
 
     @Column(name = "is_for_tutors")
-    private boolean isForTutors;
+    private byte isForTutors;
 
     @ManyToMany
     @JoinTable(

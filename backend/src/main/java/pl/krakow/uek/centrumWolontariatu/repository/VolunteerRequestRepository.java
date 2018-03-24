@@ -16,10 +16,7 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
 
     Optional<VolunteerRequest> findByUser(User user);
 
-    List<VolunteerRequest> findFirst2ByOrderByIdDesc();
-
     Optional<VolunteerRequest> findById(long id);
 
-    //Page<VolunteerRequest> findAll(Pageable pageable);
     Page<VolunteerRequestDTO> findAllBy(Pageable pageable);
 }

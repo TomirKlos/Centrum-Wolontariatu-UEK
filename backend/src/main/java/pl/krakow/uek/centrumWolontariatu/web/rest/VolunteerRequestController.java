@@ -2,9 +2,13 @@ package pl.krakow.uek.centrumWolontariatu.web.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
@@ -14,6 +18,8 @@ import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
+import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.*;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,54 +48,54 @@ public class VolunteerRequestController {
 
 //TODO Odbierac VolunteerRequestVM jako @RequestPart zamiast parametrami, gdyz normalna metoda @RequestBody + @RequestParam nie przechodzi.
 
-    @PostMapping(path = "/vrequest/create", consumes = "multipart/form-data")
+    @PostMapping(path = "/vrequest/", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
     public void addVolunteerRequest(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam int numberVolunteers, @RequestParam boolean isForStudents, @RequestParam boolean isForTutors, @RequestParam Set<String> categories, @RequestParam Set<String> types, @RequestParam long expirationDate) {
-        volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, isForStudents, isForTutors, categories, types,expirationDate,  file);
+        volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, parse(isForStudents), parse(isForTutors), categories, types,expirationDate,  file);
     }
 
-    @GetMapping("/vrequest/getimage")
+    @GetMapping("/vrequest/image")
     public HashMap<String, String> getImagesByVolunteerId(@RequestParam long volunteerRequestId) {
         return volunteerRequestService.getImagesFromVolunteerRequest(volunteerRequestId);
     }
 
-    @GetMapping("/vrequest/getVolunteerRequests")
-    public List<VolunteerRequestDTO> getVolunteerRequests(@RequestParam int page, @RequestParam int numberOfResultsPerPage, @RequestParam boolean isDescending) {
-        return volunteerRequestService.getVolunteerRequests(page, numberOfResultsPerPage, isDescending);
-    }
 
-    @PostMapping("/vrequest/category/create")
+    @PostMapping("/vrequest/category/")
     @ResponseStatus(HttpStatus.CREATED)
     public void createNewCategory(@RequestParam String categoryName) {
         volunteerRequestService.createVolunteerRequestCategory(categoryName);
     }
 
-    @GetMapping("/vrequest/category/get")
+    @GetMapping("/vrequest/category/")
     public List<VolunteerRequestCategory> getAllVolunteerRequestCategory() {
         return volunteerRequestService.getAllCategories();
     }
 
-    @PostMapping("/vrequest/type/create")
+    @PostMapping("/vrequest/type")
     @ResponseStatus(HttpStatus.CREATED)
     public void createNewType(@RequestParam String typeName) {
         volunteerRequestService.createVolunteerRequestType(typeName);
     }
 
-    @GetMapping("/vrequest/type/get")
+    @GetMapping("/vrequest/type")
     public List<VolunteerRequestType> getAllVolunteerRequestType() {
         return volunteerRequestService.getAllTypes();
     }
 
-    @GetMapping("/vrequest/getAllByRsql")
+    @GetMapping("/vrequest/")
     @ResponseBody
-    public List<VolunteerRequest> findAllByRsq(@RequestParam(value = "search") Optional<String> search,
-                                               @RequestParam(value = "descending") Optional<Boolean> descending,
-                                               @RequestParam(value = "sortBy") Optional<String> sortBy,
-                                               @RequestParam(value = "forStudents") Optional<Boolean> forStudents,
-                                               @RequestParam(value = "forTutors") Optional<Boolean> forTutors,
-                                               @RequestParam(value = "page") int page,
-                                               @RequestParam(value = "numResults") int numberOfResultsPerPage) {
-
-        return volunteerRequestService.findAllByRsql(page, numberOfResultsPerPage, sortBy, forStudents, forTutors, search, descending);
+    public ResponseEntity<Page<VolunteerRequest>> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
+        Page<VolunteerRequest> volunteerRequests = volunteerRequestService.findAllByRsql(pageable, parse(search));
+        return new ResponseEntity<>(volunteerRequests, HttpStatus.OK);
     }
+
+    @PostMapping("/vrequest/accept")
+    public void acceptVolunteerRequest(@RequestParam(value = "id") long id){
+        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
+            volunteerRequest.setAccepted(parse(true));
+            volunteerRequestRepository.save(volunteerRequest);
+        });
+    }
+
+
 }

@@ -6,10 +6,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -78,7 +75,7 @@ public class VolunteerRequestService {
         return volunteerRequest.getId();
     }
 
-    public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, boolean isForStudents, boolean isForTutors, Set<String> categories, Set<String> types, long expirationDate, MultipartFile[] file) {
+    public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, byte isForStudents, byte isForTutors, Set<String> categories, Set<String> types, long expirationDate, MultipartFile[] file) {
         boolean isImageUploaded = file.length > 0;
         long id = GenerateVolunteerRequest();
         try {
@@ -92,8 +89,8 @@ public class VolunteerRequestService {
                     volunteerRequest.setDescription(description);
                     volunteerRequest.setTitle(title);
                     volunteerRequest.setVolunteersAmount(numberVolunteers);
-                    volunteerRequest.setForTutors(isForTutors);
-                    volunteerRequest.setForStudents(isForStudents);
+                    volunteerRequest.setIsForTutors(isForTutors);
+                    volunteerRequest.setIsForStudents(isForStudents);
 
                     User user = userService.getUserWithAuthorities().get();
 
@@ -230,21 +227,13 @@ public class VolunteerRequestService {
     }
 
     @Transactional
-    public List<VolunteerRequest> findAllByRsql(int page, int numberOfResultsPerPage, Optional<String> sortBy, Optional<Boolean> forStudents, Optional<Boolean> forTutors, Optional<String> search, Optional<Boolean> descending) {
-        Sort.Direction sort = ((descending.isPresent() && !descending.get()) ? Sort.Direction.ASC : Sort.Direction.DESC );
-        String sortByField = ((sortBy.isPresent()) ? sortBy.get() : "id");
-
-        List<VolunteerRequest> result;
+    public Page<VolunteerRequest> findAllByRsql(Pageable pageable, Optional<String> search) {
         if(search.isPresent()) {
             final Node rootNode = new RSQLParser().parse(search.get());
             Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());
-            result = volunteerRequestRepository.findAll(spec, new PageRequest(page, numberOfResultsPerPage, sort, sortByField)).getContent();
-        } else result = volunteerRequestRepository.findAll(new PageRequest(page, numberOfResultsPerPage, sort, sortByField)).getContent();
-
-        if(forStudents.isPresent() && forTutors.isPresent()) return result.stream().filter(volunteerRequest -> volunteerRequest.isForTutors() == forTutors.get() && volunteerRequest.isForStudents() == forStudents.get()).collect(Collectors.toList());
-        else if (forStudents.isPresent()) return result.stream().filter(volunteerRequest -> volunteerRequest.isForStudents() == forStudents.get()).collect(Collectors.toList());
-        else if (forTutors.isPresent()) return result.stream().filter(volunteerRequest -> volunteerRequest.isForTutors() == forTutors.get()).collect(Collectors.toList());
-        return result;
+            return volunteerRequestRepository.findAll(spec, pageable);
+        } else return volunteerRequestRepository.findAll(pageable);
     }
+
 
 }

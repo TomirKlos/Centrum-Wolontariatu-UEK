@@ -24,8 +24,7 @@ public class UserResource {
     @GetMapping
     public ResponseEntity<Page<User>> getAll(
         @RequestParam(value = "activated", required = false) Boolean activated,
-        Pageable pageable
-    ) {
+        Pageable pageable) {
 
         Page<User> page = userService.findAll(pageable, activated);
         return new ResponseEntity<>(page, HttpStatus.OK);
