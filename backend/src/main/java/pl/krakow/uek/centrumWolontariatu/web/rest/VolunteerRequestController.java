@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
@@ -16,6 +17,7 @@ import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -78,4 +80,16 @@ public class VolunteerRequestController {
         return volunteerRequestService.getAllTypes();
     }
 
+    @GetMapping("/vrequest/getAllByRsql")
+    @ResponseBody
+    public List<VolunteerRequest> findAllByRsq(@RequestParam(value = "search") Optional<String> search,
+                                               @RequestParam(value = "descending") Optional<Boolean> descending,
+                                               @RequestParam(value = "sortBy") Optional<String> sortBy,
+                                               @RequestParam(value = "forStudents") Optional<Boolean> forStudents,
+                                               @RequestParam(value = "forTutors") Optional<Boolean> forTutors,
+                                               @RequestParam(value = "page") int page,
+                                               @RequestParam(value = "numResults") int numberOfResultsPerPage) {
+
+        return volunteerRequestService.findAllByRsql(page, numberOfResultsPerPage, sortBy, forStudents, forTutors, search, descending);
+    }
 }

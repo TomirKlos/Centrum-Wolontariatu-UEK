@@ -1,24 +1,29 @@
 package pl.krakow.uek.centrumWolontariatu.service;
 
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
+import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
-import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestCategoryRepository;
-import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
-import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
-import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestTypeRepository;
+import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 
 import javax.imageio.ImageIO;
+import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -46,6 +51,8 @@ public class VolunteerRequestService {
     private final VolunteerRequestPictureRepository volunteerRequestPictureRepository;
     private final VolunteerRequestCategoryRepository volunteerRequestCategoryRepository;
     private final VolunteerRequestTypeRepository volunteerRequestTypeRepository;
+    @Autowired
+    UserRepository userRepository;
 
     public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository) {
         this.userService = userService;
@@ -220,6 +227,24 @@ public class VolunteerRequestService {
             volunteerRequestTypes.add(new VolunteerRequestType(string));
         }
         return volunteerRequestTypes;
+    }
+
+    @Transactional
+    public List<VolunteerRequest> findAllByRsql(int page, int numberOfResultsPerPage, Optional<String> sortBy, Optional<Boolean> forStudents, Optional<Boolean> forTutors, Optional<String> search, Optional<Boolean> descending) {
+        Sort.Direction sort = ((descending.isPresent() && !descending.get()) ? Sort.Direction.ASC : Sort.Direction.DESC );
+        String sortByField = ((sortBy.isPresent()) ? sortBy.get() : "id");
+
+        List<VolunteerRequest> result;
+        if(search.isPresent()) {
+            final Node rootNode = new RSQLParser().parse(search.get());
+            Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());
+            result = volunteerRequestRepository.findAll(spec, new PageRequest(page, numberOfResultsPerPage, sort, sortByField)).getContent();
+        } else result = volunteerRequestRepository.findAll(new PageRequest(page, numberOfResultsPerPage, sort, sortByField)).getContent();
+
+        if(forStudents.isPresent() && forTutors.isPresent()) return result.stream().filter(volunteerRequest -> volunteerRequest.isForTutors() == forTutors.get() && volunteerRequest.isForStudents() == forStudents.get()).collect(Collectors.toList());
+        else if (forStudents.isPresent()) return result.stream().filter(volunteerRequest -> volunteerRequest.isForStudents() == forStudents.get()).collect(Collectors.toList());
+        else if (forTutors.isPresent()) return result.stream().filter(volunteerRequest -> volunteerRequest.isForTutors() == forTutors.get()).collect(Collectors.toList());
+        return result;
     }
 
 }

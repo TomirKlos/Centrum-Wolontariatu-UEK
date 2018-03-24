@@ -24,7 +24,4 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     List<User> findByActivated(boolean isActivated);
 
-    //List<User> findAllByActivatedTrue(boolean activated, Specification specification);
-    List<User> findByActivatedTrue();
-
 }
