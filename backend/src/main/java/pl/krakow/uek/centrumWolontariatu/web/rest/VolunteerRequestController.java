@@ -8,10 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.krakow.uek.centrumWolontariatu.domain.User;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.VolunteerRequestDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
@@ -71,10 +70,22 @@ public class VolunteerRequestController {
         return volunteerRequestService.getAllCategories();
     }
 
+    @DeleteMapping("/vrequest/category")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCategory(@RequestParam String name) {
+        volunteerRequestService.deleteCategory(name);
+    }
+
     @PostMapping("/vrequest/type")
     @ResponseStatus(HttpStatus.CREATED)
     public void createNewType(@RequestParam String typeName) {
         volunteerRequestService.createVolunteerRequestType(typeName);
+    }
+
+    @DeleteMapping("/vrequest/type")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteType(@RequestParam String name) {
+        volunteerRequestService.deleteType(name);
     }
 
     @GetMapping("/vrequest/type")
@@ -84,18 +95,16 @@ public class VolunteerRequestController {
 
     @GetMapping("/vrequest/")
     @ResponseBody
-    public ResponseEntity<Page<VolunteerRequest>> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
-        Page<VolunteerRequest> volunteerRequests = volunteerRequestService.findAllByRsql(pageable, parse(search));
+    public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
+        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsql(pageable, parse(search));
         return new ResponseEntity<>(volunteerRequests, HttpStatus.OK);
     }
 
     @PostMapping("/vrequest/accept")
     public void acceptVolunteerRequest(@RequestParam(value = "id") long id){
-        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
-            volunteerRequest.setAccepted(parse(true));
-            volunteerRequestRepository.save(volunteerRequest);
-        });
+        volunteerRequestService.acceptVolunteerRequest(id);
     }
+
 
 
 }
