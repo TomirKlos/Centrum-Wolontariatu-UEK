@@ -36,6 +36,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
+import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
 @Service
 public class VolunteerRequestService {
@@ -240,6 +241,13 @@ public class VolunteerRequestService {
 
     public void deleteCategory(String name){
         volunteerRequestCategoryRepository.deleteById(name);
+    }
+
+    public void acceptVolunteerRequest(long id){
+        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
+            volunteerRequest.setAccepted(parse(true));
+            volunteerRequestRepository.save(volunteerRequest);
+        });
     }
 
 

@@ -102,10 +102,7 @@ public class VolunteerRequestController {
 
     @PostMapping("/vrequest/accept")
     public void acceptVolunteerRequest(@RequestParam(value = "id") long id){
-        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
-            volunteerRequest.setAccepted(parse(true));
-            volunteerRequestRepository.save(volunteerRequest);
-        });
+        volunteerRequestService.acceptVolunteerRequest(id);
     }
 
 
