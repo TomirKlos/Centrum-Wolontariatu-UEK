@@ -1,5 +1,6 @@
 package pl.krakow.uek.centrumWolontariatu.repository.DTO;
 
+
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 
@@ -12,19 +13,19 @@ public interface VolunteerRequestDTO {
 
     String getTitle();
 
-    String getVolunteersAmount();
-
-    UserIdDTO getUser();
+    int getVolunteersAmount();
 
     long getTimestamp();
 
     long getExpirationDate();
 
-    boolean isExpired();
+    byte getExpired();
 
-    boolean isForStudents();
+    byte getIsForStudents();
 
-    boolean isForTutors();
+    byte getIsForTutors();
+
+    UserIdDTO getUser();
 
     Set<VolunteerRequestCategory> getCategories();
 

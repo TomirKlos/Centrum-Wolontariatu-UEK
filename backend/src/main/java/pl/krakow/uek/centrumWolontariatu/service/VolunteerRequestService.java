@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
@@ -34,7 +34,6 @@ import java.security.NoSuchAlgorithmException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
 
@@ -181,16 +180,11 @@ public class VolunteerRequestService {
 
     }
 
-    public List<VolunteerRequestDTO> getVolunteerRequests(int page, int numberOfResultsPerPage, boolean isDescending) {
-        Sort.Direction sort;
-        if (isDescending)
-            sort = Sort.Direction.DESC;
-        else
-            sort = Sort.Direction.ASC;
-        return volunteerRequestRepository.findAllBy(new PageRequest(page, numberOfResultsPerPage, sort, "id")).getContent();
-    }
 
     public void createVolunteerRequestCategory(String name) {
+        if(volunteerRequestCategoryRepository.findById(name).isPresent()){
+            throw new BadRequestAlertException("category already exist in database", "categoryManagement", "categoryexistindatabase");
+        }
         VolunteerRequestCategory volunteerRequestCategory = new VolunteerRequestCategory();
         volunteerRequestCategory.setName(name);
         volunteerRequestCategoryRepository.save(volunteerRequestCategory);
@@ -201,6 +195,9 @@ public class VolunteerRequestService {
     }
 
     public void createVolunteerRequestType(String name) {
+        if(volunteerRequestTypeRepository.findById(name).isPresent()){
+            throw new BadRequestAlertException("type already exist in database", "categoryManagement", "typeexistindatabase");
+        }
         VolunteerRequestType volunteerRequestType = new VolunteerRequestType();
         volunteerRequestType.setName(name);
         volunteerRequestTypeRepository.save(volunteerRequestType);
@@ -227,12 +224,22 @@ public class VolunteerRequestService {
     }
 
     @Transactional
-    public Page<VolunteerRequest> findAllByRsql(Pageable pageable, Optional<String> search) {
+    public Page<VolunteerRequestDTO> findAllByRsql(Pageable pageable, Optional<String> search) {
         if(search.isPresent()) {
             final Node rootNode = new RSQLParser().parse(search.get());
             Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());
-            return volunteerRequestRepository.findAll(spec, pageable);
-        } else return volunteerRequestRepository.findAll(pageable);
+
+            Page<VolunteerRequest> volunteerRequests = volunteerRequestRepository.findAll(spec, pageable);
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequests);
+        } else return volunteerRequestRepository.findAllBy(pageable);
+    }
+
+    public void deleteType(String name){
+        volunteerRequestTypeRepository.deleteById(name);
+    }
+
+    public void deleteCategory(String name){
+        volunteerRequestCategoryRepository.deleteById(name);
     }
 
 
