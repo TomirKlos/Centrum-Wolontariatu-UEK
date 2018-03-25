@@ -1,6 +1,5 @@
 package pl.krakow.uek.centrumWolontariatu.web.rest;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.security.jwt.JWTConfigurer;
 import pl.krakow.uek.centrumWolontariatu.security.jwt.TokenProvider;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.JWTTokenVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.UserVM;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody UserVM userVM) {
+    public ResponseEntity<JWTTokenVM> authorize(@Valid @RequestBody UserVM userVM) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(userVM.getEmail(), userVM.getPassword());
@@ -48,26 +48,6 @@ public class AuthenticationController {
         String jwt = tokenProvider.createToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
-    }
-
-    /**
-     * Object to return as body in JWT Authentication.
-     */
-    static class JWTToken {
-        private String idToken;
-
-        JWTToken(String idToken) {
-            this.idToken = idToken;
-        }
-
-        @JsonProperty("jwtToken")
-        String getIdToken() {
-            return idToken;
-        }
-
-        void setIdToken(String idToken) {
-            this.idToken = idToken;
-        }
+        return new ResponseEntity<>(new JWTTokenVM(jwt), httpHeaders, HttpStatus.OK);
     }
 }

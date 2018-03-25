@@ -21,7 +21,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class AccountResource {
-
     private final UserRepository userRepository;
     private final UserService userService;
     private final MailService mailService;

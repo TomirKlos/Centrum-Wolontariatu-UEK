@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Optional<User> findByResetKey(String resetKey);
 
-    User findOneById(long id);
+    Optional<User> findOneById(long id);
 
     List<User> findByActivated(boolean isActivated);
 

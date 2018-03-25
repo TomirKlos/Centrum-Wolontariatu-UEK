@@ -6,25 +6,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
-import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
-import pl.krakow.uek.centrumWolontariatu.service.MailDomainToAuthoritiesService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
+import pl.krakow.uek.centrumWolontariatu.web.rest.util.HeaderUtil;
 
 @RestController
 @RequestMapping("/api/users")
+@Secured({"ROLE_ADMIN"})
 public class UserResource {
-
     private final Logger log = LoggerFactory.getLogger(UserService.class);
     final private UserService userService;
-    private final UserRepository userRepository;
-    private final MailDomainToAuthoritiesService mailDomainToAuthoritiesService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailDomainToAuthoritiesService mailDomainToAuthoritiesService) {
+
+    public UserResource(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
-        this.mailDomainToAuthoritiesService = mailDomainToAuthoritiesService;
     }
 
     @GetMapping
@@ -36,9 +33,16 @@ public class UserResource {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+        log.debug("REST request to delete User: {}", id);
+        userService.deleteUser(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", id.toString())).build();
+    }
+
     @PostMapping(path = "/activate")
     @ResponseStatus(HttpStatus.OK)
-    public void activateUser(@RequestParam long id){
+    public void activateUser(@RequestParam long id) {
         userService.activateUser(id);
     }
 

@@ -111,7 +111,14 @@ public class UserService {
         }
     }
 
-    public void activateUser(long id){
+    public void deleteUser(Integer id) {
+        userRepository.findOneById(id).ifPresent(user -> {
+            userRepository.delete(user);
+            log.debug("Deleted User: {}", user);
+        });
+    }
+
+    public void activateUser(long id) {
         log.debug("Activating user {} by ADMIN ", id);
         userRepository.findById(id)
             .map(user -> {

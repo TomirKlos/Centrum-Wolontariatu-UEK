@@ -81,8 +81,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/api/authenticate",
                 "/api/register",
                 "/api/activate",
-                "/api/reset-password/**",
-                "/api/users/**"
+                "/api/reset-password/**"
             ).permitAll()
             .antMatchers("/api/**").authenticated()
         .and()
