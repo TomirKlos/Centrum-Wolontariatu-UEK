@@ -1,6 +1,5 @@
 package pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
