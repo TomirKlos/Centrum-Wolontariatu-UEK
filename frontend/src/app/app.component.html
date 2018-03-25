@@ -1,24 +1,16 @@
-<mat-progress-bar mode="indeterminate" *ngIf="displayProgresBar" id="app-progress-bar"></mat-progress-bar>
+<app-navbar></app-navbar>
 
-<mat-toolbar color="primary" id="toolbar" fxLayout="row" fxLayoutAlign="space-between center">
-  <button routerLink="/" mat-button>
-    <mat-icon>home</mat-icon>
-  </button>
+<!--<mat-sidenav-container id="sidenav-container">-->
 
-  <div>
-    <button mat-button [matMenuTriggerFor]="menu">
-      <mat-icon>person</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item routerLink="/auth/login">Logowanie</button>
-      <button mat-menu-item routerLink="/auth/signup">Rejestracja</button>
-    </mat-menu>
-  </div>
+<!--<mat-sidenav opened="true" mode="side">-->
+<!--<app-sidenav></app-sidenav>-->
+<!--</mat-sidenav>-->
 
-
-</mat-toolbar>
 
 <router-outlet></router-outlet>
+
+
+<!--</mat-sidenav-container>-->
 
 
 

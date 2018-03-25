@@ -1,15 +1,7 @@
-#app-progress-bar {
-  position: fixed;
-  top: 0;
+#sidenav-container {
+  position: absolute;
   left: 0;
-}
-
-mat-toolbar {
-  margin-bottom: 40px;
-}
-
-button {
-  height: 80%;
-  font-size: 19px;
-  min-width: 60px;
+  top: 64px;
+  right: 0;
+  bottom: 0;
 }

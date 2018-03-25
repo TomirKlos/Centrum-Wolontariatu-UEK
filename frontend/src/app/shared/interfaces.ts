@@ -13,3 +13,23 @@ export interface IResponseBody {
   detail?: string;
   message?: string;
 }
+
+export interface User {
+  activated: boolean;
+  authorities: string[];
+  email: string;
+  firstName: string;
+  lastName: string;
+  // resetDate:
+}
+
+export interface Pageable<T> {
+  content: T[];
+  first: boolean;
+  last: boolean;
+  number: number;
+  numberOfElements: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}

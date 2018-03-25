@@ -3,40 +3,44 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
 @Injectable()
 export class SnackBarService {
+  private _defaultProperties: MatSnackBarConfig = {
+    verticalPosition: 'top',
+    horizontalPosition: 'end'
+  };
+  private _defaultWaringProperties: MatSnackBarConfig = {
+    panelClass: ['snackbar-error', 'as']
+  };
+  private _defaultAction = 'ok';
+  private _defaultWarnMessage = 'Wystąpił problem, proszę spróbować ponownie';
 
-  constructor(private snackbar: MatSnackBar) {
+
+  constructor(private _snackbar: MatSnackBar) {
   }
 
   open(message: string, properties?: MatSnackBarConfig): void {
-    this.snackbar.open(message, 'ok', properties);
+    if (window.innerWidth < 600) {
+      if (!properties) {
+        properties = {};
+      }
+      properties.verticalPosition = 'bottom';
+    }
+
+    this._snackbar.open(
+      message,
+      this._defaultAction,
+      Object.assign({}, this._defaultProperties, properties)
+    );
   }
 
-  openError(message?: string, properties?: MatSnackBarConfig | null): void {
+  warning(message?: string, properties?: MatSnackBarConfig | null): void {
     if (!message) {
-      message = 'Wystąpił problem, proszę spróbować ponownie';
+      message = this._defaultWarnMessage;
     }
-    if (!properties) {
-      properties = {};
-    }
-    properties = this.addErrorCSS(properties);
 
-    this.open(message, properties);
+    this.open(
+      message,
+      Object.assign({}, this._defaultWaringProperties, properties)
+    );
   }
 
-  private addErrorCSS(properties: MatSnackBarConfig): MatSnackBarConfig {
-    const errorCSS = 'snackbar-error';
-
-    if (properties.panelClass) {
-      if (typeof properties.panelClass === 'string') {
-        properties.panelClass = [ errorCSS, properties.panelClass ];
-      }
-      if (properties.panelClass instanceof Array) {
-        properties.panelClass.push(errorCSS);
-      }
-    } else {
-      properties.panelClass = [ errorCSS ];
-    }
-
-    return properties;
-  }
 }

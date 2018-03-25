@@ -3,19 +3,25 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from './material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { HasAnyRoleDirective } from './auth/has-any-role.directive';
 
-const modules = [
+const myImports = [
   CommonModule,
   MaterialModule,
   ReactiveFormsModule,
-  FlexLayoutModule
+  FlexLayoutModule,
 ];
 
+const myDeclarations: any[] = [
+  HasAnyRoleDirective
+];
+
+const myExports = myImports.concat(myDeclarations);
 
 @NgModule({
-  imports: modules,
-  exports: modules,
-  declarations: []
+  imports: myImports,
+  exports: myExports,
+  declarations: myDeclarations
 })
 export class LayoutModule {
 }

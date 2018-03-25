@@ -1,10 +1,12 @@
 @import "my-theme";
 @import "variables";
 @import "my-mat-card";
+@import "my-mat-sidenav";
 
 body, html {
   margin: 0;
   padding: 0;
+  background: #fafafa;
 }
 
 form {
@@ -17,10 +19,6 @@ form {
     width: 100%;
     margin: 20px 0 !important;
   }
-}
-
-snack-bar-container {
-  text-align: center;
 }
 
 .snackbar-error {

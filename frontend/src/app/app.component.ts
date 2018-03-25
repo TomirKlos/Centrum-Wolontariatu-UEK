@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
+import { UserService } from './shared/auth/user.service';
 
 @Component({
   selector: 'app-root',
@@ -7,12 +7,11 @@ import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  displayProgresBar = false;
 
-  constructor(private loadingBarService: LoadingBarService) {
+  constructor(private userService: UserService) {
   }
 
   ngOnInit() {
-    this.loadingBarService.display.subscribe(d => this.displayProgresBar = d);
+    this.userService.checkIfLoggedIn();
   }
 }

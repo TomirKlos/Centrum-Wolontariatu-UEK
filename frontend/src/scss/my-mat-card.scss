@@ -1,0 +1,19 @@
+@import "variables";
+
+.mat-card {
+  padding: 0 !important;
+
+  .mat-card-header {
+    background: mat-color($primary);
+    padding: 15px 10px;
+    color: white;
+
+    .mat-card-title,  .mat-card-title h1{
+      margin: 0;
+    }
+  }
+
+  .mat-card-content {
+    padding: 20px;
+  }
+}
