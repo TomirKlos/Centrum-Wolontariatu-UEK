@@ -7,6 +7,7 @@ import org.hibernate.annotations.BatchSize;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -61,4 +62,18 @@ public class VolunteerAd implements Serializable {
     @BatchSize(size = 20)
     private Set<VolunteerAdType> types = new HashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VolunteerAd that = (VolunteerAd) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, user);
+    }
 }
