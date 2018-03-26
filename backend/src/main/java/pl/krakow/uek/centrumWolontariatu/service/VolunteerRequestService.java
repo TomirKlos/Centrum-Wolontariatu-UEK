@@ -35,7 +35,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER;
+import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER_REQUESTS;
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
 @Service
@@ -131,7 +131,7 @@ public class VolunteerRequestService {
                 salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
                 String hexString = DatatypeConverter.printHexBinary(salt.digest());
 
-                Path path = Paths.get(UPLOADED_FOLDER + hexString + "." + fileType);
+                Path path = Paths.get(UPLOADED_FOLDER_REQUESTS + hexString + "." + fileType);
                 Files.write(path, bytes);
                 log.debug("User id={} uploaded picture: {}", user.getId(), hexString + "." + fileType);
 
@@ -152,7 +152,7 @@ public class VolunteerRequestService {
 
     private void createThumbnailFromPicture(byte[] bytes, String hexString, String fileType) {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        Path pathThumbnail = Paths.get(UPLOADED_FOLDER + hexString + "_thumbnail." + fileType);
+        Path pathThumbnail = Paths.get(UPLOADED_FOLDER_REQUESTS + hexString + "_thumbnail." + fileType);
         try {
             BufferedImage img = Thumbnails.of(bis)
                 .size(400, 400)
