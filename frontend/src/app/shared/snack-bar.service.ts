@@ -5,19 +5,22 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 export class SnackBarService {
   private _defaultProperties: MatSnackBarConfig = {
     verticalPosition: 'top',
-    horizontalPosition: 'end'
+    horizontalPosition: 'end',
+    duration: 2000
   };
   private _defaultWaringProperties: MatSnackBarConfig = {
+    duration: 5000,
     panelClass: ['snackbar-error', 'as']
   };
+
   private _defaultAction = 'ok';
   private _defaultWarnMessage = 'Wystąpił problem, proszę spróbować ponownie';
-
 
   constructor(private _snackbar: MatSnackBar) {
   }
 
   open(message: string, properties?: MatSnackBarConfig): void {
+    console.log(window.innerWidth, 'window.innerWidth');
     if (window.innerWidth < 600) {
       if (!properties) {
         properties = {};

@@ -118,16 +118,18 @@ public class UserService {
         });
     }
 
-    public void activateUser(long id) {
+    public Optional<User> activateUser(long id) {
         log.debug("Activating user {} by ADMIN ", id);
-        userRepository.findById(id)
+
+       return userRepository.findById(id)
             .map(user -> {
                 user.setActivated(true);
                 user.setActivationKey(null);
                 user.setAuthorities(mailDomainToAuthoritiesService.awardAuthoritiesBasedEmail(user.getEmail()));
                 userRepository.save(user);
                 log.debug("Activated (by Admin) user: {}", user);
-                return null;
+
+                return user;
             });
     }
 }

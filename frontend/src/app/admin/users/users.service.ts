@@ -33,4 +33,8 @@ export class UsersService {
   delete(id: number) {
     return this._http.delete(this._url + '/' + id);
   }
+
+  activate(id: number) {
+    return this._http.post(this._url + '/activate', { id });
+  }
 }

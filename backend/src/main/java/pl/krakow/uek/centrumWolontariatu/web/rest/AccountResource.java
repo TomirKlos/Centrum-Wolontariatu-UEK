@@ -50,7 +50,7 @@ public class AccountResource {
         });
         User user = userService.registerUser(userVM.getEmail(), userVM.getPassword());
 
-        mailService.sendActivationEmail(user);
+//        mailService.sendActivationEmail(user);
     }
 
     private boolean checkPasswordLength(String password) {
