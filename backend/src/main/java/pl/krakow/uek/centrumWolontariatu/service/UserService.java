@@ -111,7 +111,7 @@ public class UserService {
         }
     }
 
-    public void deleteUser(Integer id) {
+    public void deleteUser(long id) {
         userRepository.findOneById(id).ifPresent(user -> {
             userRepository.delete(user);
             log.debug("Deleted User: {}", user);
