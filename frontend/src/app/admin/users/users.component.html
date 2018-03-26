@@ -20,16 +20,21 @@
         <ng-container matColumnDef="activated">
           <mat-header-cell *matHeaderCellDef fxFlex="120px">Aktywny</mat-header-cell>
           <mat-cell *matCellDef="let element" fxFlex="120px">
-            <button mat-button [color]="(element.activated ? 'primary' : 'warn')">{{ (element.activated ? 'Aktywny' :
-              'Nieaktywny') }}
+
+            <button *ngIf="element.activated" mat-button color="primary">
+              Aktywny
             </button>
+            <button *ngIf="!element.activated" mat-button color="warn" (click)="activateUser(element.id)">
+              Nieaktywny
+            </button>
+
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="delete">
           <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
           <mat-cell *matCellDef="let element" fxFlex="100px">
-            <button mat-button color="warn" (click)="delete(element.id)">
+            <button mat-button color="warn" (click)="deleteUser(element.id)">
               <mat-icon>delete</mat-icon>
               Usuń
             </button>
@@ -45,7 +50,7 @@
     <mat-paginator #paginator
                    [length]="totalElements"
                    [pageSize]="10"
-                   [pageSizeOptions]="[2, 10, 20]"
+                   [pageSizeOptions]="[5, 10, 20]"
                    [showFirstLastButtons]="true">
 
     </mat-paginator>

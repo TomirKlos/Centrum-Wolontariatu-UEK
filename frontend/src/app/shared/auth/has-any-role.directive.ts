@@ -20,7 +20,7 @@ export class HasAnyRoleDirective {
 
     this._updateView();
     // Get notified each time authentication state changes.
-    this.userService.rolesState.subscribe(() => this._updateView());
+    this.userService.roles$.subscribe(() => this._updateView());
   }
 
   private _updateView(): void {

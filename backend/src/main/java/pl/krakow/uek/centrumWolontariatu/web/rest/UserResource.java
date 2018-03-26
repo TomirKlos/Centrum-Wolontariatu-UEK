@@ -10,7 +10,10 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
+import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.UserNotFoundException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.util.HeaderUtil;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -42,8 +45,24 @@ public class UserResource {
 
     @PostMapping(path = "/activate")
     @ResponseStatus(HttpStatus.OK)
-    public void activateUser(@RequestParam long id) {
-        userService.activateUser(id);
+    public void activateUser(@RequestBody IdVM idVM) {
+        Optional<User> user = userService.activateUser(idVM.getId());
+
+        if (!user.isPresent()) {
+            throw new UserNotFoundException();
+        }
+    }
+
+    public static class IdVM {
+        private long id;
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
     }
 
 }

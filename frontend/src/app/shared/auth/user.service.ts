@@ -1,52 +1,44 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class UserService {
+  private readonly _CONST_GUEST = 'guest';
+  private readonly _CONST_IS_LOGGED_IN = 'isLoggedIn';
+
+  private _isLoggedIn = new BehaviorSubject<boolean>(false);
+  private _roles$ = new BehaviorSubject<string[]>([this._CONST_GUEST]);
+
   constructor(private jwtHelper: JwtHelperService, private http: HttpClient) {
   }
 
-  private _isLoggedInState = new Subject<boolean>();
-
-  get isLoggedInState(): Observable<boolean> {
-    return this._isLoggedInState.asObservable();
+  set isLoggedIn(value: boolean) {
+    this._isLoggedIn.next(value);
+    this._refreshRoles();
   }
-
-  private _isLoggedIn = false;
 
   get isLoggedIn(): boolean {
-    return this._isLoggedIn;
+    return this._isLoggedIn.getValue();
   }
 
-  set isLoggedIn(value: boolean) {
-    this._isLoggedInState.next(value);
-    this._isLoggedIn = value;
-
-    this._setRoles();
+  get isLoggedIn$() {
+    return this._isLoggedIn.asObservable();
   }
 
-  private _rolesState = new Subject<string[]>();
-
-  get rolesState(): Observable<string[]> {
-    return this._rolesState.asObservable();
-  }
-
-  private _roles = [];
-
-  get roles(): string[] {
-    return this._roles;
+  get roles$(): Observable<string[]> {
+    return this._roles$.asObservable();
   }
 
   hasAnyRole(roles: string[]): boolean {
+    const userRoles = this._roles$.getValue();
+
     for (const role of roles) {
-      for (const _role of this._roles) {
-        if (role === _role) {
-          return true;
-        }
+      if (userRoles.find(value => value === role)) {
+        return true;
       }
     }
     return false;
@@ -68,12 +60,18 @@ export class UserService {
     );
   }
 
-  private _setRoles() {
+  private _refreshRoles() {
     const jwtO = this.jwtHelper.decodeToken(this.getJwtToken());
-    const roles = (jwtO && jwtO.auth ? jwtO.auth : ['GUEST']);
+    let tempRoles: string[];
 
-    this._roles = roles;
-    this._rolesState.next(roles);
+    if (jwtO && jwtO.auth) {
+      tempRoles = jwtO.auth;
+      tempRoles.push(this._CONST_IS_LOGGED_IN);
+    } else {
+      tempRoles = [this._CONST_GUEST];
+    }
+
+    this._roles$.next(tempRoles);
   }
 
   private getJwtToken() {

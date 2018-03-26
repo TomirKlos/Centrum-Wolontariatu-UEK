@@ -21,10 +21,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-
   constructor(private _http: HttpClient, private _usersService: UsersService, private _sb: SnackBarService) {
   }
-
 
   ngOnInit() {
     this.usersData = new UsersDataSource(this._usersService);
@@ -41,26 +39,33 @@ export class UsersComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.paginator.page
       .pipe(
-        tap(() => this.loadUsersPage())
+        tap(() => this._loadUsersPage())
       )
       .subscribe();
   }
 
-  loadUsersPage() {
+  private _loadUsersPage() {
     this.usersData.loadUsers(
       this.paginator.pageIndex,
       this.paginator.pageSize
     );
   }
 
-  delete(id: number) {
-    console.log(id);
-    // this.paginator.
-
+  deleteUser(id: number) {
     this._usersService.delete(id).subscribe(
       () => {
         this._sb.open('Usunięto konto');
-        this.loadUsersPage();
+        this._loadUsersPage();
+      },
+      () => this._sb.warning()
+    );
+  }
+
+  activateUser(id: number) {
+    this._usersService.activate(id).subscribe(
+      () => {
+        this._sb.open('Zapisano');
+        this._loadUsersPage();
       },
       () => this._sb.warning()
     );
