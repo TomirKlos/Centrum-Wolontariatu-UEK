@@ -15,6 +15,9 @@ import pl.krakow.uek.centrumWolontariatu.repository.VolunteerAdPictureRepository
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerAdService;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.CategoryVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerAdVM;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +43,12 @@ public class VolunteerAdController {
         this.volunteerAdPictureRepository = volunteerAdPictureRepository;
     }
 
+
     @PostMapping(consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerAd(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam Set<String> categories, @RequestParam Set<String> types, @RequestParam long expirationDate) {
-        volunteerAdService.createVolunteerAd(description, title, categories, types,expirationDate,  file);
+    public void addVolunteerAd(@RequestPart MultipartFile[] file,
+                               @RequestPart VolunteerAdVM volunteerAdVM) {
+        volunteerAdService.createVolunteerAd(volunteerAdVM.getDescription(), volunteerAdVM.getTitle(), volunteerAdVM.getCategories(), volunteerAdVM.getTypes(), volunteerAdVM.getExpirationDate(), file);
     }
 
     @GetMapping("image")
@@ -54,8 +59,8 @@ public class VolunteerAdController {
 
     @PostMapping("category/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewCategory(@RequestParam String categoryName) {
-        volunteerAdService.createVolunteerAdCategory(categoryName);
+    public void createNewCategory(@RequestBody CategoryVM categoryVM) {
+        volunteerAdService.createVolunteerAdCategory(categoryVM.getCategoryName());
     }
 
     @GetMapping("category/")
@@ -71,8 +76,8 @@ public class VolunteerAdController {
 
     @PostMapping("type")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewType(@RequestParam String typeName) {
-        volunteerAdService.createVolunteerAdType(typeName);
+    public void createNewType(@RequestBody TypeVM typeVM) {
+        volunteerAdService.createVolunteerAdType(typeVM.getType());
     }
 
     @DeleteMapping("type")

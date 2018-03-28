@@ -1,5 +1,6 @@
 package pl.krakow.uek.centrumWolontariatu.web.rest;
 
+import jdk.jfr.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,9 +18,16 @@ import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.CategoryVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
+
+import javax.validation.Valid;
+
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.*;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -45,13 +53,14 @@ public class VolunteerRequestController {
         this.volunteerRequestPictureRepository = volunteerRequestPictureRepository;
     }
 
-//TODO Odbierac VolunteerRequestVM jako @RequestPart zamiast parametrami, gdyz normalna metoda @RequestBody + @RequestParam nie przechodzi.
 
-    @PostMapping(path = "/vrequest/", consumes = "multipart/form-data")
+    @PostMapping(path = "/vrequest/", consumes="multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerRequest(@RequestParam MultipartFile[] file, @RequestParam String description, @RequestParam String title, @RequestParam int numberVolunteers, @RequestParam boolean isForStudents, @RequestParam boolean isForTutors, @RequestParam Set<String> categories, @RequestParam Set<String> types, @RequestParam long expirationDate) {
-        volunteerRequestService.createVolunteerRequest(description, title, numberVolunteers, parse(isForStudents), parse(isForTutors), categories, types,expirationDate,  file);
+    public void addVolunteerRequest(@RequestPart VolunteerRequestVM volunteerRequestVM,
+                                    @RequestPart  MultipartFile[] file) {
+        volunteerRequestService.createVolunteerRequest(volunteerRequestVM.getDescription(), volunteerRequestVM.getTitle(), volunteerRequestVM.getVolunteersAmount(), parse(volunteerRequestVM.isForStudents()), parse(volunteerRequestVM.isForTutors()), volunteerRequestVM.getCategories(), volunteerRequestVM.getTypes(), volunteerRequestVM.getExpirationDate(),  file);
     }
+
 
     @GetMapping("/vrequest/image")
     public HashMap<String, String> getImagesByVolunteerId(@RequestParam long volunteerRequestId) {
@@ -61,8 +70,8 @@ public class VolunteerRequestController {
 
     @PostMapping("/vrequest/category/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewCategory(@RequestParam String categoryName) {
-        volunteerRequestService.createVolunteerRequestCategory(categoryName);
+    public void createNewCategory(@RequestBody CategoryVM categoryVM) {
+        volunteerRequestService.createVolunteerRequestCategory(categoryVM.getCategoryName());
     }
 
     @GetMapping("/vrequest/category/")
@@ -78,8 +87,8 @@ public class VolunteerRequestController {
 
     @PostMapping("/vrequest/type")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewType(@RequestParam String typeName) {
-        volunteerRequestService.createVolunteerRequestType(typeName);
+    public void createNewType(@RequestBody TypeVM typeVM) {
+        volunteerRequestService.createVolunteerRequestType(typeVM.getType());
     }
 
     @DeleteMapping("/vrequest/type")
