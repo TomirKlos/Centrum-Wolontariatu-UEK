@@ -23,6 +23,14 @@ export interface User {
   // resetDate:
 }
 
+export interface VolunteerRequest {
+  description: string;
+  title: string;
+  accepted: boolean;
+  user: User;
+  // resetDate:
+}
+
 export interface Pageable<T> {
   content: T[];
   first: boolean;

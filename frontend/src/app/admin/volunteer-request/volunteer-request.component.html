@@ -1,0 +1,91 @@
+    <div *ngIf=onlyNotActivated>
+        <button mat-raised-button color="primary" (click)="selectSpecifiedVr(false)">Nie zatwierdzone</button>
+    </div>
+    <div *ngIf=!onlyNotActivated>
+        <button mat-button color="primary" (click)="selectSpecifiedVr(false)">Nie zatwierdzone</button>
+    </div>
+    <div *ngIf=onlyActivated>
+        <button mat-raised-button color="primary" (click)="selectSpecifiedVr(true)">Zatwierdzone</button>
+    </div>
+    <div *ngIf=!onlyActivated>
+        <button mat-button color="primary" (click)="selectSpecifiedVr(true)">Zatwierdzone</button>
+    </div>
+
+  <mat-form-field class="example-full-width">
+   <input type="text" placeholder="Szukaj ogłoszeń" aria-label="Number" matInput (keyup)="searchTerm$.next($event.target.value)" [matAutocomplete]="auto">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option *ngFor="let result of results " [value]="result.title">
+        {{result.title}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Ogłoszenia o wolontariat</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+
+    <div id="my-table-container">
+      <mat-table #table [dataSource]="usersData">
+
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef fxFlex="50px">id</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="50px"> {{ element.id }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tytuł">
+          <mat-header-cell *matHeaderCellDef>tytuł</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.title }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="activated">
+          <mat-header-cell *matHeaderCellDef fxFlex="120px">Aktywny</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="120px">
+
+            <button *ngIf="element.accepted" mat-button color="primary">
+              Aktywny
+            </button>
+            <button *ngIf="!element.accepted" mat-button color="warn" (click)="activateVr(element.id)">
+              Nieaktywny
+            </button>
+
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="100px">
+            <button mat-button color="warn" (click)="deleteVr(element.id)">
+              <mat-icon>delete</mat-icon>
+              Usuń
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="editVr">
+            <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
+            <mat-cell *matCellDef="let element" fxFlex="100px">
+              <button mat-button color="primary" (click)="openDialog(element.id)">
+                <mat-icon>edit</mat-icon>
+                podgląd
+              </button>
+            </mat-cell>
+          </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+
+      </mat-table>
+    </div>
+
+    <mat-paginator #paginator
+                   [length]="totalElements"
+                   [pageSize]="10"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   [showFirstLastButtons]="true">
+
+    </mat-paginator>
+
+  </mat-card-content>
+</mat-card>

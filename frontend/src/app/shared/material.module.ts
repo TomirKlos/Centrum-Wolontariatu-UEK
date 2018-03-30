@@ -35,7 +35,7 @@ const modules = [
   MatExpansionModule,
   MatTableModule,
   MatPaginatorModule,
-  CdkTableModule
+  CdkTableModule,
 ];
 
 @NgModule({

@@ -4,6 +4,7 @@ import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
 import { AdminGuardService } from '../shared/auth/admin-guard.service';
 import { AuthGuardService } from '../shared/auth/auth-guard.service';
+import { VolunteerRequestComponent } from './volunteer-request/volunteer-request.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,10 @@ const routes: Routes = [
       {
         path: 'users',
         component: UsersComponent
+      },
+      {
+        path: 'volunteerrequest',
+        component: VolunteerRequestComponent
       }
     ]
   }

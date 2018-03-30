@@ -37,4 +37,5 @@ export class UsersService {
   activate(id: number) {
     return this._http.post(this._url + '/activate', { id });
   }
+
 }

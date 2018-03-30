@@ -18,6 +18,10 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { DumpComponent } from './dump/dump.component';
 import { AdminModule } from './admin/admin.module';
 import { SidenavComponent } from './layouts/sidenav/sidenav.component';
+import { DialogService } from './shared/dialog.service'
+
+import { DialogComponent } from './admin/volunteer-request/dialog/dialog.component'
+
 
 
 @NgModule({
@@ -35,16 +39,19 @@ import { SidenavComponent } from './layouts/sidenav/sidenav.component';
     LayoutModule,
     AuthModule,
     JwtModule.forRoot(jwtModuleOptions),
-
     AppRoutingModule,
-
     AccountModule,
-    AdminModule
+    AdminModule,
+
   ],
   providers: [
     LoadingBarService,
     SnackBarService,
+    DialogService,
     httpInterceptorProviders
+  ],
+  entryComponents: [
+    DialogComponent
   ],
   bootstrap: [AppComponent]
 })
