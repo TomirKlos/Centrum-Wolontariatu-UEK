@@ -25,6 +25,8 @@ public interface VolunteerRequestDTO {
 
     byte getIsForTutors();
 
+    byte getAccepted();
+
     UserIdDTO getUser();
 
     Set<VolunteerRequestCategory> getCategories();

@@ -26,6 +26,14 @@ public class VolunteerRequestConverter {
         return dtoList;
     }
 
+    static List<VolunteerRequestDTO> mapListIntoDTOList(List<VolunteerRequest> entities) {
+        List<VolunteerRequestDTO> dtoList = new ArrayList<>();
+
+        entities.forEach(e -> dtoList.add(mapEntityIntoDTO(e)));
+
+        return dtoList;
+    }
+
     static VolunteerRequestDTOImpl mapEntityIntoDTO(VolunteerRequest entity) {
         VolunteerRequestDTOImpl dto = new VolunteerRequestDTOImpl();
 
@@ -41,6 +49,7 @@ public class VolunteerRequestConverter {
         dto.setIsForTutors(entity.getIsForTutors());
         dto.setExpired(entity.getExpired());
         dto.setExpirationDate(entity.getExpirationDate());
+        dto.setAccepted(entity.getAccepted());
         return dto;
     }
 
@@ -54,6 +63,10 @@ public class VolunteerRequestConverter {
     public static Page<VolunteerRequestDTO> mapEntityPageIntoDTOPage(Pageable pageRequest, Page<VolunteerRequest> source) {
         List<VolunteerRequestDTO> dtoList = mapEntitiesIntoDTOList(source.getContent());
         return new PageImpl<>(dtoList, pageRequest, source.getTotalElements());
+    }
+
+    public static List<VolunteerRequestDTO> mapEntityListIntoDTOList(List<VolunteerRequest> source) {
+        return mapEntitiesIntoDTOList(source);
     }
 
 }

@@ -3,22 +3,26 @@ package pl.krakow.uek.centrumWolontariatu.web.rest;
 import jdk.jfr.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.VolunteerRequestDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
+import pl.krakow.uek.centrumWolontariatu.repository.solr.VolunteerRequestSearchDao;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.CategoryVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
@@ -28,10 +32,7 @@ import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.*;
 
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @RestController
@@ -52,6 +53,9 @@ public class VolunteerRequestController {
         this.volunteerRequestRepository = volunteerRequestRepository;
         this.volunteerRequestPictureRepository = volunteerRequestPictureRepository;
     }
+
+    @Autowired
+    VolunteerRequestSearchDao volunteerRequestSearchDao;
 
 
     @PostMapping(path = "/vrequest/", consumes="multipart/form-data")
@@ -110,8 +114,18 @@ public class VolunteerRequestController {
     }
 
     @PostMapping("/vrequest/accept")
-    public void acceptVolunteerRequest(@RequestParam(value = "id") long id){
-        volunteerRequestService.acceptVolunteerRequest(id);
+    public void acceptVolunteerRequest(@RequestBody IdVM idVM){
+        volunteerRequestService.acceptVolunteerRequest(idVM.getId());
+    }
+
+    @DeleteMapping("/vrequest/{id}")
+    public void deleteVolunteerRequest(@PathVariable Integer id){
+        volunteerRequestService.deleteVolunteerRequest(id);
+    }
+
+    @GetMapping("/vrequest/solr/{text}")
+    public List<VolunteerRequestDTO> getVolunteerRequestBySolr(@PathVariable String text) {
+        return volunteerRequestService.getVolunteerRequestBySolr(text);
     }
 
 

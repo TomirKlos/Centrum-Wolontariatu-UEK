@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +19,7 @@ import java.util.Set;
 @Table(name = "cw_volunteer_requests")
 @Getter
 @Setter
+@Indexed
 public class VolunteerRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,9 +34,11 @@ public class VolunteerRequest implements Serializable {
 
     @Column(name = "description")
     @Lob
+    @Field(termVector = TermVector.YES)
     private String description;
 
     @Column(name = "title")
+    @Field(termVector = TermVector.YES)
     private String title;
 
     @Column(name = "volunteers_amount")
@@ -43,6 +49,7 @@ public class VolunteerRequest implements Serializable {
 
     //accepted set to byte to provide query search in RSQL which not support boolean type.
     @Column(name = "accepted")
+    @Field(termVector = TermVector.YES)
     private byte accepted;
 
     @Column(name = "expired")

@@ -238,5 +238,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Solr
+pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest
 
 # End of https://www.gitignore.io/api/java,node,macos,maven,windows,angular,intellij+all

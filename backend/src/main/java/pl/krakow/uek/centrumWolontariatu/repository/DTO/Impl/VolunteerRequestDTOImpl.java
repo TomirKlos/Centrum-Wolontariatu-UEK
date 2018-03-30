@@ -30,6 +30,8 @@ public class VolunteerRequestDTOImpl implements VolunteerRequestDTO {
 
     byte isForTutors;
 
+    byte accepted;
+
     UserIdDTO user;
 
     Set<VolunteerRequestCategory> categories;

@@ -15,6 +15,7 @@ import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
+import pl.krakow.uek.centrumWolontariatu.repository.solr.VolunteerRequestSearchDao;
 import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
@@ -48,16 +49,17 @@ public class VolunteerRequestService {
     private final VolunteerRequestPictureRepository volunteerRequestPictureRepository;
     private final VolunteerRequestCategoryRepository volunteerRequestCategoryRepository;
     private final VolunteerRequestTypeRepository volunteerRequestTypeRepository;
-    @Autowired
-    UserRepository userRepository;
+    private final VolunteerRequestSearchDao volunteerRequestSearchDao;
 
-    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository) {
+
+    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository, VolunteerRequestSearchDao volunteerRequestSearchDao) {
         this.userService = userService;
         this.mailService = mailService;
         this.volunteerRequestRepository = volunteerRequestRepository;
         this.volunteerRequestPictureRepository = volunteerRequestPictureRepository;
         this.volunteerRequestCategoryRepository = volunteerRequestCategoryRepository;
         this.volunteerRequestTypeRepository = volunteerRequestTypeRepository;
+        this.volunteerRequestSearchDao = volunteerRequestSearchDao;
     }
     /*
      * don't refactor!!,
@@ -248,6 +250,13 @@ public class VolunteerRequestService {
             volunteerRequest.setAccepted(parse(true));
             volunteerRequestRepository.save(volunteerRequest);
         });
+    }
+    public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}
+
+    public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){
+        if(text.length()>=3)
+            return volunteerRequestSearchDao.searchVolunteerRequestByQuery(text);
+        return null;
     }
 
 
