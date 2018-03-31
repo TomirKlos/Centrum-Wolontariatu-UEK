@@ -7,24 +7,25 @@ import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import pl.krakow.uek.centrumWolontariatu.converter.VolunteerAdConverter;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
-import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-public class VolunteerRequestSearchDao {
+public class VolunteerAdSearchDao {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    VolunteerRequestConverter volunteerRequestConverter;
+    VolunteerAdConverter volunteerAdConverter;
 
-    public List<VolunteerRequestDTO> searchVolunteerRequestByQuery(String text) {
+    public List<VolunteerAdDTO> searchVolunteerAdByQuery(String text) {
 
         //todo add boosted title search in fuzzy and phrase
         Query combinedQuery = getQueryBuilder()
@@ -57,18 +58,17 @@ public class VolunteerRequestSearchDao {
             .must(filterQuery)
             .createQuery();
 
-        List<VolunteerRequestDTO> results = VolunteerRequestConverter.mapEntityListIntoDTOList(getJpaQuery(finalQuery).setProjection().getResultList());
+
+        List<VolunteerAdDTO> results = VolunteerAdConverter.mapEntityListIntoDTOList(getJpaQuery(finalQuery).setProjection().getResultList());
 
         return results;
 
     }
 
-
     private FullTextQuery getJpaQuery(org.apache.lucene.search.Query luceneQuery) {
 
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-
-        return fullTextEntityManager.createFullTextQuery(luceneQuery, VolunteerRequest.class);
+        return fullTextEntityManager.createFullTextQuery(luceneQuery, VolunteerAd.class);
     }
 
     private QueryBuilder getQueryBuilder() {
@@ -77,7 +77,8 @@ public class VolunteerRequestSearchDao {
 
         return fullTextEntityManager.getSearchFactory()
             .buildQueryBuilder()
-            .forEntity(VolunteerRequest.class)
+            .forEntity(VolunteerAd.class)
             .get();
     }
+
 }

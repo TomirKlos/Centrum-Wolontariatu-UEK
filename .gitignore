@@ -240,5 +240,6 @@ $RECYCLE.BIN/
 
 # Solr
 pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest
+pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd
 
 # End of https://www.gitignore.io/api/java,node,macos,maven,windows,angular,intellij+all

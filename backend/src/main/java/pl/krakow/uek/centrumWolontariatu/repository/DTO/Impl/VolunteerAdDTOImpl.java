@@ -24,6 +24,8 @@ public class VolunteerAdDTOImpl implements VolunteerAdDTO {
 
     byte expired;
 
+    byte accepted;
+
     UserIdDTO user;
 
     Set<VolunteerAdCategory> categories;

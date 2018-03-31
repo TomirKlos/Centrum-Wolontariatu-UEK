@@ -19,6 +19,8 @@ public interface VolunteerAdDTO {
 
     byte getExpired();
 
+    byte getAccepted();
+
     UserIdDTO getUser();
 
     Set<VolunteerAdCategory> getCategories();

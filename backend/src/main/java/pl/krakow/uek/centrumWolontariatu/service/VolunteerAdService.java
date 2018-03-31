@@ -16,6 +16,7 @@ import pl.krakow.uek.centrumWolontariatu.converter.VolunteerAdConverter;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
+import pl.krakow.uek.centrumWolontariatu.repository.solr.VolunteerAdSearchDao;
 import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
@@ -48,16 +49,18 @@ public class VolunteerAdService {
     private final VolunteerAdPictureRepository volunteerAdPictureRepository;
     private final VolunteerAdCategoryRepository volunteerAdCategoryRepository;
     private final VolunteerAdTypeRepository volunteerAdTypeRepository;
+    private final VolunteerAdSearchDao volunteerAdSearchDao;
     @Autowired
     UserRepository userRepository;
 
-    public VolunteerAdService(UserService userService, MailService mailService, VolunteerAdRepository volunteerAdRepository, VolunteerAdPictureRepository volunteerAdPictureRepository, VolunteerAdCategoryRepository volunteerAdCategoryRepository, VolunteerAdTypeRepository volunteerAdTypeRepository) {
+    public VolunteerAdService(UserService userService, MailService mailService, VolunteerAdRepository volunteerAdRepository, VolunteerAdPictureRepository volunteerAdPictureRepository, VolunteerAdCategoryRepository volunteerAdCategoryRepository, VolunteerAdTypeRepository volunteerAdTypeRepository, VolunteerAdSearchDao volunteerAdSearchDao) {
         this.userService = userService;
         this.mailService = mailService;
         this.volunteerAdRepository = volunteerAdRepository;
         this.volunteerAdPictureRepository = volunteerAdPictureRepository;
         this.volunteerAdCategoryRepository = volunteerAdCategoryRepository;
         this.volunteerAdTypeRepository = volunteerAdTypeRepository;
+        this.volunteerAdSearchDao = volunteerAdSearchDao;
     }
 
     public long GenerateVolunteerAd() {
@@ -236,5 +239,11 @@ public class VolunteerAdService {
             volunteerAd.setAccepted(parse(true));
             volunteerAdRepository.save(volunteerAd);
         });
+    }
+
+    public List<VolunteerAdDTO> getVolunteerAdBySolr(String text){
+        if(text.length()>=3)
+            return volunteerAdSearchDao.searchVolunteerAdByQuery(text);
+        return null;
     }
 }

@@ -3,7 +3,7 @@ import { VolunteerRequestService } from './volunteerrequest.service';
 import { MatPaginator } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { SnackBarService } from '../../shared/snack-bar.service';
-import { UsersDataSource2 } from './volunteerRequest-data-source';
+import { VolunteerRequestDataSource } from './volunteerRequest-data-source';
 import { tap } from 'rxjs/operators';
 import { DialogService } from '../../shared/dialog.service';
 import {MatDialog, MatAutocompleteModule} from '@angular/material';
@@ -25,7 +25,7 @@ import {FormControl} from '@angular/forms';
   ]
 })
 export class VolunteerRequestComponent implements OnInit, AfterViewInit {
-  usersData: UsersDataSource2;
+  VRData: VolunteerRequestDataSource;
   columnsToDisplay = ['id', 'activated', 'tytuł', 'delete', 'editVr'];
   totalElements = 0;
   dialogResult = "";
@@ -50,16 +50,16 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.usersData = new UsersDataSource2(this._volunteerRequestService);
-    this.usersData.loadUsers();
+    this.VRData = new VolunteerRequestDataSource(this._volunteerRequestService);
+    this.VRData.loadVolunteerRequests();
     this._volunteerRequestService.getPage().subscribe(d => {
       if (d && d.totalElements) {
         this.totalElements = d.totalElements;
       }
     });
   }
-  private _loadUsersPage() {
-    this.usersData.loadUsers(
+  private _loadVRPage() {
+    this.VRData.loadVolunteerRequests(
       this.paginator.pageIndex,
       this.paginator.pageSize
     );
@@ -85,7 +85,7 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
       this.onlyActivated = !this.onlyActivated;
       if(this.onlyNotActivated) this.onlyNotActivated = !this.onlyNotActivated;
     }
-    this.usersData.loadSpecializedVolunteerRequest(0,10,query);
+    this.VRData.loadSpecializedVolunteerRequest(0,10,query);
 }
 
   openDialog(id:number) {
@@ -111,7 +111,7 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.paginator.page
       .pipe(
-        tap(() => this._loadUsersPage())
+        tap(() => this._loadVRPage())
       )
       .subscribe();
   }
@@ -120,7 +120,7 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
     this._volunteerRequestService.delete(id).subscribe(
       () => {
         this._sb.open('Usunięto ogłoszenie');
-        this._loadUsersPage();
+        this._loadVRPage();
       },
       () => this._sb.warning()
     );
@@ -130,7 +130,7 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
     this._volunteerRequestService.accept(id).subscribe(
       () => {
         this._sb.open('Zatwierdzono ogłoszenie: ' + id);
-        this._loadUsersPage();
+        this._loadVRPage();
       },
       () => this._sb.warning()
     );

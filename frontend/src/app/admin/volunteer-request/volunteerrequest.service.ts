@@ -12,7 +12,6 @@ export class VolunteerRequestService {
   private _url = environment.apiEndpoint + 'vrequest/';
   private _urlOneVolunteerRequest = environment.apiEndpoint + 'vrequest/?search=id==';
   private _urlVolunteerRequestQuery = environment.apiEndpoint + 'vrequest/';
-  //+ 'vrequest/?search=accepted=in=';
 
   constructor(private _http: HttpClient) {
   }
@@ -23,9 +22,9 @@ export class VolunteerRequestService {
         .set('page', page.toString())
         .set('size', size.toString())
     }).pipe(
-      map((usersPage: Pageable<VolunteerRequest>) => {
-        this._pageSubject.next(usersPage);
-        return usersPage.content;
+      map((vRPage: Pageable<VolunteerRequest>) => {
+        this._pageSubject.next(vRPage);
+        return vRPage.content;
       })
     );
   } 
@@ -33,19 +32,6 @@ export class VolunteerRequestService {
   getPage() {
     return this._pageSubject.asObservable();
   }
-/*
-  getVolunteerRequestById(page=0, size=1, id) {
-    return this._http.get(this._urlOneVolunteerRequest+id, {
-      params: new HttpParams()
-        .set('page', page.toString())
-        .set('size', size.toString())
-    }).pipe(
-      map((usersPage: Pageable<VolunteerRequest>) => {
-        this._pageSubject.next(usersPage);
-        return usersPage.content;
-      })
-    );
-  } */
 
   getVolunteerRequestById(page=0, size=1, id) {
     return this._http.get(this._urlOneVolunteerRequest+id, {
@@ -53,9 +39,9 @@ export class VolunteerRequestService {
         .set('page', page.toString())
         .set('size', size.toString())
     }).pipe(
-      map((usersPage: Pageable<VolunteerRequest>) => {
-        this._pageSubject.next(usersPage);
-        return usersPage.content;
+      map((vRPage: Pageable<VolunteerRequest>) => {
+        this._pageSubject.next(vRPage);
+        return vRPage.content;
       })
     );  
   }
@@ -66,9 +52,9 @@ export class VolunteerRequestService {
         .set('page', page.toString())
         .set('size', size.toString())
     }).pipe(
-      map((usersPage: Pageable<VolunteerRequest>) => {
-        this._pageSubject.next(usersPage);
-        return usersPage.content;
+      map((vRPage: Pageable<VolunteerRequest>) => {
+        this._pageSubject.next(vRPage);
+        return vRPage.content;
       })
     );  
   }

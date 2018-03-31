@@ -19,10 +19,7 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.vm.CategoryVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerAdVM;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
@@ -103,6 +100,10 @@ public class VolunteerAdController {
         volunteerAdService.acceptVolunteerAd(id);
     }
 
-
+    @GetMapping("solr/{text}")
+    public List<VolunteerAdDTO> getVolunteerAdBySolr(@PathVariable String text) {
+        return volunteerAdService.getVolunteerAdBySolr(text);
+    }
+    
 
 }

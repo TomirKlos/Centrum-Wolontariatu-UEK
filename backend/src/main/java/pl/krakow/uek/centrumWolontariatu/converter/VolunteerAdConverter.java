@@ -6,10 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.UserIdDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.VolunteerAdDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ public class VolunteerAdConverter {
         dto.setTimestamp(entity.getTimestamp());
         dto.setExpired(entity.getExpired());
         dto.setExpirationDate(entity.getExpirationDate());
+        dto.setAccepted(entity.getAccepted());
         return dto;
     }
 
@@ -49,6 +52,10 @@ public class VolunteerAdConverter {
     public static Page<VolunteerAdDTO> mapEntityPageIntoDTOPage(Pageable pageRequest, Page<VolunteerAd> source) {
         List<VolunteerAdDTO> dtoList = mapEntitiesIntoDTOList(source.getContent());
         return new PageImpl<>(dtoList, pageRequest, source.getTotalElements());
+    }
+
+    public static List<VolunteerAdDTO> mapEntityListIntoDTOList(List<VolunteerAd> source) {
+        return mapEntitiesIntoDTOList(source);
     }
 
 }
