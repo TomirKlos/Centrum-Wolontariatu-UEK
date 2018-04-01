@@ -128,6 +128,12 @@ public class VolunteerRequestController {
         return volunteerRequestService.getVolunteerRequestBySolr(text);
     }
 
+    @PostMapping(path = "/vrequestTest/", consumes="multipart/form-data")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addVolunteerRequestTest(@RequestBody VolunteerRequestVM volunteerRequestVM) {
+        volunteerRequestService.createVolunteerRequestTest(volunteerRequestVM.getDescription(), volunteerRequestVM.getTitle(), volunteerRequestVM.getVolunteersAmount(), parse(volunteerRequestVM.isForStudents()), parse(volunteerRequestVM.isForTutors()), volunteerRequestVM.getCategories(), volunteerRequestVM.getTypes(), volunteerRequestVM.getExpirationDate());
+    }
+
 
 
 }

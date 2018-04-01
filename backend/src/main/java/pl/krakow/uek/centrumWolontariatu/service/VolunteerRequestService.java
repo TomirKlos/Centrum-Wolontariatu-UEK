@@ -114,6 +114,37 @@ public class VolunteerRequestService {
         }
     }
 
+    public VolunteerRequest createVolunteerRequestTest(String description, String title, int numberVolunteers, byte isForStudents, byte isForTutors, Set<String> categories, Set<String> types, long expirationDate) {
+        long id = GenerateVolunteerRequest();
+        try {
+            return volunteerRequestRepository.findById(id)
+                .map(volunteerRequest -> {
+                    ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+                    long epochMillis = utc.toEpochSecond() * 1000;
+                    volunteerRequest.setTimestamp(epochMillis);
+                    volunteerRequest.setExpirationDate(expirationDate);
+                    volunteerRequest.setDescription(description);
+                    volunteerRequest.setTitle(title);
+                    volunteerRequest.setVolunteersAmount(numberVolunteers);
+                    volunteerRequest.setIsForTutors(isForTutors);
+                    volunteerRequest.setIsForStudents(isForStudents);
+
+                    User user = userService.getUserWithAuthorities().get();
+
+                    volunteerRequest.setCategories(getCategoriesFromRequest(categories));
+                    volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(types));
+
+                    volunteerRequestRepository.save(volunteerRequest);
+                    log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
+
+                    return volunteerRequest;
+                }).get();
+        } catch (JpaObjectRetrievalFailureException e) {
+            volunteerRequestRepository.deleteById(id);
+            throw new BadRequestAlertException("Unable to find category/type of volunteerRequest in database", "volunteerRequestManagement", "nocategoryortypelinkstodatabase");
+        }
+    }
+
     private VolunteerRequestPicture addPicturesToVolunteerRequest(MultipartFile[] file, User user, VolunteerRequest volunteerRequest) {
         for (MultipartFile multipartFile : file) {
             if (!multipartFile.getContentType().matches("^(image).*$")) {
