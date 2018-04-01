@@ -11,13 +11,18 @@ export class UserService {
   private readonly _CONST_IS_LOGGED_IN = 'isLoggedIn';
 
   private _isLoggedIn = new BehaviorSubject<boolean>(false);
-  private _roles$ = new BehaviorSubject<string[]>([this._CONST_GUEST]);
+  private _roles$ = new BehaviorSubject<string[]>([ this._CONST_GUEST ]);
 
   constructor(private jwtHelper: JwtHelperService, private http: HttpClient) {
   }
 
   set isLoggedIn(value: boolean) {
     this._isLoggedIn.next(value);
+
+    if (!value) {
+      this._deleteJwtToken();
+    }
+
     this._refreshRoles();
   }
 
@@ -45,7 +50,7 @@ export class UserService {
   }
 
   checkIfLoggedIn() {
-    const rawToken = this.getJwtToken();
+    const rawToken = this._getJwtToken();
     if (!rawToken || this.jwtHelper.isTokenExpired(rawToken)) {
       this.isLoggedIn = false;
       return;
@@ -54,27 +59,30 @@ export class UserService {
     this.isLoggedIn = true;
 
     this.http.get(environment.apiEndpoint + 'account').subscribe(
-      d => {
-      },
-      () => this.isLoggedIn = false,
+      () => {},
+      () => this.isLoggedIn = false
     );
   }
 
   private _refreshRoles() {
-    const jwtO = this.jwtHelper.decodeToken(this.getJwtToken());
+    const jwtO = this.jwtHelper.decodeToken(this._getJwtToken());
     let tempRoles: string[];
 
     if (jwtO && jwtO.auth) {
       tempRoles = jwtO.auth;
       tempRoles.push(this._CONST_IS_LOGGED_IN);
     } else {
-      tempRoles = [this._CONST_GUEST];
+      tempRoles = [ this._CONST_GUEST ];
     }
 
     this._roles$.next(tempRoles);
   }
 
-  private getJwtToken() {
+  private _getJwtToken(): string {
     return localStorage.getItem('jwtToken');
+  }
+
+  private _deleteJwtToken(): void {
+    localStorage.removeItem('jwtToken');
   }
 }

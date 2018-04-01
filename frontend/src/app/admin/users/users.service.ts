@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { map } from 'rxjs/operators';
-import { Pageable, User } from '../../shared/interfaces';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { map } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
+import { Pageable, User } from '../../shared/interfaces';
 
 @Injectable()
 export class UsersService {

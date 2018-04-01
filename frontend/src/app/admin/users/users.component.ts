@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UsersService } from './users.service';
-import { UsersDataSource } from './users-data-source';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { tap } from 'rxjs/operators';
+
 import { SnackBarService } from '../../shared/snack-bar.service';
+import { UsersDataSource } from './users-data-source';
+import { UsersService } from './users.service';
 
 @Component({
   selector: 'app-users',

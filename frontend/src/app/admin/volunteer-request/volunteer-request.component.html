@@ -1,24 +1,25 @@
-    <div *ngIf=onlyNotActivated>
-        <button mat-raised-button color="primary" (click)="selectSpecifiedVr(false)">Nie zatwierdzone</button>
-    </div>
-    <div *ngIf=!onlyNotActivated>
-        <button mat-button color="primary" (click)="selectSpecifiedVr(false)">Nie zatwierdzone</button>
-    </div>
-    <div *ngIf=onlyActivated>
-        <button mat-raised-button color="primary" (click)="selectSpecifiedVr(true)">Zatwierdzone</button>
-    </div>
-    <div *ngIf=!onlyActivated>
-        <button mat-button color="primary" (click)="selectSpecifiedVr(true)">Zatwierdzone</button>
-    </div>
+<div *ngIf=onlyNotActivated>
+  <button mat-raised-button color="primary" (click)="selectSpecifiedVr(false)">Nie zatwierdzone</button>
+</div>
+<div *ngIf=!onlyNotActivated>
+  <button mat-button color="primary" (click)="selectSpecifiedVr(false)">Nie zatwierdzone</button>
+</div>
+<div *ngIf=onlyActivated>
+  <button mat-raised-button color="primary" (click)="selectSpecifiedVr(true)">Zatwierdzone</button>
+</div>
+<div *ngIf=!onlyActivated>
+  <button mat-button color="primary" (click)="selectSpecifiedVr(true)">Zatwierdzone</button>
+</div>
 
-  <mat-form-field class="example-full-width">
-   <input type="text" placeholder="Szukaj ogłoszeń" aria-label="Number" matInput (keyup)="searchTerm$.next($event.target.value)" [matAutocomplete]="auto">
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-      <mat-option *ngFor="let result of results " [value]="result.title">
-        {{result.title}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+<mat-form-field class="example-full-width">
+  <input type="text" placeholder="Szukaj ogłoszeń" aria-label="Number" matInput
+         (keyup)="searchTerm$.next($event.target.value)" [matAutocomplete]="auto">
+  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+    <mat-option *ngFor="let result of results " [value]="result.title">
+      {{result.title}}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
 
 <mat-card class="example-card">
   <mat-card-header>
@@ -64,14 +65,14 @@
         </ng-container>
 
         <ng-container matColumnDef="editVr">
-            <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
-            <mat-cell *matCellDef="let element" fxFlex="100px">
-              <button mat-button color="primary" (click)="openDialog(element.id)">
-                <mat-icon>edit</mat-icon>
-                podgląd
-              </button>
-            </mat-cell>
-          </ng-container>
+          <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="100px">
+            <button mat-button color="primary" (click)="openDialog(element.id)">
+              <mat-icon>edit</mat-icon>
+              podgląd
+            </button>
+          </mat-cell>
+        </ng-container>
 
         <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
         <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>

@@ -19,6 +19,8 @@ export class PasswordsFormGroupComponent implements OnInit {
       password2: ['', [Validators.required, matchOtherControls()]]
     });
 
+    this.passwordsFormGroup.get('password').valueChanges.subscribe(() => this.passwordsFormGroup.get('password2').updateValueAndValidity());
+
     this.passwordsFormEmitter.emit(this.passwordsFormGroup);
   }
 

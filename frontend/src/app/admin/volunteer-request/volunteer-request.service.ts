@@ -27,14 +27,14 @@ export class VolunteerRequestService {
         return vRPage.content;
       })
     );
-  } 
+  }
 
   getPage() {
     return this._pageSubject.asObservable();
   }
 
-  getVolunteerRequestById(page=0, size=1, id) {
-    return this._http.get(this._urlOneVolunteerRequest+id, {
+  getVolunteerRequestById(page = 0, size = 1, id) {
+    return this._http.get(this._urlOneVolunteerRequest + id, {
       params: new HttpParams()
         .set('page', page.toString())
         .set('size', size.toString())
@@ -43,11 +43,11 @@ export class VolunteerRequestService {
         this._pageSubject.next(vRPage);
         return vRPage.content;
       })
-    );  
+    );
   }
 
-  getVolunteerRequestSpecialized(page=0, size=1, query) {
-    return this._http.get(this._urlVolunteerRequestQuery+query, {
+  getVolunteerRequestSpecialized(page = 0, size = 1, query) {
+    return this._http.get(this._urlVolunteerRequestQuery + query, {
       params: new HttpParams()
         .set('page', page.toString())
         .set('size', size.toString())
@@ -56,7 +56,7 @@ export class VolunteerRequestService {
         this._pageSubject.next(vRPage);
         return vRPage.content;
       })
-    );  
+    );
   }
 
   delete(id: number) {
@@ -66,6 +66,6 @@ export class VolunteerRequestService {
   accept(id: number) {
     return this._http.post(this._url + 'accept', { id });
   }
-  
+
 
 }
