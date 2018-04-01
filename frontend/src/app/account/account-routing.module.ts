@@ -7,7 +7,7 @@ import { SignupComponent } from './before-login/signup/signup.component';
 import { ActivateComponent } from './before-login/activate/activate.component';
 import { ResetPasswordInitComponent } from './before-login/reset-password-init/reset-password-init.component';
 import { ResetPasswordFinishComponent } from './before-login/reset-password-finish/reset-password-finish.component';
-import { AuthGuardService } from '../shared/auth/auth-guard.service';
+import { AuthGuardService } from '../shared/auth/gurads/auth-guard.service';
 import { ProfileComponent } from './after-login/profile/profile.component';
 
 const routes: Routes = [

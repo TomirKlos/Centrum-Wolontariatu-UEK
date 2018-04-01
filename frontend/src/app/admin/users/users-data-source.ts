@@ -1,8 +1,9 @@
-import { User } from '../../shared/interfaces';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { UsersService } from './users.service';
 import { Observable } from 'rxjs/Observable';
+
+import { User } from '../../shared/interfaces';
+import { UsersService } from './users.service';
 
 export class UsersDataSource implements DataSource<User> {
   private _usersSubject = new BehaviorSubject<User[]>([]);

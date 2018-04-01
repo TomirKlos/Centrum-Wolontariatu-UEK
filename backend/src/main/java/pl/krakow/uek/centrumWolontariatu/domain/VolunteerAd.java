@@ -19,7 +19,6 @@ import java.util.Set;
 @Setter
 @Indexed
 public class VolunteerAd implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -80,7 +79,6 @@ public class VolunteerAd implements Serializable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, user);
     }
 }

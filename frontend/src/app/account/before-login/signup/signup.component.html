@@ -6,29 +6,29 @@
   </mat-card-header>
   <mat-card-content>
 
-    <form [formGroup]="signupForm" #form="ngForm">
+    <form [formGroup]="formGroup" #form="ngForm">
       <mat-form-field>
         <input matInput type="email" placeholder="Email" formControlName="email">
-        <mat-error *ngIf="signupForm.get('email').hasError('required')">
+        <mat-error *ngIf="formGroup.get('email').hasError('required')">
           Email jest <strong>wymagany</strong>
         </mat-error>
-        <mat-error *ngIf="signupForm.get('email').hasError('email') && !signupForm.get('email').hasError('required')">
+        <mat-error *ngIf="formGroup.get('email').hasError('email') && !formGroup.get('email').hasError('required')">
           Proszę podać poprawny adres email
         </mat-error>
-        <mat-error *ngIf="signupForm.get('email').hasError('pattern')
-        && !signupForm.get('email').hasError('required')
-        && !signupForm.get('email').hasError('email')
+        <mat-error *ngIf="formGroup.get('email').hasError('pattern')
+        && !formGroup.get('email').hasError('required')
+        && !formGroup.get('email').hasError('email')
       ">
           Email email musi być uczelnianym.
         </mat-error>
-        <mat-error *ngIf="signupForm.get('email').hasError('matchValue')">
+        <mat-error *ngIf="formGroup.get('email').hasError('matchValue')">
           Podany adres email jest w bazie
         </mat-error>
       </mat-form-field>
 
       <app-passwords-form-group (passwordsFormEmitter)="getPasswordsFormGroup($event)"></app-passwords-form-group>
 
-      <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid || signupButtonDisabled"
+      <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid || buttonDisabled"
               (click)="signup()">
         Zarejestruj się
       </button>

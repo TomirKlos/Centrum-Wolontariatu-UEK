@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+import { AdminGuardService } from '../shared/auth/gurads/admin-guard.service';
+import { AuthGuardService } from '../shared/auth/gurads/auth-guard.service';
 import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
-import { AdminGuardService } from '../shared/auth/admin-guard.service';
-import { AuthGuardService } from '../shared/auth/auth-guard.service';
 import { VolunteerRequestComponent } from './volunteer-request/volunteer-request.component';
 
 const routes: Routes = [
@@ -17,7 +18,7 @@ const routes: Routes = [
         component: UsersComponent
       },
       {
-        path: 'volunteerrequest',
+        path: 'volunteer-request',
         component: VolunteerRequestComponent
       }
     ]

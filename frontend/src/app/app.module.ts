@@ -1,28 +1,24 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-import { AppRoutingModule } from './app-routing.module';
-
-import { AppComponent } from './app.component';
-import { AccountModule } from './account/account.module';
-import { LayoutModule } from './shared/layout.module';
-import { httpInterceptorProviders } from './shared/http-interceptors';
-import { SnackBarService } from './shared/snack-bar.service';
-import { HomeComponent } from './home/home.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { HttpClientModule } from '@angular/common/http';
-import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
-import { AuthModule, jwtModuleOptions } from './shared/auth/auth.module';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { JwtModule } from '@auth0/angular-jwt';
-import { DumpComponent } from './dump/dump.component';
+
+import { AccountModule } from './account/account.module';
 import { AdminModule } from './admin/admin.module';
+import { DialogComponent } from './admin/volunteer-request/dialog/dialog.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { DumpComponent } from './dump/dump.component';
+import { HomeComponent } from './home/home.component';
+import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { SidenavComponent } from './layouts/sidenav/sidenav.component';
-import { DialogService } from './shared/dialog.service'
-
-import { DialogComponent } from './admin/volunteer-request/dialog/dialog.component'
-
-
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AuthModule, jwtModuleOptions } from './shared/auth/auth.module';
+import { DialogService } from './shared/dialog.service';
+import { httpInterceptorProviders } from './shared/http-interceptors';
+import { LayoutModule } from './shared/layout.module';
+import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
+import { SnackBarService } from './shared/snack-bar.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +27,7 @@ import { DialogComponent } from './admin/volunteer-request/dialog/dialog.compone
     PageNotFoundComponent,
     NavbarComponent,
     SidenavComponent,
-    DumpComponent,
+    DumpComponent, //todo delete it
   ],
   imports: [
     BrowserModule,
@@ -53,7 +49,7 @@ import { DialogComponent } from './admin/volunteer-request/dialog/dialog.compone
   entryComponents: [
     DialogComponent
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ]
 })
 export class AppModule {
 }

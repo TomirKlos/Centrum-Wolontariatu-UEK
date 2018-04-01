@@ -1,5 +1,5 @@
+import { CdkTableModule } from '@angular/cdk/table';
 import { NgModule } from '@angular/core';
-
 import {
   MatButtonModule,
   MatCardModule,
@@ -15,9 +15,10 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
+  MatAutocompleteModule,
+  MatDialogModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CdkTableModule } from '@angular/cdk/table';
 
 const modules = [
   BrowserAnimationsModule,
@@ -36,6 +37,8 @@ const modules = [
   MatTableModule,
   MatPaginatorModule,
   CdkTableModule,
+  MatAutocompleteModule,
+  MatDialogModule,
 ];
 
 @NgModule({
