@@ -20,6 +20,7 @@ import pl.krakow.uek.centrumWolontariatu.repository.solr.VolunteerAdSearchDao;
 import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerAdVM;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
@@ -38,6 +39,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER_AD;
+import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER_REQUESTS;
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
 @Service
@@ -50,10 +52,9 @@ public class VolunteerAdService {
     private final VolunteerAdCategoryRepository volunteerAdCategoryRepository;
     private final VolunteerAdTypeRepository volunteerAdTypeRepository;
     private final VolunteerAdSearchDao volunteerAdSearchDao;
-    @Autowired
-    UserRepository userRepository;
+    private final PictureService<VolunteerAd> pictureService;
 
-    public VolunteerAdService(UserService userService, MailService mailService, VolunteerAdRepository volunteerAdRepository, VolunteerAdPictureRepository volunteerAdPictureRepository, VolunteerAdCategoryRepository volunteerAdCategoryRepository, VolunteerAdTypeRepository volunteerAdTypeRepository, VolunteerAdSearchDao volunteerAdSearchDao) {
+    public VolunteerAdService(UserService userService, MailService mailService, VolunteerAdRepository volunteerAdRepository, VolunteerAdPictureRepository volunteerAdPictureRepository, VolunteerAdCategoryRepository volunteerAdCategoryRepository, VolunteerAdTypeRepository volunteerAdTypeRepository, VolunteerAdSearchDao volunteerAdSearchDao, PictureService<VolunteerAd> pictureService) {
         this.userService = userService;
         this.mailService = mailService;
         this.volunteerAdRepository = volunteerAdRepository;
@@ -61,6 +62,7 @@ public class VolunteerAdService {
         this.volunteerAdCategoryRepository = volunteerAdCategoryRepository;
         this.volunteerAdTypeRepository = volunteerAdTypeRepository;
         this.volunteerAdSearchDao = volunteerAdSearchDao;
+        this.pictureService = pictureService;
     }
 
     public long GenerateVolunteerAd() {
@@ -72,32 +74,28 @@ public class VolunteerAdService {
         return volunteerAd.getId();
     }
 
-    public VolunteerAd createVolunteerAd(String description, String title, Set<String> categories, Set<String> types, long expirationDate, MultipartFile[] file) {
-        boolean isImageUploaded = file.length > 0;
+    public VolunteerAd createVolunteerAd(VolunteerAdVM volunteerAdVm) {
         long id = GenerateVolunteerAd();
         try {
             return volunteerAdRepository.findById(id)
                 .map(volunteerAd -> {
                     ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-                    Date date = Date.from(utc.toInstant());
                     long epochMillis = utc.toEpochSecond() * 1000;
                     volunteerAd.setTimestamp(epochMillis);
-                    volunteerAd.setExpirationDate(expirationDate);
-                    volunteerAd.setDescription(description);
-                    volunteerAd.setTitle(title);
+                    volunteerAd.setExpirationDate(volunteerAdVm.getExpirationDate());
+                    volunteerAd.setDescription(volunteerAdVm.getDescription());
+                    volunteerAd.setTitle(volunteerAdVm.getTitle());
 
                     User user = userService.getUserWithAuthorities().get();
 
-                    volunteerAd.setCategories(getCategoriesFromAd(categories));
-                    volunteerAd.setTypes(getTypesFromAd(types));
+                    volunteerAd.setCategories(getCategoriesFromAd(volunteerAdVm.getCategories()));
+                    volunteerAd.setTypes(getTypesFromAd(volunteerAdVm.getTypes()));
 
                     volunteerAdRepository.save(volunteerAd);
                     log.debug("User id={} created new volunteer Ad id={}", user.getId(), volunteerAd.getId());
 
-                    if (isImageUploaded) {
-                        VolunteerAdPicture volunteerAdPicture = addPicturesToVolunteerAd(file, user, volunteerAd);
-                        volunteerAdPictureRepository.save(volunteerAdPicture);
-                    }
+                    volunteerAd.setPictures((Set<VolunteerAdPicture>) pictureService.addPicturesToDatabase(volunteerAdVm.getImages(), volunteerAd));
+
                     return volunteerAd;
                 }).get();
         } catch (JpaObjectRetrievalFailureException e) {
@@ -106,14 +104,14 @@ public class VolunteerAdService {
         }
     }
 
-    private VolunteerAdPicture addPicturesToVolunteerAd(MultipartFile[] file, User user, VolunteerAd volunteerAd) {
+    public Set<String> addPicturesToVolunteerAd(MultipartFile[] file) {
         for (MultipartFile multipartFile : file) {
             if (!multipartFile.getContentType().matches("^(image).*$")) {
                 throw new BadRequestAlertException("Not allowed format file", "volunteerManagement", "notallowedformatfile");
             }
         }
-        VolunteerAdPicture volunteerAdPicture = new VolunteerAdPicture();
-        HashMap<String, String> hashPicturesWithReferences = new HashMap<>();
+        User user = userService.getUserWithAuthorities().get();
+        HashSet<String> hashPicturesWithReferences = new HashSet<>();
         for (MultipartFile multipartFile : file) {
             try {
                 byte[] bytes = multipartFile.getBytes();
@@ -125,11 +123,11 @@ public class VolunteerAdService {
                 salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
                 String hexString = DatatypeConverter.printHexBinary(salt.digest());
 
-                Path path = Paths.get(UPLOADED_FOLDER_AD + hexString + "." + fileType);
+                Path path = Paths.get(UPLOADED_FOLDER_REQUESTS + hexString + "." + fileType);
                 Files.write(path, bytes);
                 log.debug("User id={} uploaded picture: {}", user.getId(), hexString + "." + fileType);
 
-                hashPicturesWithReferences.put(hexString + "." + fileType, multipartFile.getOriginalFilename());
+                hashPicturesWithReferences.add(hexString + "." + fileType);
 
                 createThumbnailFromPicture(bytes, hexString, fileType);
 
@@ -139,9 +137,7 @@ public class VolunteerAdService {
                 e.printStackTrace();
             }
         }
-        volunteerAdPicture.setReferenceToPicture(hashPicturesWithReferences);
-        volunteerAdPicture.setVolunteerAd(volunteerAd);
-        return volunteerAdPicture;
+        return hashPicturesWithReferences;
     }
 
     private void createThumbnailFromPicture(byte[] bytes, String hexString, String fileType) {
@@ -160,18 +156,6 @@ public class VolunteerAdService {
         }
     }
 
-    public HashMap<String, String> getImagesFromVolunteerAd(long volunteerAdId) {
-        VolunteerAdPicture volunteerAdPicture;
-        try {
-            volunteerAdPicture =
-                volunteerAdPictureRepository.findByVolunteerAdId(volunteerAdId)
-                    .get();
-        } catch (NoSuchElementException e) {
-            throw new BadRequestAlertException("No image found for this volunteer request", "volunteerManagement", "noimagefoundforvolunteerid");
-
-        }
-        return volunteerAdPicture.getReferenceToPicture();
-    }
 
     public void createVolunteerAdCategory(String name) {
         if(volunteerAdCategoryRepository.findById(name).isPresent()){

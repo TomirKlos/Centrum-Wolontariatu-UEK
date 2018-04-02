@@ -5,6 +5,7 @@ import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAdPicture;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
+import pl.krakow.uek.centrumWolontariatu.repository.VolunteerAdPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestPictureRepository;
 
 import java.util.HashSet;
@@ -14,9 +15,11 @@ import java.util.Set;
 public class PictureService<T> {
 
     private final VolunteerRequestPictureRepository volunteerRequestPictureRepository;
+    private final VolunteerAdPictureRepository volunteerAdPictureRepository;
 
-    public PictureService(VolunteerRequestPictureRepository volunteerRequestPictureRepository){
+    public PictureService(VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerAdPictureRepository volunteerAdPictureRepository){
         this.volunteerRequestPictureRepository = volunteerRequestPictureRepository;
+        this.volunteerAdPictureRepository = volunteerAdPictureRepository;
     }
 
     public Set<? extends Object> addPicturesToDatabase(String[] references, T t){
@@ -37,9 +40,9 @@ public class PictureService<T> {
             if (references.length>0) {
                 for(String reference: references){
                     VolunteerAdPicture volunteerAdPicture = new VolunteerAdPicture();
-                   // volunteerAdPicture.setReferenceToPicture(reference);
+                    volunteerAdPicture.setReferenceToPicture(reference);
                     volunteerAdPicture.setVolunteerAd((VolunteerAd) t);
-                   // volunteerRequestPictureRepository.save(volunteerAdPicture);
+                    volunteerAdPictureRepository.save(volunteerAdPicture);
                     set.add(volunteerAdPicture);
                 }
             }

@@ -1,5 +1,6 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +22,19 @@ public class VolunteerAdPicture implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name="volunteer_ad_id", nullable=false)
+    @Getter
+    @Setter
+    @JsonBackReference
+    private VolunteerAd volunteerAd;
 
     @Column(name = "reference_to_picture")
     @Lob
-    private HashMap<String, String> referenceToPicture;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "volunteerAd_id")
-    private VolunteerAd volunteerAd;
+    @Getter
+    @Setter
+    private String referenceToPicture;
 }

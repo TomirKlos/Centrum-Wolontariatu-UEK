@@ -41,16 +41,10 @@ public class VolunteerAdController {
     }
 
 
-    @PostMapping(consumes = "multipart/form-data")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerAd(@RequestPart MultipartFile[] file,
-                               @RequestPart VolunteerAdVM volunteerAdVM) {
-        volunteerAdService.createVolunteerAd(volunteerAdVM.getDescription(), volunteerAdVM.getTitle(), volunteerAdVM.getCategories(), volunteerAdVM.getTypes(), volunteerAdVM.getExpirationDate(), file);
-    }
-
-    @GetMapping("image")
-    public HashMap<String, String> getImagesByVolunteerId(@RequestParam long volunteerAdId) {
-        return volunteerAdService.getImagesFromVolunteerAd(volunteerAdId);
+    public void addVolunteerAd(@RequestBody VolunteerAdVM volunteerAdVM) {
+        volunteerAdService.createVolunteerAd(volunteerAdVM);
     }
 
 
@@ -103,6 +97,12 @@ public class VolunteerAdController {
     @GetMapping("solr/{text}")
     public List<VolunteerAdDTO> getVolunteerAdBySolr(@PathVariable String text) {
         return volunteerAdService.getVolunteerAdBySolr(text);
+    }
+
+    @PostMapping(path = "/picture", consumes = "multipart/form-data")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Set<String> addPicture(@RequestBody MultipartFile[] file) {
+        return volunteerAdService.addPicturesToVolunteerAd(file);
     }
 
 

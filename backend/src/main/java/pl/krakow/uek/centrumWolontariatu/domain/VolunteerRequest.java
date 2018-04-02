@@ -63,7 +63,7 @@ public class VolunteerRequest implements Serializable {
     @Column(name = "is_for_tutors")
     private byte isForTutors;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "cw_volunteer_requests_categories",
         joinColumns = {@JoinColumn(name = "volunteerRequest_id", referencedColumnName = "id")},
@@ -71,7 +71,7 @@ public class VolunteerRequest implements Serializable {
     @BatchSize(size = 20)
     private Set<VolunteerRequestCategory> categories = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "cw_volunteer_requests_types",
         joinColumns = {@JoinColumn(name = "volunteerRequest_id", referencedColumnName = "id")},
@@ -79,7 +79,7 @@ public class VolunteerRequest implements Serializable {
     @BatchSize(size = 20)
     private Set<VolunteerRequestType> volunteerRequestTypes = new HashSet<>();
 
-    @OneToMany(mappedBy="volunteerRequest")
+    @OneToMany(mappedBy="volunteerRequest",fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<VolunteerRequestPicture> pictures;
 

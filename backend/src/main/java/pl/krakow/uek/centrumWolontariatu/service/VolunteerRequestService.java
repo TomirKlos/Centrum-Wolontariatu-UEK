@@ -120,7 +120,6 @@ public class VolunteerRequestService {
             }
         }
         User user = userService.getUserWithAuthorities().get();
-        VolunteerRequestPicture volunteerRequestPicture = new VolunteerRequestPicture();
         HashSet<String> hashPicturesWithReferences = new HashSet<>();
         for (MultipartFile multipartFile : file) {
             try {
@@ -146,10 +145,6 @@ public class VolunteerRequestService {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-        }
-
-        for (String string: hashPicturesWithReferences){
-            volunteerRequestPicture.setReferenceToPicture(string);
         }
         return hashPicturesWithReferences;
     }

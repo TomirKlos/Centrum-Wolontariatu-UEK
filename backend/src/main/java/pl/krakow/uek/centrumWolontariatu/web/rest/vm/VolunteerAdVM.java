@@ -20,4 +20,6 @@ public class VolunteerAdVM {
     private Set<String> types;
 
     private long expirationDate;
+
+    private String[] images;
 }
