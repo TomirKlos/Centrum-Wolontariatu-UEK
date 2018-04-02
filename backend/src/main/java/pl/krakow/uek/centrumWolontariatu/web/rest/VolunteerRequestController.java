@@ -17,9 +17,9 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
@@ -34,16 +34,10 @@ public class VolunteerRequestController {
         this.volunteerRequestService = volunteerRequestService;
     }
 
-    @PostMapping(path = "/vrequest/", consumes = "multipart/form-data")
+    @PostMapping(path = "/vrequest/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerRequest(@RequestPart VolunteerRequestVM volunteerRequestVM,
-                                    @RequestPart MultipartFile[] file) {
-        volunteerRequestService.createVolunteerRequest(volunteerRequestVM.getDescription(), volunteerRequestVM.getTitle(), volunteerRequestVM.getVolunteersAmount(), parse(volunteerRequestVM.isForStudents()), parse(volunteerRequestVM.isForTutors()), volunteerRequestVM.getCategories(), volunteerRequestVM.getTypes(), volunteerRequestVM.getExpirationDate(), file);
-    }
-
-    @GetMapping("/vrequest/image")
-    public HashMap<String, String> getImagesByVolunteerId(@RequestParam long volunteerRequestId) {
-        return volunteerRequestService.getImagesFromVolunteerRequest(volunteerRequestId);
+    public void addVolunteerRequest(@RequestBody VolunteerRequestVM volunteerRequestVM, @RequestBody String[] referenceToPictures) {
+        volunteerRequestService.createVolunteerRequest(volunteerRequestVM,  referenceToPictures);
     }
 
     @PostMapping("/vrequest/category/")
@@ -101,16 +95,12 @@ public class VolunteerRequestController {
     public List<VolunteerRequestDTO> getVolunteerRequestBySolr(@PathVariable String text) {
         return volunteerRequestService.getVolunteerRequestBySolr(text);
     }
-<<<<<<< HEAD
 
-    @PostMapping(path = "/vrequestTest/", consumes="multipart/form-data")
+    @PostMapping(path = "/vrequest/picture", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerRequestTest(@RequestBody VolunteerRequestVM volunteerRequestVM) {
-        volunteerRequestService.createVolunteerRequestTest(volunteerRequestVM.getDescription(), volunteerRequestVM.getTitle(), volunteerRequestVM.getVolunteersAmount(), parse(volunteerRequestVM.isForStudents()), parse(volunteerRequestVM.isForTutors()), volunteerRequestVM.getCategories(), volunteerRequestVM.getTypes(), volunteerRequestVM.getExpirationDate());
+    public Set<String> addPicture(@RequestBody MultipartFile[] file) {
+        return volunteerRequestService.addPicturesToVolunteerRequest(file);
     }
 
 
-
-=======
->>>>>>> 9155c532df13ca7e4d13417e24ffebae1a578cd6
 }
