@@ -28,5 +28,7 @@ public class VolunteerRequestVM {
 
     private long expirationDate;
 
+    private String[] images;
+
 
 }
