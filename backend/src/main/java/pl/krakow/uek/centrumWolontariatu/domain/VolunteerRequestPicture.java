@@ -1,14 +1,12 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashMap;
 
 
 @Entity
@@ -23,17 +21,18 @@ public class VolunteerRequestPicture implements Serializable {
     @Getter
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name="volunteer_request_id", nullable=false)
+    @Getter
+    @Setter
+    @JsonBackReference
+    private VolunteerRequest volunteerRequest;
+
     @Column(name = "reference_to_picture")
     @Lob
     @Getter
     @Setter
-    private HashMap<String, String> referenceToPicture;
+    private String referenceToPicture;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "volunteerRequest_id")
-    @Getter
-    @Setter
-    private VolunteerRequest volunteerRequest;
 
 }

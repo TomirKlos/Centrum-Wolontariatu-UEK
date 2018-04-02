@@ -5,7 +5,6 @@ import cz.jirutka.rsql.parser.ast.Node;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -19,6 +18,7 @@ import pl.krakow.uek.centrumWolontariatu.repository.solr.VolunteerRequestSearchD
 import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
@@ -50,9 +50,10 @@ public class VolunteerRequestService {
     private final VolunteerRequestCategoryRepository volunteerRequestCategoryRepository;
     private final VolunteerRequestTypeRepository volunteerRequestTypeRepository;
     private final VolunteerRequestSearchDao volunteerRequestSearchDao;
+    private final PictureService<VolunteerRequest> pictureService;
 
 
-    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository, VolunteerRequestSearchDao volunteerRequestSearchDao) {
+    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository, VolunteerRequestSearchDao volunteerRequestSearchDao, PictureService<VolunteerRequest> pictureService) {
         this.userService = userService;
         this.mailService = mailService;
         this.volunteerRequestRepository = volunteerRequestRepository;
@@ -60,6 +61,7 @@ public class VolunteerRequestService {
         this.volunteerRequestCategoryRepository = volunteerRequestCategoryRepository;
         this.volunteerRequestTypeRepository = volunteerRequestTypeRepository;
         this.volunteerRequestSearchDao = volunteerRequestSearchDao;
+        this.pictureService = pictureService;
     }
     /*
      * don't refactor!!,
@@ -77,44 +79,7 @@ public class VolunteerRequestService {
         return volunteerRequest.getId();
     }
 
-    public VolunteerRequest createVolunteerRequest(String description, String title, int numberVolunteers, byte isForStudents, byte isForTutors, Set<String> categories, Set<String> types, long expirationDate, MultipartFile[] file) {
-        boolean isImageUploaded = file.length > 0;
-        long id = GenerateVolunteerRequest();
-        try {
-            return volunteerRequestRepository.findById(id)
-                .map(volunteerRequest -> {
-                    ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-                    Date date = Date.from(utc.toInstant());
-                    long epochMillis = utc.toEpochSecond() * 1000;
-                    volunteerRequest.setTimestamp(epochMillis);
-                    volunteerRequest.setExpirationDate(expirationDate);
-                    volunteerRequest.setDescription(description);
-                    volunteerRequest.setTitle(title);
-                    volunteerRequest.setVolunteersAmount(numberVolunteers);
-                    volunteerRequest.setIsForTutors(isForTutors);
-                    volunteerRequest.setIsForStudents(isForStudents);
-
-                    User user = userService.getUserWithAuthorities().get();
-
-                    volunteerRequest.setCategories(getCategoriesFromRequest(categories));
-                    volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(types));
-
-                    volunteerRequestRepository.save(volunteerRequest);
-                    log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
-
-                    if (isImageUploaded) {
-                        VolunteerRequestPicture volunteerRequestPicture = addPicturesToVolunteerRequest(file, user, volunteerRequest);
-                        volunteerRequestPictureRepository.save(volunteerRequestPicture);
-                    }
-                    return volunteerRequest;
-                }).get();
-        } catch (JpaObjectRetrievalFailureException e) {
-            volunteerRequestRepository.deleteById(id);
-            throw new BadRequestAlertException("Unable to find category/type of volunteerRequest in database", "volunteerRequestManagement", "nocategoryortypelinkstodatabase");
-        }
-    }
-
-    public VolunteerRequest createVolunteerRequestTest(String description, String title, int numberVolunteers, byte isForStudents, byte isForTutors, Set<String> categories, Set<String> types, long expirationDate) {
+    public VolunteerRequest createVolunteerRequest(VolunteerRequestVM volunteerRequestVM, String[] pictureReferences) {
         long id = GenerateVolunteerRequest();
         try {
             return volunteerRequestRepository.findById(id)
@@ -122,17 +87,19 @@ public class VolunteerRequestService {
                     ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
                     long epochMillis = utc.toEpochSecond() * 1000;
                     volunteerRequest.setTimestamp(epochMillis);
-                    volunteerRequest.setExpirationDate(expirationDate);
-                    volunteerRequest.setDescription(description);
-                    volunteerRequest.setTitle(title);
-                    volunteerRequest.setVolunteersAmount(numberVolunteers);
-                    volunteerRequest.setIsForTutors(isForTutors);
-                    volunteerRequest.setIsForStudents(isForStudents);
+                    volunteerRequest.setExpirationDate(volunteerRequestVM.getExpirationDate());
+                    volunteerRequest.setDescription(volunteerRequestVM.getDescription());
+                    volunteerRequest.setTitle(volunteerRequestVM.getTitle());
+                    volunteerRequest.setVolunteersAmount(volunteerRequestVM.getVolunteersAmount());
+                    volunteerRequest.setIsForTutors(parse(volunteerRequestVM.isForTutors()));
+                    volunteerRequest.setIsForStudents(parse(volunteerRequestVM.isForStudents()));
 
                     User user = userService.getUserWithAuthorities().get();
 
-                    volunteerRequest.setCategories(getCategoriesFromRequest(categories));
-                    volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(types));
+                    volunteerRequest.setCategories(getCategoriesFromRequest(volunteerRequestVM.getCategories()));
+                    volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(volunteerRequestVM.getTypes()));
+
+                    volunteerRequest.setPictures((Set<VolunteerRequestPicture>) pictureService.addPicturesToDatabase(pictureReferences, volunteerRequest));
 
                     volunteerRequestRepository.save(volunteerRequest);
                     log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
@@ -145,14 +112,16 @@ public class VolunteerRequestService {
         }
     }
 
-    private VolunteerRequestPicture addPicturesToVolunteerRequest(MultipartFile[] file, User user, VolunteerRequest volunteerRequest) {
+
+    public Set<String> addPicturesToVolunteerRequest(MultipartFile[] file) {
         for (MultipartFile multipartFile : file) {
             if (!multipartFile.getContentType().matches("^(image).*$")) {
                 throw new BadRequestAlertException("Not allowed format file", "volunteerManagement", "notallowedformatfile");
             }
         }
+        User user = userService.getUserWithAuthorities().get();
         VolunteerRequestPicture volunteerRequestPicture = new VolunteerRequestPicture();
-        HashMap<String, String> hashPicturesWithReferences = new HashMap<>();
+        HashSet<String> hashPicturesWithReferences = new HashSet<>();
         for (MultipartFile multipartFile : file) {
             try {
                 byte[] bytes = multipartFile.getBytes();
@@ -168,7 +137,7 @@ public class VolunteerRequestService {
                 Files.write(path, bytes);
                 log.debug("User id={} uploaded picture: {}", user.getId(), hexString + "." + fileType);
 
-                hashPicturesWithReferences.put(hexString + "." + fileType, multipartFile.getOriginalFilename());
+                hashPicturesWithReferences.add(hexString + "." + fileType);
 
                 createThumbnailFromPicture(bytes, hexString, fileType);
 
@@ -178,9 +147,11 @@ public class VolunteerRequestService {
                 e.printStackTrace();
             }
         }
-        volunteerRequestPicture.setReferenceToPicture(hashPicturesWithReferences);
-        volunteerRequestPicture.setVolunteerRequest(volunteerRequest);
-        return volunteerRequestPicture;
+
+        for (String string: hashPicturesWithReferences){
+            volunteerRequestPicture.setReferenceToPicture(string);
+        }
+        return hashPicturesWithReferences;
     }
 
     private void createThumbnailFromPicture(byte[] bytes, String hexString, String fileType) {
@@ -198,22 +169,6 @@ public class VolunteerRequestService {
             e.printStackTrace();
         }
     }
-
-    public HashMap<String, String> getImagesFromVolunteerRequest(long volunteerRequestId) {
-        VolunteerRequestPicture volunteerRequestPicture;
-        try {
-            volunteerRequestPicture =
-                volunteerRequestPictureRepository.findByVolunteerRequestId(volunteerRequestId)
-                    .get();
-        } catch (NoSuchElementException e) {
-            throw new BadRequestAlertException("No image found for this volunteer request", "volunteerManagement", "noimagefoundforvolunteerid");
-
-        }
-
-        return volunteerRequestPicture.getReferenceToPicture();
-
-    }
-
 
     public void createVolunteerRequestCategory(String name) {
         if(volunteerRequestCategoryRepository.findById(name).isPresent()){

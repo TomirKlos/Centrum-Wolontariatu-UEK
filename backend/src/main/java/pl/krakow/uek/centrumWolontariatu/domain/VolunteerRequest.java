@@ -1,16 +1,15 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -79,6 +78,10 @@ public class VolunteerRequest implements Serializable {
         inverseJoinColumns = {@JoinColumn(name = "type_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
     private Set<VolunteerRequestType> volunteerRequestTypes = new HashSet<>();
+
+    @OneToMany(mappedBy="volunteerRequest")
+    @JsonManagedReference
+    private Set<VolunteerRequestPicture> pictures;
 
 
     @Override
