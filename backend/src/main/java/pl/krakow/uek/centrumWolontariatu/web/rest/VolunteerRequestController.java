@@ -36,8 +36,8 @@ public class VolunteerRequestController {
 
     @PostMapping(path = "/vrequest/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerRequest(@RequestBody VolunteerRequestVM volunteerRequestVM, @RequestBody String[] referenceToPictures) {
-        volunteerRequestService.createVolunteerRequest(volunteerRequestVM,  referenceToPictures);
+    public void addVolunteerRequest(@RequestBody VolunteerRequestVM volunteerRequestVM) {
+        volunteerRequestService.createVolunteerRequest(volunteerRequestVM);
     }
 
     @PostMapping("/vrequest/category/")

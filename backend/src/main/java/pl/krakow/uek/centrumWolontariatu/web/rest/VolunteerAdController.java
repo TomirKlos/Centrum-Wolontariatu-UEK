@@ -104,6 +104,6 @@ public class VolunteerAdController {
     public List<VolunteerAdDTO> getVolunteerAdBySolr(@PathVariable String text) {
         return volunteerAdService.getVolunteerAdBySolr(text);
     }
-    
+
 
 }

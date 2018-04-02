@@ -79,7 +79,7 @@ public class VolunteerRequestService {
         return volunteerRequest.getId();
     }
 
-    public VolunteerRequest createVolunteerRequest(VolunteerRequestVM volunteerRequestVM, String[] pictureReferences) {
+    public VolunteerRequest createVolunteerRequest(VolunteerRequestVM volunteerRequestVM) {
         long id = GenerateVolunteerRequest();
         try {
             return volunteerRequestRepository.findById(id)
@@ -99,7 +99,7 @@ public class VolunteerRequestService {
                     volunteerRequest.setCategories(getCategoriesFromRequest(volunteerRequestVM.getCategories()));
                     volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(volunteerRequestVM.getTypes()));
 
-                    volunteerRequest.setPictures((Set<VolunteerRequestPicture>) pictureService.addPicturesToDatabase(pictureReferences, volunteerRequest));
+                    volunteerRequest.setPictures((Set<VolunteerRequestPicture>) pictureService.addPicturesToDatabase(volunteerRequestVM.getImages(), volunteerRequest));
 
                     volunteerRequestRepository.save(volunteerRequest);
                     log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
