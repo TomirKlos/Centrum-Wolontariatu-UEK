@@ -21,7 +21,7 @@ public class VolunteerRequestPicture implements Serializable {
     @Getter
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="volunteer_request_id", nullable=false)
     @Getter
     @Setter

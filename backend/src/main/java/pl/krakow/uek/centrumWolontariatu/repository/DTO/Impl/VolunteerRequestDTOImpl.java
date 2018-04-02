@@ -8,11 +8,12 @@ import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Setter
 @Getter
-public class VolunteerRequestDTOImpl implements VolunteerRequestDTO {
+public class VolunteerRequestDTOImpl implements VolunteerRequestDTO, Serializable {
     Long id;
 
     String description;

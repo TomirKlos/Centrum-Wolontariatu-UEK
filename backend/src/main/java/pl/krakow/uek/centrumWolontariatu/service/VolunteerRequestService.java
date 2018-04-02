@@ -5,6 +5,7 @@ import cz.jirutka.rsql.parser.ast.Node;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -35,6 +36,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
+
 
 import static pl.krakow.uek.centrumWolontariatu.configuration.constant.UserConstant.UPLOADED_FOLDER_REQUESTS;
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
@@ -207,8 +209,9 @@ public class VolunteerRequestService {
         return volunteerRequestTypes;
     }
 
+    @Cacheable(value = "volunteerRequestsByRsql")
     @Transactional
-    public Page<VolunteerRequestDTO> findAllByRsql(Pageable pageable, Optional<String> search) {
+    public Page<VolunteerRequestDTO> findAllByRsql(Pageable pageable, com.google.common.base.Optional<String> search) {
         if(search.isPresent()) {
             final Node rootNode = new RSQLParser().parse(search.get());
             Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());

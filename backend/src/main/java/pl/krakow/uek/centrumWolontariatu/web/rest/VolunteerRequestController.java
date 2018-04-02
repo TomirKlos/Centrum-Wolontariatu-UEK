@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
+import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parseGuavaOptional;
 
 @RestController
 @RequestMapping("/api")
@@ -77,7 +79,7 @@ public class VolunteerRequestController {
     @GetMapping("/vrequest/")
     @ResponseBody
     public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
-        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsql(pageable, parse(search));
+        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsql(pageable, parseGuavaOptional(search));
         return new ResponseEntity<>(volunteerRequests, HttpStatus.OK);
     }
 
