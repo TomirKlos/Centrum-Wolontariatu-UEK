@@ -5,6 +5,7 @@ import cz.jirutka.rsql.parser.ast.Node;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -230,12 +231,15 @@ public class VolunteerRequestService {
         volunteerRequestCategoryRepository.deleteById(name);
     }
 
+    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
     public void acceptVolunteerRequest(long id){
         volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
             volunteerRequest.setAccepted(parse(true));
             volunteerRequestRepository.save(volunteerRequest);
         });
     }
+
+    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
     public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}
 
     public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){
