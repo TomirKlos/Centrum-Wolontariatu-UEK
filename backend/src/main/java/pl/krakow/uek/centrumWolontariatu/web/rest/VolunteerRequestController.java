@@ -36,7 +36,7 @@ public class VolunteerRequestController {
         this.volunteerRequestService = volunteerRequestService;
     }
 
-    @PostMapping(path = "/vrequest/")
+    @PostMapping(path = "/vrequest")
     @ResponseStatus(HttpStatus.CREATED)
     public void addVolunteerRequest(@RequestBody VolunteerRequestVM volunteerRequestVM) {
         volunteerRequestService.createVolunteerRequest(volunteerRequestVM);
@@ -76,7 +76,7 @@ public class VolunteerRequestController {
         return volunteerRequestService.getAllTypes();
     }
 
-    @GetMapping("/vrequest/")
+    @GetMapping("/vrequest")
     @ResponseBody
     public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
         Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsql(pageable, parseGuavaOptional(search));

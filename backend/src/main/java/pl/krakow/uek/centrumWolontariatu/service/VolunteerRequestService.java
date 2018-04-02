@@ -98,10 +98,11 @@ public class VolunteerRequestService {
 
                     User user = userService.getUserWithAuthorities().get();
 
-                    volunteerRequest.setCategories(getCategoriesFromRequest(volunteerRequestVM.getCategories()));
-                    volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(volunteerRequestVM.getTypes()));
+                    if (volunteerRequestVM.getCategories() != null) { volunteerRequest.setCategories(getCategoriesFromRequest(volunteerRequestVM.getCategories())); }
+                    if (volunteerRequestVM.getTypes() != null) { volunteerRequest.setVolunteerRequestTypes(getTypesFromRequest(volunteerRequestVM.getTypes()));}
 
-                    volunteerRequest.setPictures((Set<VolunteerRequestPicture>) pictureService.addPicturesToDatabase(volunteerRequestVM.getImages(), volunteerRequest));
+                    if (volunteerRequestVM.getImages() != null){ volunteerRequest.setPictures((Set<VolunteerRequestPicture>) pictureService.addPicturesToDatabase(volunteerRequestVM.getImages(), volunteerRequest));}
+
 
                     volunteerRequestRepository.save(volunteerRequest);
                     log.debug("User id={} created new volunteer request id={}", user.getId(), volunteerRequest.getId());
