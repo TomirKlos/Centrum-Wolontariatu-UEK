@@ -50,6 +50,7 @@ public class VolunteerRequestConverter {
         dto.setExpired(entity.getExpired());
         dto.setExpirationDate(entity.getExpirationDate());
         dto.setAccepted(entity.getAccepted());
+        dto.setPictures(entity.getPictures());
         return dto;
     }
 

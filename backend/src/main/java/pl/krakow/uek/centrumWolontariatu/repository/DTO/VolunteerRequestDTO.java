@@ -2,6 +2,7 @@ package pl.krakow.uek.centrumWolontariatu.repository.DTO;
 
 
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 
 import java.util.Set;
@@ -32,6 +33,8 @@ public interface VolunteerRequestDTO {
     Set<VolunteerRequestCategory> getCategories();
 
     Set<VolunteerRequestType> getVolunteerRequestTypes();
+
+    Set<VolunteerRequestPicture> getPictures();
 
 }
 

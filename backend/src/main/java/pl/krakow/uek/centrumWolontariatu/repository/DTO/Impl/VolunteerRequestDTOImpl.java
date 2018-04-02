@@ -3,15 +3,17 @@ package pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl;
 import lombok.Getter;
 import lombok.Setter;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Setter
 @Getter
-public class VolunteerRequestDTOImpl implements VolunteerRequestDTO {
+public class VolunteerRequestDTOImpl implements VolunteerRequestDTO, Serializable {
     Long id;
 
     String description;
@@ -37,5 +39,7 @@ public class VolunteerRequestDTOImpl implements VolunteerRequestDTO {
     Set<VolunteerRequestCategory> categories;
 
     Set<VolunteerRequestType> volunteerRequestTypes;
+
+    Set<VolunteerRequestPicture> pictures;
 
 }

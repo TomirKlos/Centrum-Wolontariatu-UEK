@@ -1,5 +1,6 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -67,6 +68,10 @@ public class VolunteerAd implements Serializable {
         inverseJoinColumns = {@JoinColumn(name = "type_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
     private Set<VolunteerAdType> types = new HashSet<>();
+
+    @OneToMany(mappedBy="volunteerAd")
+    @JsonManagedReference
+    private Set<VolunteerAdPicture> pictures;
 
     @Override
     public boolean equals(Object o) {
