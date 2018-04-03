@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
           this.sb.warning('Nieprawidłowy email lub hasło', { duration: 5000 });
         }
       },
-      e => this.sb.warning(null, { duration: 5000 })
+      () => this.sb.warning()
     );
     this.loginButtonDisabled = false;
   }

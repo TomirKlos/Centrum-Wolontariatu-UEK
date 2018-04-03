@@ -1,18 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { HomeComponent } from './home/home.component';
 import { DumpComponent } from './dump/dump.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: HomeComponent,
-  },
-  {
-    path: 'dump',
-    component: DumpComponent,
-    // canActivate: [AuthGuardService]
-  }
+  { path: '', component: HomeComponent, },
+  { path: 'dump', component: DumpComponent, },
+  // { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({

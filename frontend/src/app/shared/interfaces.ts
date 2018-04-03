@@ -31,6 +31,18 @@ export interface VolunteerRequest {
   // resetDate:
 }
 
+export interface VolunteerRequestVM {
+  categories: string[];
+  description: string;
+  expirationDate: number;
+  forStudents: boolean
+  forTutors: boolean;
+  images: string[];
+  title: string;
+  types: string[];
+  volunteersAmount: 0;
+}
+
 export interface Pageable<T> {
   content: T[];
   first: boolean;

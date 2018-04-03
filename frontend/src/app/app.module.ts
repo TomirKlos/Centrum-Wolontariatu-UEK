@@ -12,13 +12,15 @@ import { DumpComponent } from './dump/dump.component';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { SidenavComponent } from './layouts/sidenav/sidenav.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './other/page-not-found/page-not-found.component';
 import { AuthModule, jwtModuleOptions } from './shared/auth/auth.module';
 import { DialogService } from './shared/dialog.service';
 import { httpInterceptorProviders } from './shared/http-interceptors';
 import { LayoutModule } from './shared/layout.module';
 import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
 import { SnackBarService } from './shared/snack-bar.service';
+import { OtherModule } from "./other/other.module";
+import { LecturerModule } from "./lecturer/lecturer.module";
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { SnackBarService } from './shared/snack-bar.service';
     AppRoutingModule,
     AccountModule,
     AdminModule,
+    LecturerModule,
 
+    OtherModule // must be last
   ],
   providers: [
     LoadingBarService,
