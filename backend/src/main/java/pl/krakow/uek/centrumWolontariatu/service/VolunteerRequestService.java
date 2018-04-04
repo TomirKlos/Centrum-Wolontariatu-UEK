@@ -82,6 +82,7 @@ public class VolunteerRequestService {
         return volunteerRequest.getId();
     }
 
+    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
     public VolunteerRequest createVolunteerRequest(VolunteerRequestVM volunteerRequestVM) {
         long id = GenerateVolunteerRequest();
         try {
