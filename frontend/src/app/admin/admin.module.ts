@@ -16,7 +16,7 @@ import { VolunteerRequestComponent } from './volunteer-request/volunteer-request
     AdminComponent,
     UsersComponent,
     VolunteerRequestComponent,
-    DialogComponent
+    DialogComponent,
   ]
 })
 export class AdminModule {

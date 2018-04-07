@@ -6,10 +6,10 @@ import { AddRequestComponent } from "./add-request/add-request.component";
 
 const routes: Routes = [
   {
-    path: 'requests',
+    path: 'lecturer',
     component: LecturerComponent,
     children: [
-      { path: 'add', component: AddRequestComponent }
+      { path: 'add-request', component: AddRequestComponent }
     ]
   }
 ];

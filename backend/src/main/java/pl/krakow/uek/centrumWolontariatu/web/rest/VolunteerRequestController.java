@@ -5,28 +5,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
-import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
+import pl.krakow.uek.centrumWolontariatu.configuration.constant.AuthoritiesConstants;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.CategoryVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-
-import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
-import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parseGuavaOptional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/vrequest")
 public class VolunteerRequestController {
 
     private final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
@@ -36,73 +30,100 @@ public class VolunteerRequestController {
         this.volunteerRequestService = volunteerRequestService;
     }
 
-    @PostMapping(path = "/vrequest")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addVolunteerRequest(@RequestBody VolunteerRequestVM volunteerRequestVM) {
-        volunteerRequestService.createVolunteerRequest(volunteerRequestVM);
+    /*
+     * VOLUNTEER REQUEST
+     */
+
+    @GetMapping()
+    public Page<VolunteerRequest> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
+        if (search.isPresent()) {
+            return volunteerRequestService.findAllByRsql(pageable, search.get());
+        } else {
+            return volunteerRequestService.getAll(pageable);
+        }
+
     }
 
-    @PostMapping("/vrequest/category/")
+    @Secured(AuthoritiesConstants.LECTURER)
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewCategory(@RequestBody CategoryVM categoryVM) {
-        volunteerRequestService.createVolunteerRequestCategory(categoryVM.getCategoryName());
+    public void addVolunteerRequest(@Valid @RequestBody VolunteerRequestVM volunteerRequestVM) {
+        volunteerRequestService.create(volunteerRequestVM);
     }
 
-    @GetMapping("/vrequest/category/")
-    public List<VolunteerRequestCategory> getAllVolunteerRequestCategory() {
+    @Secured(AuthoritiesConstants.LECTURER)
+    @DeleteMapping("/{id}")
+    public void deleteVolunteerRequest(@PathVariable Integer id) {
+        volunteerRequestService.delete(id);
+    }
+
+    @Secured(AuthoritiesConstants.ADMIN)
+    @PostMapping("/accept")
+    public void acceptVolunteerRequest(@RequestBody IdVM idVM) {
+        volunteerRequestService.changeAccepted(idVM.getId());
+    }
+
+
+    /*
+     * CATEGORIES
+     */
+
+    @GetMapping("/categories")
+    public List<String> getAllVolunteerRequestCategory() {
         return volunteerRequestService.getAllCategories();
     }
 
-    @DeleteMapping("/vrequest/category")
+    @Secured(AuthoritiesConstants.LECTURER)
+    @PostMapping("/categories")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createNewCategory(@Valid @RequestBody CategoryVM categoryVM) {
+        volunteerRequestService.createCategory(categoryVM.getCategoryName());
+    }
+
+    @Secured(AuthoritiesConstants.ADMIN)
+    @DeleteMapping("/categories/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategory(@RequestParam String name) {
+    public void deleteCategory(@PathVariable String name) {
         volunteerRequestService.deleteCategory(name);
     }
 
-    @PostMapping("/vrequest/type")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createNewType(@RequestBody TypeVM typeVM) {
-        volunteerRequestService.createVolunteerRequestType(typeVM.getType());
-    }
+    /*
+     * TYPES
+     */
 
-    @DeleteMapping("/vrequest/type")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteType(@RequestParam String name) {
-        volunteerRequestService.deleteType(name);
-    }
-
-    @GetMapping("/vrequest/type")
-    public List<VolunteerRequestType> getAllVolunteerRequestType() {
+    @GetMapping("/types")
+    public List<String> getAllVolunteerRequestType() {
         return volunteerRequestService.getAllTypes();
     }
 
-    @GetMapping("/vrequest")
-    @ResponseBody
-    public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
-        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsql(pageable, parseGuavaOptional(search));
-        return new ResponseEntity<>(volunteerRequests, HttpStatus.OK);
-    }
-
-    @PostMapping("/vrequest/accept")
-    public void acceptVolunteerRequest(@RequestBody IdVM idVM) {
-        volunteerRequestService.acceptVolunteerRequest(idVM.getId());
-    }
-
-    @DeleteMapping("/vrequest/{id}")
-    public void deleteVolunteerRequest(@PathVariable Integer id) {
-        volunteerRequestService.deleteVolunteerRequest(id);
-    }
-
-    @GetMapping("/vrequest/solr/{text}")
-    public List<VolunteerRequestDTO> getVolunteerRequestBySolr(@PathVariable String text) {
-        return volunteerRequestService.getVolunteerRequestBySolr(text);
-    }
-
-    @PostMapping(path = "/vrequest/picture", consumes = "multipart/form-data")
+    @Secured(AuthoritiesConstants.LECTURER)
+    @PostMapping("/types")
     @ResponseStatus(HttpStatus.CREATED)
-    public Set<String> addPicture(@RequestBody MultipartFile[] file) {
-        return volunteerRequestService.addPicturesToVolunteerRequest(file);
+    public void createNewType(@RequestBody TypeVM typeVM) {
+        volunteerRequestService.createType(typeVM.getType());
     }
 
+    @Secured(AuthoritiesConstants.ADMIN)
+    @DeleteMapping("/types/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteType(@PathVariable String name) {
+        volunteerRequestService.deleteType(name);
+    }
+
+
+//
+
+//
+//    @GetMapping("/vrequest/solr/{text}")
+//    public List<VolunteerRequestDTO> getVolunteerRequestBySolr(@PathVariable String text) {
+//        return volunteerRequestService.getVolunteerRequestBySolr(text);
+//    }
+//
+//    @PostMapping(path = "/vrequest/picture", consumes = "multipart/form-data")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public Set<String> addPicture(@RequestBody MultipartFile[] file) {
+//        return volunteerRequestService.addPicturesToVolunteerRequest(file);
+//    }
+//
 
 }

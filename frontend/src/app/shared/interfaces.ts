@@ -43,7 +43,7 @@ export interface VolunteerRequestVM {
   volunteersAmount: 0;
 }
 
-export interface Pageable<T> {
+export interface Page<T> {
   content: T[];
   first: boolean;
   last: boolean;

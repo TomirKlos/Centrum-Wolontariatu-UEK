@@ -4,11 +4,11 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { Pageable, User } from '../../shared/interfaces';
+import { Page, User } from '../../shared/interfaces';
 
 @Injectable()
 export class UsersService {
-  private _pageSubject = new BehaviorSubject<Pageable<User>>(null);
+  private _pageSubject = new BehaviorSubject<Page<User>>(null);
   private _url = environment.apiEndpoint + 'users';
 
   constructor(private _http: HttpClient) {
@@ -20,7 +20,7 @@ export class UsersService {
         .set('page', page.toString())
         .set('size', size.toString())
     }).pipe(
-      map((usersPage: Pageable<User>) => {
+      map((usersPage: Page<User>) => {
         this._pageSubject.next(usersPage);
         return usersPage.content;
       })

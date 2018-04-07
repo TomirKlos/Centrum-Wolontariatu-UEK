@@ -7,29 +7,26 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.TermVector;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "cw_volunteer_requests")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Indexed
-public class VolunteerRequest implements Serializable {
+public class VolunteerRequest extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @Column(name = "description")
     @Lob
@@ -42,9 +39,6 @@ public class VolunteerRequest implements Serializable {
 
     @Column(name = "volunteers_amount")
     private int volunteersAmount;
-
-    @Column(name= "timestamp")
-    private long timestamp;
 
     //accepted set to byte to provide query search in RSQL which not support boolean type.
     @Column(name = "accepted")
@@ -79,23 +73,8 @@ public class VolunteerRequest implements Serializable {
     @BatchSize(size = 20)
     private Set<VolunteerRequestType> volunteerRequestTypes = new HashSet<>();
 
-    @OneToMany(mappedBy="volunteerRequest",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "volunteerRequest", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<VolunteerRequestPicture> pictures;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        VolunteerRequest that = (VolunteerRequest) o;
-        return Objects.equals(id, that.id) &&
-            Objects.equals(user, that.user);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, user);
-    }
 }

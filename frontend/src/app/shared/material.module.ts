@@ -15,6 +15,7 @@ import {
   MatProgressBarModule,
   MatSidenavModule,
   MatSnackBarModule,
+  MatSortModule,
   MatTableModule,
   MatTabsModule,
   MatToolbarModule
@@ -40,7 +41,8 @@ const modules = [
   CdkTableModule,
   MatAutocompleteModule,
   MatDialogModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatSortModule
 ];
 
 @NgModule({
