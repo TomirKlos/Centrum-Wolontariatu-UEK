@@ -14,7 +14,7 @@ export class DumpComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get(environment.apiEndpoint + 'account').subscribe(d => {
+    this.http.get(environment.apiEndpoint + '/account').subscribe(d => {
         console.log(d);
       },
       e => console.log(e));

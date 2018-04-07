@@ -58,7 +58,7 @@ export class UserService {
 
     this.isLoggedIn = true;
 
-    this.http.get(environment.apiEndpoint + 'account').subscribe(
+    this.http.get(environment.apiEndpoint + '/account').subscribe(
       () => {},
       () => this.isLoggedIn = false
     );

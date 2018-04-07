@@ -5,8 +5,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { VolunteerRequestService } from './volunteer-request.service';
 import { SnackBarService } from '../../shared/snack-bar.service';
-import { VolunteerRequestDataSource } from './volunteer-request-data-source';
 import { merge } from "rxjs/observable/merge";
+import { GenericDataSource } from "../../shared/GenericDataSource";
 
 
 @Component({
@@ -18,7 +18,7 @@ import { merge } from "rxjs/observable/merge";
   ]
 })
 export class VolunteerRequestComponent implements OnInit, AfterViewInit {
-  VRData: VolunteerRequestDataSource;
+  VRData: GenericDataSource;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'delete', 'editVr' ];
   totalElements = 0;
 
@@ -33,8 +33,8 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.VRData = new VolunteerRequestDataSource(this._volunteerRequestService);
-    this.VRData.loadVolunteerRequests();
+    this.VRData = new GenericDataSource(this._volunteerRequestService);
+    this.VRData.loadPage();
 
     this._volunteerRequestService.getPage().subscribe(d => {
       if (d && d.totalElements) {
@@ -73,10 +73,10 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
   }
 
   private _loadVRPage() {
-    this.VRData.loadVolunteerRequests(
+    this.VRData.loadPage(
       this.paginator.pageIndex,
       this.paginator.pageSize,
-      (this.sort.active ? this.sort.active + ',' + this.sort.direction : null)
+      { name: this.sort.active, value: this.sort.direction }
     );
   }
 

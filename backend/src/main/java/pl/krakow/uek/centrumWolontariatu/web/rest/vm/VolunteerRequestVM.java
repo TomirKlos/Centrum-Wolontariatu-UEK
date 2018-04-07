@@ -27,8 +27,10 @@ public class VolunteerRequestVM {
     @NotNull
     private boolean isForTutors;
 
+    @NotNull
     private Set<String> categories;
 
+    @NotNull
     private Set<String> types;
 
     @NotNull

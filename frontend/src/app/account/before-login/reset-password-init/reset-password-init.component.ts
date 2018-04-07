@@ -26,7 +26,7 @@ export class ResetPasswordInitComponent implements OnInit {
 
   resetPasswordInit() {
     this.resetPasswordInitButtonDisabled = true;
-    this.http.post(environment.apiEndpoint + 'reset-password/init', this.resetPasswordInitForm.value, { observe: 'response' })
+    this.http.post(environment.apiEndpoint + '/reset-password/init', this.resetPasswordInitForm.value, { observe: 'response' })
       .subscribe(
         ok => {
           this.sb.open('Link do zmiany hasła został wysłany na podany adres');

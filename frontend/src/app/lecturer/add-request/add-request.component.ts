@@ -27,7 +27,7 @@ export class AddRequestComponent implements OnInit {
 
   submit() {
     this.submitButtonDisabled = true;
-    this._http.post(environment.apiEndpoint + 'vrequest/', this.formGroup.value).subscribe(
+    this._http.post(environment.apiEndpoint + '/vrequest', this.formGroup.value).subscribe(
       () => {
         this._sb.open('Oferta została dodana');
         this.formGroup.reset();

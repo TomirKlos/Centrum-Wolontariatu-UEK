@@ -5,20 +5,20 @@
   <mat-card-content>
 
     <div>
-      <mat-table #table [dataSource]="usersData">
+      <mat-table #table [dataSource]="usersData" matSort>
 
         <ng-container matColumnDef="id">
-          <mat-header-cell *matHeaderCellDef fxFlex="50px">id</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef fxFlex="50px" mat-sort-header>id</mat-header-cell>
           <mat-cell *matCellDef="let element" fxFlex="50px"> {{ element.id }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="email">
-          <mat-header-cell *matHeaderCellDef>email</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>email</mat-header-cell>
           <mat-cell *matCellDef="let element"> {{ element.email }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="activated">
-          <mat-header-cell *matHeaderCellDef fxFlex="120px">Aktywny</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef fxFlex="120px" mat-sort-header>Aktywny</mat-header-cell>
           <mat-cell *matCellDef="let element" fxFlex="120px">
 
             <button *ngIf="element.activated" mat-button color="primary">

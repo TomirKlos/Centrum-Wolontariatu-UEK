@@ -1,44 +1,45 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator, MatSort } from '@angular/material';
 import { tap } from 'rxjs/operators';
 
 import { SnackBarService } from '../../shared/snack-bar.service';
-import { UsersDataSource } from './users-data-source';
 import { UsersService } from './users.service';
+import { GenericDataSource } from "../../shared/GenericDataSource";
+import { merge } from "rxjs/observable/merge";
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss'],
+  styleUrls: [ './users.component.scss' ],
   providers: [
     UsersService
   ]
 })
 export class UsersComponent implements OnInit, AfterViewInit {
-  usersData: UsersDataSource;
-  columnsToDisplay = ['id', 'activated', 'email', 'delete'];
+  usersData: GenericDataSource;
+  columnsToDisplay = [ 'id', 'activated', 'email', 'delete' ];
   totalElements = 0;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private _http: HttpClient, private _usersService: UsersService, private _sb: SnackBarService) {
   }
 
   ngOnInit() {
-    this.usersData = new UsersDataSource(this._usersService);
-    this.usersData.loadUsers();
+    this.usersData = new GenericDataSource(this._usersService);
+    this.usersData.loadPage();
 
     this._usersService.getPage().subscribe(d => {
       if (d && d.totalElements) {
         this.totalElements = d.totalElements;
       }
     });
-
   }
 
   ngAfterViewInit() {
-    this.paginator.page
+    merge(this.sort.sortChange, this.paginator.page)
       .pipe(
         tap(() => this._loadUsersPage())
       )
@@ -46,9 +47,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   private _loadUsersPage() {
-    this.usersData.loadUsers(
+    this.usersData.loadPage(
       this.paginator.pageIndex,
-      this.paginator.pageSize
+      this.paginator.pageSize,
+      { name: this.sort.active, value: this.sort.direction }
     );
   }
 
