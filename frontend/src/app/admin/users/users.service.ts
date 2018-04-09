@@ -9,7 +9,7 @@ export class UsersService extends GenericService<User> {
 
   constructor(_http: HttpClient) {
     super(_http);
-    this._url = this._url + 'users'
+    this._url = this._url + '/users'
   }
 
   activate(id: number) {

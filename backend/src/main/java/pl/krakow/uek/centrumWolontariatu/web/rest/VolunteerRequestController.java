@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.krakow.uek.centrumWolontariatu.configuration.constant.AuthoritiesConstants;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerRequestService;
+import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.RequestNotFoundException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.CategoryVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
@@ -49,6 +50,11 @@ public class VolunteerRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addVolunteerRequest(@Valid @RequestBody VolunteerRequestVM volunteerRequestVM) {
         volunteerRequestService.create(volunteerRequestVM);
+    }
+
+    @GetMapping("/{id}")
+    public VolunteerRequest getOneRequest(@PathVariable Integer id) {
+        return this.volunteerRequestService.getOne(id).orElseThrow(RequestNotFoundException::new);
     }
 
     @Secured(AuthoritiesConstants.LECTURER)

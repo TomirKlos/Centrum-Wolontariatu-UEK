@@ -41,5 +41,5 @@ export interface Page<T> {
 
 export interface Param {
   name: string;
-  value: string;
+  value: string | number;
 }

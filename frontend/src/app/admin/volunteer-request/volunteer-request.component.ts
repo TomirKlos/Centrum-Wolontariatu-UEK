@@ -2,11 +2,12 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { tap } from "rxjs/operators";
 import { MatPaginator, MatSort } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
+import { merge } from "rxjs/observable/merge";
 
 import { VolunteerRequestService } from './volunteer-request.service';
 import { SnackBarService } from '../../shared/snack-bar.service';
-import { merge } from "rxjs/observable/merge";
 import { GenericDataSource } from "../../shared/GenericDataSource";
+import { VolunteerRequestVM } from "../../shared/interfaces";
 
 
 @Component({
@@ -18,7 +19,7 @@ import { GenericDataSource } from "../../shared/GenericDataSource";
   ]
 })
 export class VolunteerRequestComponent implements OnInit, AfterViewInit {
-  VRData: GenericDataSource;
+  VRData: GenericDataSource<VolunteerRequestVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'delete', 'editVr' ];
   totalElements = 0;
 
@@ -34,7 +35,7 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.VRData = new GenericDataSource(this._volunteerRequestService);
-    this.VRData.loadPage();
+    this._loadVRPage();
 
     this._volunteerRequestService.getPage().subscribe(d => {
       if (d && d.totalElements) {
@@ -74,9 +75,9 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
 
   private _loadVRPage() {
     this.VRData.loadPage(
-      this.paginator.pageIndex,
-      this.paginator.pageSize,
-      { name: this.sort.active, value: this.sort.direction }
+      { name: 'page', value: this.paginator.pageIndex },
+      { name: 'size', value: this.paginator.pageSize },
+      { name: 'sort', value: this.sort.active + ',' + this.sort.direction }
     );
   }
 

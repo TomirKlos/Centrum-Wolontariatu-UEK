@@ -10,6 +10,7 @@ import {
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatListModule,
   MatMenuModule,
   MatPaginatorModule,
   MatProgressBarModule,
@@ -42,7 +43,8 @@ const modules = [
   MatAutocompleteModule,
   MatDialogModule,
   MatCheckboxModule,
-  MatSortModule
+  MatSortModule,
+  MatListModule
 ];
 
 @NgModule({

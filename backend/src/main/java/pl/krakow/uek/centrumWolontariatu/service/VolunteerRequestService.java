@@ -21,6 +21,7 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VolunteerRequestService {
@@ -89,6 +90,10 @@ public class VolunteerRequestService {
         Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<>());
 
         return volunteerRequestRepository.findAll(spec, pageable);
+    }
+
+    public Optional<VolunteerRequest> getOne(long id) {
+        return this.volunteerRequestRepository.getById(id);
     }
 
 

@@ -14,14 +14,12 @@ export abstract class GenericService<T> {
   protected constructor(protected _http: HttpClient) {
   }
 
-  getAll(page = 0, size = 50, ...otherParams: Param[]) {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+  getAll(...httpParams: Param[]) {
+    let params = new HttpParams();
 
-    for (const param of otherParams) {
-      if (param.name !== undefined && param.value !== undefined) {
-        params = params.set(param.name, param.value);
+    for (const param of httpParams) {
+      if (param.value !== undefined && !param.value.toString().includes('undefined')) {
+        params = params.set(param.name, param.value.toString());
       }
     }
 
@@ -30,6 +28,10 @@ export abstract class GenericService<T> {
         this._pageSubject.next(page);
         return page.content;
       }))
+  }
+
+  getOne(id: number) {
+    return this._http.get(this._url + '/' + id);
   }
 
   getPage() {

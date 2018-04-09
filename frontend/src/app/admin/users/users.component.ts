@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { tap } from 'rxjs/operators';
+import { merge } from "rxjs/observable/merge";
 
 import { SnackBarService } from '../../shared/snack-bar.service';
 import { UsersService } from './users.service';
 import { GenericDataSource } from "../../shared/GenericDataSource";
-import { merge } from "rxjs/observable/merge";
+import { User } from "../../shared/interfaces";
 
 @Component({
   selector: 'app-users',
@@ -17,7 +18,7 @@ import { merge } from "rxjs/observable/merge";
   ]
 })
 export class UsersComponent implements OnInit, AfterViewInit {
-  usersData: GenericDataSource;
+  usersData: GenericDataSource<User>;
   columnsToDisplay = [ 'id', 'activated', 'email', 'delete' ];
   totalElements = 0;
 
@@ -29,7 +30,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.usersData = new GenericDataSource(this._usersService);
-    this.usersData.loadPage();
+    this._loadUsersPage();
 
     this._usersService.getPage().subscribe(d => {
       if (d && d.totalElements) {
@@ -48,9 +49,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   private _loadUsersPage() {
     this.usersData.loadPage(
-      this.paginator.pageIndex,
-      this.paginator.pageSize,
-      { name: this.sort.active, value: this.sort.direction }
+      { name: 'page', value: this.paginator.pageIndex },
+      { name: 'size', value: this.paginator.pageSize },
+      { name: 'sort', value: this.sort.active + ',' + this.sort.direction }
     );
   }
 
