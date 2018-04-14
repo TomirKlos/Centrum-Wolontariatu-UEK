@@ -14,4 +14,7 @@ public interface VolunteerAdRepository extends JpaRepository<VolunteerAd, Long>,
     Optional<VolunteerAd> findById(long id);
 
     Page<VolunteerAdDTO> findAllBy(Pageable pageable);
+
+    Page<VolunteerAdDTO> findAllByUserId(Pageable pageable, long id);
+
 }

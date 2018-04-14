@@ -224,6 +224,11 @@ public class VolunteerRequestService {
         } else return volunteerRequestRepository.findAllBy(pageable);
     }
 
+    @Transactional
+    public Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable) {
+        return volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
+    }
+
     public void deleteType(String name){
         volunteerRequestTypeRepository.deleteById(name);
     }

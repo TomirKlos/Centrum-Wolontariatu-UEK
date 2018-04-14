@@ -2,6 +2,7 @@ package pl.krakow.uek.centrumWolontariatu.web.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAdCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAdType;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerAdPictureRepository;
+import pl.krakow.uek.centrumWolontariatu.repository.VolunteerAdRepository;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerAdService;
@@ -103,6 +105,13 @@ public class VolunteerAdController {
     @ResponseStatus(HttpStatus.CREATED)
     public Set<String> addPicture(@RequestBody MultipartFile[] file) {
         return volunteerAdService.addPicturesToVolunteerAd(file);
+    }
+
+    @GetMapping("mine")
+    @ResponseBody
+    public ResponseEntity<Page<VolunteerAdDTO>> findAllMine(Pageable pageable) {
+        Page<VolunteerAdDTO> volunteerAds = volunteerAdService.findAllByUserId(pageable);
+        return new ResponseEntity<>(volunteerAds, HttpStatus.OK);
     }
 
 

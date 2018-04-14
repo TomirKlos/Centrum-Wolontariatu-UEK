@@ -210,6 +210,11 @@ public class VolunteerAdService {
         } else return volunteerAdRepository.findAllBy(pageable);
     }
 
+    @Transactional
+    public Page<VolunteerAdDTO> findAllByUserId(Pageable pageable) {
+         return volunteerAdRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
+    }
+
     public void deleteType(String name){
         volunteerAdTypeRepository.deleteById(name);
     }
@@ -230,4 +235,5 @@ public class VolunteerAdService {
             return volunteerAdSearchDao.searchVolunteerAdByQuery(text);
         return null;
     }
+
 }

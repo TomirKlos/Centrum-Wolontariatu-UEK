@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
@@ -102,6 +103,13 @@ public class VolunteerRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public Set<String> addPicture(@RequestBody MultipartFile[] file) {
         return volunteerRequestService.addPicturesToVolunteerRequest(file);
+    }
+
+    @GetMapping("/vrequest/mine")
+    @ResponseBody
+    public ResponseEntity<Page<VolunteerRequestDTO>> findAllMine(Pageable pageable) {
+        Page<VolunteerRequestDTO> volunteerAds = volunteerRequestService.findAllByUserId(pageable);
+        return new ResponseEntity<>(volunteerAds, HttpStatus.OK);
     }
 
 
