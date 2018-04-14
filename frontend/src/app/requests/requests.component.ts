@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-requests',
-  templateUrl: './requests.component.html',
-  styleUrls: [ './requests.component.scss' ]
+  styles: [ '#container { width: 100%; max-width: 900px;}' ],
+  template: `
+    <div fxLayout="row" fxLayoutAlign="center">
+      <div id="container">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  `,
 })
-export class RequestsComponent implements OnInit {
+export class RequestsComponent {
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
 }

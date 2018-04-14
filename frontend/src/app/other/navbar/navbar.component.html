@@ -7,19 +7,32 @@
         <mat-icon>home</mat-icon>
       </button>
 
-      <button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['ROLE_ADMIN']">
-        Admin
+      <!--<button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['ROLE_ADMIN']">-->
+      <!--Admin-->
+      <!--</button>-->
+      <!--<mat-menu #menu2="matMenu">-->
+      <!--<div>-->
+      <!--<button mat-menu-item routerLink="/admin/users">Użytkownicy</button>-->
+      <!--<button mat-menu-item routerLink="/requests/admin">Zgłoszenia</button>-->
+      <!--</div>-->
+      <!--</mat-menu>-->
+
+      <button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['authenticated']">
+        Zgłoszenia
       </button>
       <mat-menu #menu2="matMenu">
         <div>
-          <button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
-          <button mat-menu-item routerLink="/admin/volunteer-request">Zgłoszenia</button>
+          <button mat-menu-item routerLink="/requests/admin">Zgłoszenia</button>
+          <button mat-menu-item routerLink="/requests/mine">Zgłoszenia</button>
+
         </div>
       </mat-menu>
 
       <button routerLink="requests/add" mat-button>
         Dodaj zgłoszenie
       </button>
+      <!--<button mat-menu-item routerLink="/admin/users">Użytkownicy</button>-->
+
 
     </div>
 

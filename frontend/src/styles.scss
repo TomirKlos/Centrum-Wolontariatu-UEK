@@ -1,7 +1,6 @@
 @import "my-theme";
 @import "variables";
 @import "my-mat-card";
-@import "my-mat-sidenav";
 
 body, html {
   margin: 0;
@@ -33,6 +32,12 @@ form {
   text-align: center;
 }
 
-.mat-dialog-container {
-  padding: 0 !important;
+.app-dialog-container {
+  max-width: 800px !important;
+  width: 90vw;
+
+  .mat-dialog-container {
+    padding: 0;
+  }
 }
+

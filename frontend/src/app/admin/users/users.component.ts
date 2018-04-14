@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { tap } from 'rxjs/operators';
-import { merge } from "rxjs/observable/merge";
+import { merge } from 'rxjs/observable/merge';
 
 import { SnackBarService } from '../../shared/snack-bar.service';
 import { UsersService } from './users.service';
-import { GenericDataSource } from "../../shared/GenericDataSource";
-import { User } from "../../shared/interfaces";
+import { GenericDataSource } from '../../shared/GenericDataSource';
+import { User } from '../../shared/interfaces';
 
 @Component({
   selector: 'app-users',
@@ -56,13 +56,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   deleteUser(id: number) {
-    this._usersService.delete(id).subscribe(
-      () => {
-        this._sb.open('Usunięto konto');
-        this._loadUsersPage();
-      },
-      () => this._sb.warning()
-    );
+    this._usersService.delete(id).subscribe(() => this._loadUsersPage());
   }
 
   activateUser(id: number) {

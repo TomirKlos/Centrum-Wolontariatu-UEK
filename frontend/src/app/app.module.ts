@@ -7,16 +7,16 @@ import { AccountModule } from './account/account.module';
 import { AdminModule } from './admin/admin.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './layouts/navbar/navbar.component';
+import { NavbarComponent } from './other/navbar/navbar.component';
 import { PageNotFoundComponent } from './other/page-not-found/page-not-found.component';
 import { AuthModule, jwtModuleOptions } from './shared/auth/auth.module';
 import { httpInterceptorProviders } from './shared/http-interceptors';
 import { LayoutModule } from './shared/layout.module';
 import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
 import { SnackBarService } from './shared/snack-bar.service';
-import { OtherModule } from "./other/other.module";
-import { RequestsModule } from "./requests/requests.module";
-import { HomeModule } from "./home/home.module";
+import { OtherModule } from './other/other.module';
+import { RequestsModule } from './requests/requests.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
