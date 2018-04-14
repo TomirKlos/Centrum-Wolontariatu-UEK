@@ -16,7 +16,7 @@ import { ViewRequestResolverService } from "./view-request/view-request-resolver
   declarations: [
     RequestsComponent,
     AddRequestComponent,
-    ViewRequestComponent
+    ViewRequestComponent,
   ],
   providers: [
     RequestsService,

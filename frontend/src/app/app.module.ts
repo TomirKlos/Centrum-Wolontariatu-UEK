@@ -5,13 +5,11 @@ import { JwtModule } from '@auth0/angular-jwt';
 
 import { AccountModule } from './account/account.module';
 import { AdminModule } from './admin/admin.module';
-import { DialogComponent } from './admin/volunteer-request/dialog/dialog.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { PageNotFoundComponent } from './other/page-not-found/page-not-found.component';
 import { AuthModule, jwtModuleOptions } from './shared/auth/auth.module';
-import { DialogService } from './shared/dialog.service';
 import { httpInterceptorProviders } from './shared/http-interceptors';
 import { LayoutModule } from './shared/layout.module';
 import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
@@ -45,11 +43,7 @@ import { HomeModule } from "./home/home.module";
   providers: [
     LoadingBarService,
     SnackBarService,
-    DialogService,
-    httpInterceptorProviders
-  ],
-  entryComponents: [
-    DialogComponent
+    httpInterceptorProviders,
   ],
   bootstrap: [ AppComponent ]
 })

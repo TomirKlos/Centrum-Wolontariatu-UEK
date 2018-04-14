@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { tap } from "rxjs/operators";
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { merge } from "rxjs/observable/merge";
 
@@ -8,6 +8,7 @@ import { VolunteerRequestService } from './volunteer-request.service';
 import { SnackBarService } from '../../shared/snack-bar.service';
 import { GenericDataSource } from "../../shared/GenericDataSource";
 import { VolunteerRequestVM } from "../../shared/interfaces";
+import { ViewRequestDialogComponent } from "../../requests/view-request/view-request-dialog.component";
 
 
 @Component({
@@ -29,7 +30,8 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
   constructor(
     private _http: HttpClient,
     private _volunteerRequestService: VolunteerRequestService,
-    private _sb: SnackBarService
+    private _sb: SnackBarService,
+    private _dialog: MatDialog
   ) {
   }
 
@@ -79,6 +81,13 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
       { name: 'size', value: this.paginator.pageSize },
       { name: 'sort', value: this.sort.active + ',' + this.sort.direction }
     );
+  }
+
+  openDialog(request: VolunteerRequestVM): void {
+    this._dialog.open(ViewRequestDialogComponent, {
+      data: request,
+      width: '80vw',
+    })
   }
 
 }
