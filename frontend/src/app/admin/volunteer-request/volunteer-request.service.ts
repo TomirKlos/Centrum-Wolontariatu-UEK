@@ -10,13 +10,21 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class VolunteerRequestService {
   private _pageSubject = new BehaviorSubject<Pageable<VolunteerRequest>>(null);
   private _url = environment.apiEndpoint + 'vrequest/';
-  private _urlOneVolunteerRequest = environment.apiEndpoint + 'vrequest/?search=id==';
-  private _urlVolunteerRequestQuery = environment.apiEndpoint + 'vrequest/';
+  private _urlOneVolunteerRequest =  '?search=id==';
+  private _urlVolunteerRequestQuery = '';
+
+  private _urlAd = environment.apiEndpoint + 'vAd/';
+  private _urlVr = environment.apiEndpoint + 'vrequest/';
 
   constructor(private _http: HttpClient) {
   }
 
-  getAll(page = 0, size = 50) {
+  switchDisplayType(type){
+    if(type==false){this._url=this._urlVr}
+    if(type==true){this._url=this._urlAd}
+  }
+  
+  getAll(page, size) {
     return this._http.get(this._url, {
       params: new HttpParams()
         .set('page', page.toString())
@@ -34,7 +42,7 @@ export class VolunteerRequestService {
   }
 
   getVolunteerRequestById(page = 0, size = 1, id) {
-    return this._http.get(this._urlOneVolunteerRequest + id, {
+    return this._http.get(this._url + this._urlOneVolunteerRequest + id, {
       params: new HttpParams()
         .set('page', page.toString())
         .set('size', size.toString())
@@ -47,7 +55,7 @@ export class VolunteerRequestService {
   }
 
   getVolunteerRequestSpecialized(page = 0, size = 1, query) {
-    return this._http.get(this._urlVolunteerRequestQuery + query, {
+    return this._http.get(this._url + this._urlVolunteerRequestQuery + query, {
       params: new HttpParams()
         .set('page', page.toString())
         .set('size', size.toString())

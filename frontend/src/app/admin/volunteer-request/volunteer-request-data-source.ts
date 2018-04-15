@@ -18,20 +18,20 @@ export class VolunteerRequestDataSource implements DataSource<VolunteerRequest> 
     this._vRSubject.complete();
   }
 
-  loadVolunteerRequests(page = 0, size = 50) {
+  loadVolunteerRequests(page = 0, size = 10) {
     this._vRService.getAll(page, size).subscribe(d => {
       this._vRSubject.next(d);
     });
   }
 
-  loadOneVolunteerRequest(page = 0, size = 50, id:number) {
+  loadOneVolunteerRequest(page = 0, size = 10, id:number) {
       this._vRService.getVolunteerRequestById(page, size, id).subscribe(d => {
       this._vRSubject.next(d);
 
     });
   }
 
-  loadSpecializedVolunteerRequest(page = 0, size = 50, query) {
+  loadSpecializedVolunteerRequest(page = 0, size = 10, query) {
        this._vRService.getVolunteerRequestSpecialized(page, size, query).subscribe(d => {
        this._vRSubject.next(d);
 

@@ -32,6 +32,8 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
   onlyActivated = false;
   onlyNotActivated = false;
   activatedVrString = "?search=accepted=in=";
+  isVRequestDisplay = false;
+  query= ''
 
   results: Object;
   searchTerm$ = new Subject<string>();
@@ -49,7 +51,9 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.VRData = new VolunteerRequestDataSource(this._volunteerRequestService);
-    this.VRData.loadVolunteerRequests();
+    this.VRData.loadVolunteerRequests(
+      this.paginator.pageIndex,
+      this.paginator.pageSize);
     this._volunteerRequestService.getPage().subscribe(d => {
       if (d && d.totalElements) {
         this.totalElements = d.totalElements;
@@ -71,26 +75,29 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
   }
 
   private selectSpecifiedVr(bool: boolean) {
-    let query = this.activatedVrString;
+    this.query = this.activatedVrString;
     if (!bool) {
       if (!this.onlyNotActivated) {
-        query = query + 0;
+        this.query = this.query + 0;
       } else {
-        query = "";
+        this.query = "";
       }
       this.onlyNotActivated = !this.onlyNotActivated
       if (this.onlyActivated) this.onlyActivated = !this.onlyActivated;
     } else {
       if (!this.onlyActivated) {
-        query = query + 1;
+        this.query = this.query + 1;
       }
       else {
-        query = "";
+        this.query = "";
       }
       this.onlyActivated = !this.onlyActivated;
       if (this.onlyNotActivated) this.onlyNotActivated = !this.onlyNotActivated;
     }
-    this.VRData.loadSpecializedVolunteerRequest(0, 10, query);
+    this.VRData.loadSpecializedVolunteerRequest(
+      this.paginator.pageIndex,
+      this.paginator.pageSize, 
+      this.query);
   }
 
   openDialog(id: number) {
@@ -126,7 +133,10 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
     this._volunteerRequestService.delete(id).subscribe(
       () => {
         this._sb.open('Usunięto ogłoszenie');
-        this._loadVRPage();
+        this.VRData.loadSpecializedVolunteerRequest(
+          this.paginator.pageIndex,
+          this.paginator.pageSize, 
+          this.query);
       },
       () => this._sb.warning()
     );
@@ -136,10 +146,18 @@ export class VolunteerRequestComponent implements OnInit, AfterViewInit {
     this._volunteerRequestService.accept(id).subscribe(
       () => {
         this._sb.open('Zatwierdzono ogłoszenie: ' + id);
-        this._loadVRPage();
+        this.VRData.loadSpecializedVolunteerRequest(
+          this.paginator.pageIndex,
+          this.paginator.pageSize, 
+          this.query);
       },
       () => this._sb.warning()
     );
   }
 
+  switchDisplayedType(bool: boolean){
+    this.isVRequestDisplay=bool;
+    this._volunteerRequestService.switchDisplayType(bool);
+    this.VRData.loadSpecializedVolunteerRequest(0, 10, this.query);
+  }
 }

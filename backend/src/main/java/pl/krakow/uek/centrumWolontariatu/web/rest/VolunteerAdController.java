@@ -16,6 +16,7 @@ import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.service.VolunteerAdService;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.CategoryVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerAdVM;
 
@@ -90,8 +91,8 @@ public class VolunteerAdController {
     }
 
     @PostMapping("accept")
-    public void acceptVolunteerAd(@RequestParam(value = "id") long id){
-        volunteerAdService.acceptVolunteerAd(id);
+    public void acceptVolunteerAd(@RequestBody IdVM idVM){
+        volunteerAdService.acceptVolunteerAd(idVM.getId());
     }
 
     @DeleteMapping("{id}")
