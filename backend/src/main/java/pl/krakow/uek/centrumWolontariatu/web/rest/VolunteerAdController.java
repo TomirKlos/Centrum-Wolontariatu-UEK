@@ -24,6 +24,7 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerAdVM;
 import java.util.*;
 
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
+import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parseGuavaOptional;
 
 @RestController
 @RequestMapping("/api/vAd/")
@@ -87,13 +88,18 @@ public class VolunteerAdController {
     @GetMapping()
     @ResponseBody
     public ResponseEntity<Page<VolunteerAdDTO>> findAllByRsq(@RequestParam(value = "search") Optional<String> search, Pageable pageable) {
-        Page<VolunteerAdDTO> volunteerAds = volunteerAdService.findAllByRsql(pageable, parse(search));
+        Page<VolunteerAdDTO> volunteerAds = volunteerAdService.findAllByRsql(pageable, parseGuavaOptional(search));
         return new ResponseEntity<>(volunteerAds, HttpStatus.OK);
     }
 
     @PostMapping("accept")
     public void acceptVolunteerAd(@RequestParam(value = "id") long id){
         volunteerAdService.acceptVolunteerAd(id);
+    }
+
+    @DeleteMapping("{id}")
+    public void deleteVolunteerAd(@PathVariable Integer id) {
+        volunteerAdService.deleteVolunteerAd(id);
     }
 
     @GetMapping("solr/{text}")

@@ -6,6 +6,8 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -199,8 +201,9 @@ public class VolunteerAdService {
         return volunteerAdTypes;
     }
 
+    @Cacheable(value = "volunteerAdsByRsql")
     @Transactional
-    public Page<VolunteerAdDTO> findAllByRsql(Pageable pageable, Optional<String> search) {
+    public Page<VolunteerAdDTO> findAllByRsql(Pageable pageable, com.google.common.base.Optional<String> search) {
         if(search.isPresent()) {
             final Node rootNode = new RSQLParser().parse(search.get());
             Specification<VolunteerAd> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerAd>());
@@ -223,12 +226,16 @@ public class VolunteerAdService {
         volunteerAdCategoryRepository.deleteById(name);
     }
 
+    @CacheEvict(value = "volunteerAdsByRsql", allEntries = true)
     public void acceptVolunteerAd(long id){
         volunteerAdRepository.findById(id).ifPresent(volunteerAd -> {
             volunteerAd.setAccepted(parse(true));
             volunteerAdRepository.save(volunteerAd);
         });
     }
+
+    @CacheEvict(value = "volunteerAdsByRsql", allEntries = true)
+    public void deleteVolunteerAd(long id){ volunteerAdRepository.deleteById(id);}
 
     public List<VolunteerAdDTO> getVolunteerAdBySolr(String text){
         if(text.length()>=3)

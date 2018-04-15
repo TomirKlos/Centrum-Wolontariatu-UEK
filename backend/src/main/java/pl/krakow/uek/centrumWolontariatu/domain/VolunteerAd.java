@@ -53,7 +53,7 @@ public class VolunteerAd implements Serializable {
     @Column(name = "expiration_date")
     private long expirationDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "cw_volunteer_ads_categories",
         joinColumns = {@JoinColumn(name = "volunteerAd_id", referencedColumnName = "id")},
@@ -61,7 +61,7 @@ public class VolunteerAd implements Serializable {
     @BatchSize(size = 20)
     private Set<VolunteerAdCategory> categories = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "cw_volunteer_ads_types",
         joinColumns = {@JoinColumn(name = "volunteerAd_id", referencedColumnName = "id")},
@@ -69,7 +69,7 @@ public class VolunteerAd implements Serializable {
     @BatchSize(size = 20)
     private Set<VolunteerAdType> types = new HashSet<>();
 
-    @OneToMany(mappedBy="volunteerAd")
+    @OneToMany(mappedBy="volunteerAd", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<VolunteerAdPicture> pictures;
 
