@@ -6,12 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.UserIdDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.VolunteerAdDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
-import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;

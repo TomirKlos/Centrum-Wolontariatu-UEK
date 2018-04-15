@@ -65,6 +65,10 @@ public class UserService {
         return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findByEmail);
     }
 
+    public long getUserId() {
+        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findByEmail).get().getId();
+    }
+
     public void changePassword(String password) {
         SecurityUtils.getCurrentUserLogin()
             .flatMap(userRepository::findByEmail)

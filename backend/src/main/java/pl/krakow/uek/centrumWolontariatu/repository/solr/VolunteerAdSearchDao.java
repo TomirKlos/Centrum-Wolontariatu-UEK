@@ -8,7 +8,6 @@ import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerAdConverter;
-import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
 
