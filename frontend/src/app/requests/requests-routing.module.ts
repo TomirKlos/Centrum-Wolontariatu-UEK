@@ -7,6 +7,8 @@ import { ViewRequestComponent } from './components/view-request/view-request.com
 import { ViewRequestResolverService } from './components/view-request/view-request-resolver.service';
 import { AdminRequestsComponent } from './components/admin-requests/admin-requests.component';
 import { AdminGuardService } from '../shared/auth/gurads/admin-guard.service';
+import { MyRequestsComponent } from './components/my-requests/my-requests.component';
+import { AuthGuardService } from '../shared/auth/gurads/auth-guard.service';
 
 const routes: Routes = [ {
   path: 'requests',
@@ -14,6 +16,7 @@ const routes: Routes = [ {
   children: [
     { path: 'add', component: AddRequestComponent },
     { path: 'admin', component: AdminRequestsComponent, canActivate: [ AdminGuardService ] },
+    { path: 'mine', component: MyRequestsComponent, canActivate: [ AuthGuardService ] },
     { path: ':id', component: ViewRequestComponent, resolve: { request: ViewRequestResolverService } },
 
   ]

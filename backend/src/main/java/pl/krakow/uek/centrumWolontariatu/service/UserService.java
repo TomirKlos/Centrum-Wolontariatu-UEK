@@ -11,6 +11,7 @@ import pl.krakow.uek.centrumWolontariatu.repository.UserRepository;
 import pl.krakow.uek.centrumWolontariatu.security.SecurityUtils;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailNotAllowedException;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,6 +62,7 @@ public class UserService {
             });
     }
 
+    @Transactional
     public Optional<User> getUserWithAuthorities() { // TODO change method name
         return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findByEmail);
     }

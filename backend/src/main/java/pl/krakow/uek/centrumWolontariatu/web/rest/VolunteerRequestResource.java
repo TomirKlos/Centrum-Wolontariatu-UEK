@@ -22,12 +22,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vrequest")
-public class VolunteerRequestController {
+public class VolunteerRequestResource {
 
     private final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     private final VolunteerRequestService volunteerRequestService;
 
-    public VolunteerRequestController(VolunteerRequestService volunteerRequestService) {
+    public VolunteerRequestResource(VolunteerRequestService volunteerRequestService) {
         this.volunteerRequestService = volunteerRequestService;
     }
 
@@ -42,11 +42,15 @@ public class VolunteerRequestController {
         } else {
             return volunteerRequestService.getAll(pageable);
         }
-
     }
 
-    @Secured(AuthoritiesConstants.LECTURER)
+    @GetMapping("/mine")
+    public Page<VolunteerRequest> findAllByCurrentUser(Pageable pageable) {
+        return volunteerRequestService.getAllByCurrentUser(pageable);
+    }
+
     @PostMapping()
+    @Secured(AuthoritiesConstants.LECTURER)
     @ResponseStatus(HttpStatus.CREATED)
     public void addVolunteerRequest(@Valid @RequestBody VolunteerRequestVM volunteerRequestVM) {
         volunteerRequestService.create(volunteerRequestVM);

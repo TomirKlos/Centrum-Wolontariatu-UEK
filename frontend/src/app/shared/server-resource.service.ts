@@ -1,46 +1,38 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
+import { SnackBarService } from './snack-bar.service';
 import { Page, Param } from './interfaces';
 import { environment } from '../../environments/environment';
-import { SnackBarService } from './snack-bar.service';
 
 @Injectable()
-export abstract class GenericService<T> {
+export abstract class ServerResourceService<T> {
   protected _url = environment.apiEndpoint;
-  private _pageSubject = new BehaviorSubject<Page<T>>(null);
 
   protected constructor(protected _http: HttpClient, protected _snackBar: SnackBarService) {
   }
 
-  getAll(...httpParams: Param[]) {
-    return this.getAllFromRelativePath('', ...httpParams);
-  }
-
-  getAllFromRelativePath(path: string, ...httpParams: Param[]) {
+  getPageFromRelativePath(path: string, ...httpParams: Param[]): Observable<Page<T>> {
     let params = new HttpParams();
 
+    // not includes params with undefined even in string
     for (const param of httpParams) {
       if (param.value !== undefined && !param.value.toString().includes('undefined')) {
         params = params.set(param.name, param.value.toString());
       }
     }
 
-    return this._http.get(this._url + '/' + path, { params: params }).pipe(
-      map((page: Page<T>) => {
-        this._pageSubject.next(page);
-        return page.content;
-      }));
+    return this._http.get(this._url + '/' + path, { params: params }) as Observable<Page<T>>;
   }
 
-  getOne(id: number) {
-    return this._http.get(this._url + '/' + id);
+  getPage(...httpParams: Param[]): Observable<Page<T>> {
+    return this.getPageFromRelativePath('', ...httpParams);
   }
 
-  getPage() {
-    return this._pageSubject.asObservable();
+  getOne(id: number): Observable<T> {
+    return this._http.get(this._url + '/' + id) as Observable<T>;
   }
 
   delete(id: number) {

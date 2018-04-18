@@ -64,6 +64,7 @@ public class User implements Serializable {
     private String resetKey;
 
     @Column(name = "reset_date")
+    @JsonIgnore
     private Instant resetDate = null;
 
     //    @JsonIgnore

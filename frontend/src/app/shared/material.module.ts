@@ -5,6 +5,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatChipsModule,
   MatDialogModule,
   MatExpansionModule,
   MatFormFieldModule,
@@ -44,7 +45,8 @@ const modules = [
   MatDialogModule,
   MatCheckboxModule,
   MatSortModule,
-  MatListModule
+  MatListModule,
+  MatChipsModule
 ];
 
 @NgModule({

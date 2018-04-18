@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { GenericService } from '../../shared/generic.service';
 import { VolunteerRequestVM } from '../../shared/interfaces';
 import { SnackBarService } from '../../shared/snack-bar.service';
+import { ServerResourceService } from '../../shared/server-resource.service';
 
 @Injectable()
-export class RequestsService extends GenericService<VolunteerRequestVM> {
+export class RequestService extends ServerResourceService<VolunteerRequestVM> {
 
   constructor(_http: HttpClient, _snackBar: SnackBarService) {
     super(_http, _snackBar);

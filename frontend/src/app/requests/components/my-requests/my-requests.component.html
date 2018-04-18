@@ -1,6 +1,6 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>Ogłoszenia o wolontariat</mat-card-title>
+    <mat-card-title>Moje ogłoszenia</mat-card-title>
   </mat-card-header>
   <mat-card-content>
 
@@ -20,11 +20,11 @@
         <ng-container matColumnDef="accepted">
           <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="120px">Aktywny</mat-header-cell>
           <mat-cell *matCellDef="let element" fxFlex="120px">
-
-            <button mat-button [color]="(element.accepted ? 'primary' : 'warn')" (click)="changeAccepted(element.id)">
-              {{ (element.accepted ? 'Aktywny' : 'Nieaktywny') }}
-            </button>
-
+            <mat-chip-list>
+              <mat-chip [color]="(element.accepted ? 'primary' : 'warn')" selected="true">
+                {{ (element.accepted ? 'Aktywny' : 'Nieaktywny') }}
+              </mat-chip>
+            </mat-chip-list>
           </mat-cell>
         </ng-container>
 
@@ -61,7 +61,6 @@
                    [pageSize]="20"
                    [pageSizeOptions]="[5, 10, 20]"
                    [showFirstLastButtons]="true">
-
     </mat-paginator>
 
   </mat-card-content>

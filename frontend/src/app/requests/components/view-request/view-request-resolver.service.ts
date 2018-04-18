@@ -5,14 +5,14 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router/src
 import { Observable } from 'rxjs/Observable';
 import { catchError } from 'rxjs/operators';
 
-import { RequestsService } from '../../shared/requests.service';
+import { RequestService } from '../../shared/request.service';
 import { VolunteerRequestVM } from '../../../shared/interfaces';
 
 
 @Injectable()
 export class ViewRequestResolverService implements Resolve<VolunteerRequestVM> {
 
-  constructor(private _vRequestService: RequestsService, private _router: Router) {
+  constructor(private _vRequestService: RequestService, private _router: Router) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<VolunteerRequestVM> {

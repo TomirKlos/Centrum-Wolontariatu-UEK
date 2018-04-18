@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { environment } from '../../../environments/environment';
@@ -20,20 +20,11 @@ export class UserService {
 
   set isLoggedIn(value: boolean) {
     this._isLoggedIn.next(value);
-
-    if (!value) {
-      this._deleteJwtToken();
-    }
-
     this._refreshRoles();
   }
 
   get isLoggedIn(): boolean {
     return this._isLoggedIn.getValue();
-  }
-
-  get isLoggedIn$() {
-    return this._isLoggedIn.asObservable();
   }
 
   get roles$(): Observable<string[]> {
@@ -62,7 +53,11 @@ export class UserService {
 
     this.http.get(environment.apiEndpoint + '/account').subscribe(
       () => {},
-      () => this.isLoggedIn = false
+      (err: HttpErrorResponse) => {
+        if (err.status === 401) {
+          this.isLoggedIn = false;
+        }
+      }
     );
   }
 
@@ -81,10 +76,7 @@ export class UserService {
   }
 
   private _getJwtToken(): string {
-    return localStorage.getItem('jwtToken');
+    return localStorage.getItem(environment.tokenName);
   }
 
-  private _deleteJwtToken(): void {
-    localStorage.removeItem('jwtToken');
-  }
 }

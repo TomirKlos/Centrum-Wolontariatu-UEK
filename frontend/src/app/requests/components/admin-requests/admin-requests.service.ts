@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { VolunteerRequestVM } from '../../../shared/interfaces';
-import { HttpClient } from '@angular/common/http';
-import { GenericService } from '../../../shared/generic.service';
-import { SnackBarService } from '../../../shared/snack-bar.service';
 import { catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+
+import { VolunteerRequestVM } from '../../../shared/interfaces';
+import { SnackBarService } from '../../../shared/snack-bar.service';
+import { ServerResourceService } from '../../../shared/server-resource.service';
 
 @Injectable()
-export class AdminRequestsService extends GenericService<VolunteerRequestVM> {
+export class AdminRequestsService extends ServerResourceService<VolunteerRequestVM> {
 
   constructor(_http: HttpClient, _snackBar: SnackBarService) {
     super(_http, _snackBar);

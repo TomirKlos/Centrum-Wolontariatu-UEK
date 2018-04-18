@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ViewRequestDialogComponent } from '../components/view-request/view-request-dialog.component';
 import { MatDialog } from '@angular/material';
+
+import { ViewRequestDialogComponent } from '../components/view-request/view-request-dialog.component';
 
 @Injectable()
 export class RequestDialogService {

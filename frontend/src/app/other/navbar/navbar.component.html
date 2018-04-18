@@ -22,17 +22,14 @@
       </button>
       <mat-menu #menu2="matMenu">
         <div>
-          <button mat-menu-item routerLink="/requests/admin">Zgłoszenia</button>
-          <button mat-menu-item routerLink="/requests/mine">Zgłoszenia</button>
-
+          <button mat-menu-item routerLink="/requests/admin">Zgłoszenia admin</button>
+          <button mat-menu-item routerLink="/requests/mine">Moje zgłoszenia</button>
         </div>
       </mat-menu>
 
       <button routerLink="requests/add" mat-button>
         Dodaj zgłoszenie
       </button>
-      <!--<button mat-menu-item routerLink="/admin/users">Użytkownicy</button>-->
-
 
     </div>
 
@@ -46,7 +43,7 @@
           <button mat-menu-item routerLink="/signup">Rejestracja</button>
         </div>
 
-        <div *appHasAnyRole="['isLoggedIn']">
+        <div *appHasAnyRole="['authenticated']">
           <button mat-menu-item routerLink="/profile">Konto</button>
           <button mat-menu-item (click)="logout()">Wyloguj</button>
         </div>

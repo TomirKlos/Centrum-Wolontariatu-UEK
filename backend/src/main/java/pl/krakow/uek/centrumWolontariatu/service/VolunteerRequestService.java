@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
@@ -31,15 +32,17 @@ public class VolunteerRequestService {
     private final VolunteerRequestRepository volunteerRequestRepository;
     private final VolunteerRequestCategoryRepository volunteerRequestCategoryRepository;
     private final VolunteerRequestTypeRepository volunteerRequestTypeRepository;
+    private final UserService userService;
 
     public VolunteerRequestService(
         VolunteerRequestRepository volunteerRequestRepository,
         VolunteerRequestCategoryRepository volunteerRequestCategoryRepository,
-        VolunteerRequestTypeRepository volunteerRequestTypeRepository
-    ) {
+        VolunteerRequestTypeRepository volunteerRequestTypeRepository,
+        UserService userService) {
         this.volunteerRequestRepository = volunteerRequestRepository;
         this.volunteerRequestCategoryRepository = volunteerRequestCategoryRepository;
         this.volunteerRequestTypeRepository = volunteerRequestTypeRepository;
+        this.userService = userService;
     }
 
     /*
@@ -48,12 +51,12 @@ public class VolunteerRequestService {
 
     public VolunteerRequest create(VolunteerRequestVM vm) {
 
-        for (String categoryName : vm.getCategories()) {
-            if (!volunteerRequestCategoryRepository.findById(categoryName).isPresent()) {
-                throw new BadRequestAlertException("Unable to find category of volunteerRequest in database",
-                    "categoryManagement", "categoryNotFound");
-            }
-        }
+//        for (String categoryName : vm.getCategories()) {
+//            if (!volunteerRequestCategoryRepository.findById(categoryName).isPresent()) {
+//                throw new BadRequestAlertException("Unable to find category of volunteerRequest in database",
+//                    "categoryManagement", "categoryNotFound");
+//            }
+//        }
 
         VolunteerRequest vr = new VolunteerRequest();
         vr.setTitle(vm.getTitle());
@@ -83,6 +86,11 @@ public class VolunteerRequestService {
 
     public Page<VolunteerRequest> getAll(Pageable pageable) {
         return this.volunteerRequestRepository.findAll(pageable);
+    }
+
+    public Page<VolunteerRequest> getAllByCurrentUser(Pageable pageable) {
+        User user = userService.getUserWithAuthorities().get();
+        return volunteerRequestRepository.findAllByCreatedBy(pageable, user);
     }
 
     public Page<VolunteerRequest> findAllByRsql(Pageable pageable, String search) {
