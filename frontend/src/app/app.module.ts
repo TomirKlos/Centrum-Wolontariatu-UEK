@@ -21,6 +21,10 @@ import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
 import { SnackBarService } from './shared/snack-bar.service';
 import { OtherModule } from "./other/other.module";
 import { LecturerModule } from "./lecturer/lecturer.module";
+import { HomeModule } from './home/home.module';
+import { NguCarouselModule } from '@ngu/carousel';
+import { MatAutocompleteModule } from '@angular/material';
+import { SearchService } from './shared/search-service.service';
 
 @NgModule({
   declarations: [
@@ -41,6 +45,7 @@ import { LecturerModule } from "./lecturer/lecturer.module";
     AccountModule,
     AdminModule,
     LecturerModule,
+    HomeModule,
 
     OtherModule // must be last
   ],
@@ -48,6 +53,7 @@ import { LecturerModule } from "./lecturer/lecturer.module";
     LoadingBarService,
     SnackBarService,
     DialogService,
+    SearchService,
     httpInterceptorProviders
   ],
   entryComponents: [
