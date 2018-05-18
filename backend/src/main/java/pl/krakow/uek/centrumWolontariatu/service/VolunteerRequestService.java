@@ -75,89 +75,6 @@ public class VolunteerRequestService {
         this.volunteerRequestSearchDao = volunteerRequestSearchDao;
         this.pictureService = pictureService;
     }
-
-    /*
-     * VOLUNTEER REQUEST
-     */
-
-    @Cacheable(value = "volunteerRequestsByRsql")
-    @Transactional
-    public Page<VolunteerRequestDTO> findAllByRsql(Pageable pageable, com.google.common.base.Optional<String> search) {
-        if(search.isPresent()) {
-            final Node rootNode = new RSQLParser().parse(search.get());
-            Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());
-
-            Page<VolunteerRequest> volunteerRequests = volunteerRequestRepository.findAll(spec, pageable);
-            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequests);
-        } else return volunteerRequestRepository.findAllBy(pageable);
-    }
-
-    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
-    public void delete(long id){ volunteerRequestRepository.deleteById(id);}
-
-    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
-    public void acceptVolunteerRequest(long id){
-        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
-            volunteerRequest.setAccepted(parse(true));
-            volunteerRequestRepository.save(volunteerRequest);
-        });
-    }
-
-    public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){
-        if(text.length()>=3)
-            return volunteerRequestSearchDao.searchVolunteerRequestByQuery(text);
-        return null;
-    }
-
-    public VolunteerRequest create(VolunteerRequestVM vm) {
-
-//        for (String categoryName : vm.getCategories()) {
-//            if (!volunteerRequestCategoryRepository.findById(categoryName).isPresent()) {
-//                throw new BadRequestAlertException("Unable to find category of volunteerRequest in database",
-//                    "categoryManagement", "categoryNotFound");
-//            }
-//        }
-
-        VolunteerRequest vr = new VolunteerRequest();
-        vr.setTitle(vm.getTitle());
-        vr.setDescription(vm.getDescription());
-        vr.setIsForTutors((byte) (vm.isForTutors() ? 1 : 0));
-        vr.setIsForStudents((byte) (vm.isForStudents() ? 1 : 0));
-        vr.setVolunteersAmount(vm.getVolunteersAmount());
-
-        return this.volunteerRequestRepository.save(vr);
-    }
-
- /*   @Transactional
-    public Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable) {
-        return volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
-    }
-*/
-    public void changeAccepted(long id) {
-        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
-            if (volunteerRequest.getAccepted() == 1) {
-                volunteerRequest.setAccepted((byte) 0);
-            } else {
-                volunteerRequest.setAccepted((byte) 1);
-            }
-
-            volunteerRequestRepository.save(volunteerRequest);
-        });
-    }
-
-    public Page<VolunteerRequest> getAll(Pageable pageable) {
-        return this.volunteerRequestRepository.findAll(pageable);
-    }
-
-    public Page<VolunteerRequest> getAllByCurrentUser(Pageable pageable) {
-        User user = userService.getUserWithAuthorities().get();
-        return volunteerRequestRepository.findAllByCreatedBy(pageable, user);
-    }
-
-    public Optional<VolunteerRequest> getOne(long id) {
-        return this.volunteerRequestRepository.getById(id);
-    }
-
     /*
      * don't refactor!!,
      * split creating process into 2 methods:GenerateVolunteerRequest + createVolunteerRequest
@@ -167,6 +84,8 @@ public class VolunteerRequestService {
 
     public long GenerateVolunteerRequest() {
         VolunteerRequest volunteerRequest = new VolunteerRequest();
+        User user = userService.getUserWithAuthorities().get();
+        volunteerRequest.setUser(user);
 
         volunteerRequestRepository.save(volunteerRequest);
         return volunteerRequest.getId();
@@ -179,6 +98,8 @@ public class VolunteerRequestService {
             return volunteerRequestRepository.findById(id)
                 .map(volunteerRequest -> {
                     ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+                    long epochMillis = utc.toEpochSecond() * 1000;
+                    volunteerRequest.setTimestamp(epochMillis);
                     volunteerRequest.setExpirationDate(volunteerRequestVM.getExpirationDate());
                     volunteerRequest.setDescription(volunteerRequestVM.getDescription());
                     volunteerRequest.setTitle(volunteerRequestVM.getTitle());
@@ -205,9 +126,6 @@ public class VolunteerRequestService {
         }
     }
 
-    /*
-     * PICTURE
-     */
 
     public Set<String> addPicturesToVolunteerRequest(MultipartFile[] file) {
         for (MultipartFile multipartFile : file) {
@@ -261,30 +179,30 @@ public class VolunteerRequestService {
         }
     }
 
-    /*
-     * CATEGORIES
-     */
-
-    public void createCategory(String name) {
-        if (volunteerRequestCategoryRepository.findById(name).isPresent()) {
-            throw new BadRequestAlertException("category already exist in database", "categoryManagement", "categoryExist");
+    public void createVolunteerRequestCategory(String name) {
+        if(volunteerRequestCategoryRepository.findById(name).isPresent()){
+            throw new BadRequestAlertException("category already exist in database", "categoryManagement", "categoryexistindatabase");
         }
         VolunteerRequestCategory volunteerRequestCategory = new VolunteerRequestCategory();
         volunteerRequestCategory.setName(name);
         volunteerRequestCategoryRepository.save(volunteerRequestCategory);
     }
 
-    public List<String> getAllCategories() {
-        List<String> list = new ArrayList<>();
-        for (VolunteerRequestCategory vrc : volunteerRequestCategoryRepository.findAll()) {
-            list.add(vrc.getName());
-        }
-
-        return list;
+    public List<VolunteerRequestCategory> getAllCategories() {
+        return volunteerRequestCategoryRepository.findAll();
     }
 
-    public void deleteCategory(String name) {
-        volunteerRequestCategoryRepository.deleteById(name);
+    public void createVolunteerRequestType(String name) {
+        if(volunteerRequestTypeRepository.findById(name).isPresent()){
+            throw new BadRequestAlertException("type already exist in database", "categoryManagement", "typeexistindatabase");
+        }
+        VolunteerRequestType volunteerRequestType = new VolunteerRequestType();
+        volunteerRequestType.setName(name);
+        volunteerRequestTypeRepository.save(volunteerRequestType);
+    }
+
+    public List<VolunteerRequestType> getAllTypes() {
+        return volunteerRequestTypeRepository.findAll();
     }
 
     private Set<VolunteerRequestCategory> getCategoriesFromRequest(Set<String> categories) {
@@ -295,38 +213,54 @@ public class VolunteerRequestService {
         return volunteerRequestCategories;
     }
 
-    /*
-     * TYPES
-     */
-
-    public void createType(String name) {
-        if (volunteerRequestTypeRepository.findById(name).isPresent()) {
-            throw new BadRequestAlertException("type already exist in database", "categoryManagement", "typeExist");
-        }
-        VolunteerRequestType volunteerRequestType = new VolunteerRequestType();
-        volunteerRequestType.setName(name);
-
-        volunteerRequestTypeRepository.save(volunteerRequestType);
-    }
-
-    public void deleteType(String name) {
-        volunteerRequestTypeRepository.deleteById(name);
-    }
-
-    public List<String> getAllTypes() {
-        List<String> list = new ArrayList<>();
-        for (VolunteerRequestType vrt : this.volunteerRequestTypeRepository.findAll()) {
-            list.add(vrt.getName());
-        }
-        return list;
-    }
-
     private Set<VolunteerRequestType> getTypesFromRequest(Set<String> types) {
         HashSet<VolunteerRequestType> volunteerRequestTypes = new HashSet<>();
         for (String string : types) {
             volunteerRequestTypes.add(new VolunteerRequestType(string));
         }
         return volunteerRequestTypes;
+    }
+
+    @Cacheable(value = "volunteerRequestsByRsql")
+    @Transactional
+    public Page<VolunteerRequestDTO> findAllByRsql(Pageable pageable, com.google.common.base.Optional<String> search) {
+        if(search.isPresent()) {
+            final Node rootNode = new RSQLParser().parse(search.get());
+            Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());
+
+            Page<VolunteerRequest> volunteerRequests = volunteerRequestRepository.findAll(spec, pageable);
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequests);
+        } else return volunteerRequestRepository.findAllBy(pageable);
+    }
+
+    @Transactional
+    public Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable) {
+        return volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
+    }
+
+    public void deleteType(String name){
+        volunteerRequestTypeRepository.deleteById(name);
+    }
+
+    public void deleteCategory(String name){
+        volunteerRequestCategoryRepository.deleteById(name);
+    }
+
+    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
+    public void acceptVolunteerRequest(long id){
+        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
+            volunteerRequest.setAccepted(parse(true));
+            volunteerRequestRepository.save(volunteerRequest);
+        });
+    }
+
+    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
+    public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}
+
+    public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){
+        if(text.length()>=3)
+            return volunteerRequestSearchDao.searchVolunteerRequestByQuery(text);
+        return null;
     }
 
 

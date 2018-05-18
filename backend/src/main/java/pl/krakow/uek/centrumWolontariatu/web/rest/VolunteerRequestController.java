@@ -27,7 +27,7 @@ import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.par
 @RestController
 @RequestMapping("/api")
 public class VolunteerRequestController {
-/*
+
     private final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     private final VolunteerRequestService volunteerRequestService;
 
@@ -109,6 +109,6 @@ public class VolunteerRequestController {
         Page<VolunteerRequestDTO> volunteerAds = volunteerRequestService.findAllByUserId(pageable);
         return new ResponseEntity<>(volunteerAds, HttpStatus.OK);
     }
-*/
+
 
 }

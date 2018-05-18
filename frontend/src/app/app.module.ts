@@ -53,6 +53,9 @@ import { RequestsModule } from './requests/requests.module';
     SearchService,
     httpInterceptorProviders
   ],
+  entryComponents: [
+    DialogComponent
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

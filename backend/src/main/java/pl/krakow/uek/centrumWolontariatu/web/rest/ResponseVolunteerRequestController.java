@@ -20,7 +20,7 @@ public class ResponseVolunteerRequestController {
         this.userService = userService;
         this.responseVolunteerRequestService = responseVolunteerRequestService;
     }
-    /*
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void apply(@RequestParam String description, @RequestParam long volunteerRequestId) {
@@ -40,6 +40,6 @@ public class ResponseVolunteerRequestController {
     @PostMapping("confirm")
     public void confirmVolunteerRequest(@RequestBody IdVM idVM) {
         responseVolunteerRequestService.confirmResponse(idVM.getId());
-    }*/
+    }
 
 }
