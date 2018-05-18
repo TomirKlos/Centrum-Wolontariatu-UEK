@@ -30,7 +30,6 @@ public class DomainUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
 
-        System.out.println("dupa1");
         String lowerCaseEmail = login.toLowerCase();
 
         Optional<User> userFromDatabase = userRepository.findByEmail(lowerCaseEmail);
@@ -40,7 +39,7 @@ public class DomainUserDetailsService implements UserDetailsService {
                 new UsernameNotFoundException("User " + lowerCaseEmail + " was not found in the database"));
     }
 
-    private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
+    private CustomUser createSpringSecurityUser(String lowercaseLogin, User user) {
         if (!user.isActivated()) {
             throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
         }
@@ -48,8 +47,11 @@ public class DomainUserDetailsService implements UserDetailsService {
             .map(authority -> new SimpleGrantedAuthority(authority.getName()))
             .collect(Collectors.toList());
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(),
+        return new CustomUser(
+            user.getEmail(),
             user.getPassword(),
-            grantedAuthorities);
+            grantedAuthorities,
+            user.getId()
+        );
     }
 }

@@ -7,27 +7,12 @@ export interface JWTToken {
   jwtToken: string;
 }
 
-export interface IResponseBody {
-  status?: number;
-  title?: string;
-  detail?: string;
-  message?: string;
-}
-
 export interface User {
   activated: boolean;
   authorities: string[];
   email: string;
   firstName: string;
   lastName: string;
-  // resetDate:
-}
-
-export interface VolunteerRequest {
-  description: string;
-  title: string;
-  accepted: boolean;
-  user: User;
   // resetDate:
 }
 
@@ -43,7 +28,7 @@ export interface VolunteerRequestVM {
   volunteersAmount: 0;
 }
 
-export interface Pageable<T> {
+export interface Page<T> {
   content: T[];
   first: boolean;
   last: boolean;
@@ -52,4 +37,9 @@ export interface Pageable<T> {
   size: number;
   totalElements: number;
   totalPages: number;
+}
+
+export interface Param {
+  name: string;
+  value: string | number;
 }

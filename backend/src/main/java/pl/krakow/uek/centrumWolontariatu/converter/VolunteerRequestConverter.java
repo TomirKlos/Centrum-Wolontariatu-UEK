@@ -43,8 +43,6 @@ public class VolunteerRequestConverter {
         dto.setVolunteersAmount(entity.getVolunteersAmount());
         dto.setCategories(entity.getCategories());
         dto.setVolunteerRequestTypes(entity.getVolunteerRequestTypes());
-        dto.setUser(mapEntityIntoUserDTO(entity.getUser()));
-        dto.setTimestamp(entity.getTimestamp());
         dto.setIsForStudents(entity.getIsForStudents());
         dto.setIsForTutors(entity.getIsForTutors());
         dto.setExpired(entity.getExpired());

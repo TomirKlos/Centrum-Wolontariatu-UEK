@@ -5,16 +5,11 @@ import { JwtModule } from '@auth0/angular-jwt';
 
 import { AccountModule } from './account/account.module';
 import { AdminModule } from './admin/admin.module';
-import { DialogComponent } from './admin/volunteer-request/dialog/dialog.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DumpComponent } from './dump/dump.component';
-import { HomeComponent } from './home/home.component';
-import { NavbarComponent } from './layouts/navbar/navbar.component';
-import { SidenavComponent } from './layouts/sidenav/sidenav.component';
+import { NavbarComponent } from './other/navbar/navbar.component';
 import { PageNotFoundComponent } from './other/page-not-found/page-not-found.component';
 import { AuthModule, jwtModuleOptions } from './shared/auth/auth.module';
-import { DialogService } from './shared/dialog.service';
 import { httpInterceptorProviders } from './shared/http-interceptors';
 import { LayoutModule } from './shared/layout.module';
 import { LoadingBarService } from './shared/loading-bar/loading-bar.service';
@@ -25,15 +20,13 @@ import { HomeModule } from './home/home.module';
 import { NguCarouselModule } from '@ngu/carousel';
 import { MatAutocompleteModule } from '@angular/material';
 import { SearchService } from './shared/search-service.service';
+import { RequestsModule } from './requests/requests.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     PageNotFoundComponent,
     NavbarComponent,
-    SidenavComponent,
-    DumpComponent, //todo delete it
   ],
   imports: [
     BrowserModule,
@@ -41,13 +34,17 @@ import { SearchService } from './shared/search-service.service';
     LayoutModule,
     AuthModule,
     JwtModule.forRoot(jwtModuleOptions),
-    AppRoutingModule,
+
+    // module of app parts
+    HomeModule,
     AccountModule,
     AdminModule,
     LecturerModule,
     HomeModule,
+    RequestsModule,
 
-    OtherModule // must be last
+    OtherModule,
+    AppRoutingModule,
   ],
   providers: [
     LoadingBarService,
