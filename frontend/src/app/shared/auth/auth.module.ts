@@ -27,5 +27,5 @@ export const jwtModuleOptions: JwtModuleOptions = {
 };
 
 function myTokenGetter() {
-  return localStorage.getItem(environment.tokenName);
+  return localStorage.getItem(environment.auth.tokenName);
 }

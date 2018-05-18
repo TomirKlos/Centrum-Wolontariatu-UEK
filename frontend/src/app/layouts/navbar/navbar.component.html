@@ -1,0 +1,41 @@
+<div id="app-navbar">
+  <mat-progress-bar mode="indeterminate" *ngIf="displayProgresBar" id="app-progress-bar"></mat-progress-bar>
+
+  <mat-toolbar color="primary" id="toolbar" fxLayout="row" fxLayoutAlign="space-between center">
+    <div>
+      <button routerLink="/" mat-button>
+        <mat-icon>home</mat-icon>
+      </button>
+
+      <button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['ROLE_ADMIN']">
+        Admin
+      </button>
+      <mat-menu #menu2="matMenu">
+        <div>
+          <button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
+        </div>
+        <div>
+          <button mat-menu-item routerLink="/admin/volunteer-request">Ogłoszenia</button>
+        </div>
+      </mat-menu>
+
+    </div>
+
+    <div>
+      <button mat-button [matMenuTriggerFor]="menu">
+        <mat-icon>person</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <div *appHasAnyRole="['guest']">
+          <button mat-menu-item routerLink="/login">Logowanie</button>
+          <button mat-menu-item routerLink="/signup">Rejestracja</button>
+        </div>
+
+        <div *appHasAnyRole="['isLoggedIn']">
+          <button mat-menu-item routerLink="/profile">Konto</button>
+          <button mat-menu-item (click)="logout()">Wyloguj</button>
+        </div>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+</div>

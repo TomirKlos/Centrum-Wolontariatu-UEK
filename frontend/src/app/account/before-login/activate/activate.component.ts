@@ -16,7 +16,7 @@ export class ActivateComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       const activationKey = this.route.snapshot.paramMap.get('activation-key');
-      this.http.post(environment.apiEndpoint + '/activate', { activationKey }, { observe: 'response' })
+      this.http.post(environment.apiEndpoint + 'activate', { activationKey }, { observe: 'response' })
         .subscribe(
           ok => {
             this.sb.open('Konto zostało aktywowane', { duration: 3000 });

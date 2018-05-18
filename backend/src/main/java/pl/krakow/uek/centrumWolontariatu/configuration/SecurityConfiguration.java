@@ -54,7 +54,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/i18n/**")
             .antMatchers("/content/**")
             .antMatchers("/swagger-ui/index.html")
-            .antMatchers("/test/**");
+            .antMatchers("/test/**")
+            .antMatchers("/h2-console/**");
     }
 
     @Override
@@ -82,8 +83,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/api/activate",
                 "/api/reset-password/**"
             ).permitAll()
-            .antMatchers(HttpMethod.GET, "/api/vrequest/mine").authenticated()
-            .antMatchers(HttpMethod.GET, "/api/vrequest/**").permitAll()
             .antMatchers("/api/**").authenticated()
         .and()
             .apply(securityConfigurerAdapter());

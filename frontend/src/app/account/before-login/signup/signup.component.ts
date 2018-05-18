@@ -32,7 +32,7 @@ export class SignupComponent implements OnInit {
       password: this.formGroup.get('passwords').get('password').value
     };
 
-    this._http.post(environment.apiEndpoint + '/register', body, { observe: 'response' })
+    this._http.post(environment.apiEndpoint + 'register', body, { observe: 'response' })
       .subscribe(
         () => {
           this._sb.open('Konto zostało utworzone. Proszę go aktywować linkiem wysłanym w emailu', { duration: 0 });

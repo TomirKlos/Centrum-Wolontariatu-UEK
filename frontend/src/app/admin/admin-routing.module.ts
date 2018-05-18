@@ -5,6 +5,7 @@ import { AdminGuardService } from '../shared/auth/gurads/admin-guard.service';
 import { AuthGuardService } from '../shared/auth/gurads/auth-guard.service';
 import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
+import { VolunteerRequestComponent } from './volunteer-request/volunteer-request.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
         path: 'users',
         component: UsersComponent
       },
+      {
+        path: 'volunteer-request',
+        component: VolunteerRequestComponent
+      }
     ]
   }
 ];

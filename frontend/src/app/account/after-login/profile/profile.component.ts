@@ -25,7 +25,7 @@ export class ProfileComponent implements OnInit {
       password: this.formGroup.get('passwords').get('password').value,
     };
 
-    this.http.post(environment.apiEndpoint + '/account/change-password', body, { observe: 'response' })
+    this.http.post(environment.apiEndpoint + 'account/change-password', body, { observe: 'response' })
       .subscribe(
         ok => {
           this.sb.open('Hasło zostało zmienione');

@@ -5,19 +5,16 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
-  MatChipsModule,
   MatDialogModule,
   MatExpansionModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
-  MatListModule,
   MatMenuModule,
   MatPaginatorModule,
   MatProgressBarModule,
   MatSidenavModule,
   MatSnackBarModule,
-  MatSortModule,
   MatTableModule,
   MatTabsModule,
   MatToolbarModule
@@ -43,10 +40,7 @@ const modules = [
   CdkTableModule,
   MatAutocompleteModule,
   MatDialogModule,
-  MatCheckboxModule,
-  MatSortModule,
-  MatListModule,
-  MatChipsModule
+  MatCheckboxModule
 ];
 
 @NgModule({

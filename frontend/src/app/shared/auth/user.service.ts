@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class UserService {
   private readonly _CONST_GUEST = 'guest';
-  private readonly _CONST_IS_LOGGED_IN = 'authenticated';
+  private readonly _CONST_IS_LOGGED_IN = 'isLoggedIn';
 
   private _isLoggedIn = new BehaviorSubject<boolean>(false);
   private _roles$ = new BehaviorSubject<string[]>([ this._CONST_GUEST ]);
@@ -20,11 +18,20 @@ export class UserService {
 
   set isLoggedIn(value: boolean) {
     this._isLoggedIn.next(value);
+
+    if (!value) {
+      this._deleteJwtToken();
+    }
+
     this._refreshRoles();
   }
 
   get isLoggedIn(): boolean {
     return this._isLoggedIn.getValue();
+  }
+
+  get isLoggedIn$() {
+    return this._isLoggedIn.asObservable();
   }
 
   get roles$(): Observable<string[]> {
@@ -51,13 +58,9 @@ export class UserService {
 
     this.isLoggedIn = true;
 
-    this.http.get(environment.apiEndpoint + '/account').subscribe(
+    this.http.get(environment.apiEndpoint + 'account').subscribe(
       () => {},
-      (err: HttpErrorResponse) => {
-        if (err.status === 401) {
-          this.isLoggedIn = false;
-        }
-      }
+      () => this.isLoggedIn = false
     );
   }
 
@@ -76,7 +79,10 @@ export class UserService {
   }
 
   private _getJwtToken(): string {
-    return localStorage.getItem(environment.tokenName);
+    return localStorage.getItem('jwtToken');
   }
 
+  private _deleteJwtToken(): void {
+    localStorage.removeItem('jwtToken');
+  }
 }

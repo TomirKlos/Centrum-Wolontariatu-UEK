@@ -1,46 +1,44 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { tap } from 'rxjs/operators';
-import { merge } from 'rxjs/observable/merge';
 
 import { SnackBarService } from '../../shared/snack-bar.service';
+import { UsersDataSource } from './users-data-source';
 import { UsersService } from './users.service';
-import { GenericDataSource } from '../../shared/GenericDataSource';
-import { User } from '../../shared/interfaces';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
-  styleUrls: [ './users.component.scss' ],
+  styleUrls: ['./users.component.scss'],
   providers: [
     UsersService
   ]
 })
 export class UsersComponent implements OnInit, AfterViewInit {
-  usersData: GenericDataSource<User>;
-  columnsToDisplay = [ 'id', 'activated', 'email', 'delete' ];
+  usersData: UsersDataSource;
+  columnsToDisplay = ['id', 'activated', 'email', 'delete'];
   totalElements = 0;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private _http: HttpClient, private _usersService: UsersService, private _sb: SnackBarService) {
   }
 
   ngOnInit() {
-    this.usersData = new GenericDataSource(this._usersService);
-    this._loadUsersPage();
+    this.usersData = new UsersDataSource(this._usersService);
+    this.usersData.loadUsers();
 
     this._usersService.getPage().subscribe(d => {
       if (d && d.totalElements) {
         this.totalElements = d.totalElements;
       }
     });
+
   }
 
   ngAfterViewInit() {
-    merge(this.sort.sortChange, this.paginator.page)
+    this.paginator.page
       .pipe(
         tap(() => this._loadUsersPage())
       )
@@ -48,15 +46,20 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   private _loadUsersPage() {
-    this.usersData.loadPage(
-      { name: 'page', value: this.paginator.pageIndex },
-      { name: 'size', value: this.paginator.pageSize },
-      { name: 'sort', value: this.sort.active + ',' + this.sort.direction }
+    this.usersData.loadUsers(
+      this.paginator.pageIndex,
+      this.paginator.pageSize
     );
   }
 
   deleteUser(id: number) {
-    this._usersService.delete(id).subscribe(() => this._loadUsersPage());
+    this._usersService.delete(id).subscribe(
+      () => {
+        this._sb.open('Usunięto konto');
+        this._loadUsersPage();
+      },
+      () => this._sb.warning()
+    );
   }
 
   activateUser(id: number) {

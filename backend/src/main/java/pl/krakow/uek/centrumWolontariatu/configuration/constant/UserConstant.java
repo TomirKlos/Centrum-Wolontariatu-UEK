@@ -1,6 +1,6 @@
 package pl.krakow.uek.centrumWolontariatu.configuration.constant;
 
-public final class UserConstant {
+public class UserConstant {
     public static final int FIRST_NAME_MAX_SIZE = 50;
     public static final int LAST_NAME_MAX_SIZE = 50;
     public static final int EMAIL_MIN_SIZE = 5;
