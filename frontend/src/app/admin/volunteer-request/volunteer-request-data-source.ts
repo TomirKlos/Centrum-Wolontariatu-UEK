@@ -1,16 +1,16 @@
-import { VolunteerRequest } from '../../shared/interfaces';
+import { VolunteerRequestVM } from '../../shared/interfaces';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { VolunteerRequestService } from './volunteer-request.service';
 import { Observable } from 'rxjs/Observable';
 
-export class VolunteerRequestDataSource implements DataSource<VolunteerRequest> {
-  private _vRSubject = new BehaviorSubject<VolunteerRequest[]>([]);
+export class VolunteerRequestDataSource implements DataSource<VolunteerRequestVM> {
+  private _vRSubject = new BehaviorSubject<VolunteerRequestVM[]>([]);
 
   constructor(private _vRService: VolunteerRequestService) {
   }
 
-  connect(collectionViewer: CollectionViewer): Observable<VolunteerRequest[]> {
+  connect(collectionViewer: CollectionViewer): Observable<VolunteerRequestVM[]> {
     return this._vRSubject.asObservable();
   }
 

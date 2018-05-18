@@ -30,7 +30,7 @@ public class ResponseVolunteerRequestService {
         this.volunteerRequestRepository = volunteerRequestRepository;
         this.userService = userService;
     }
-
+    /*
     public void apply(String description, long volunteerRequestId){
         if(userService.getUserWithAuthorities().get().getId()!=volunteerRequestRepository.findById(volunteerRequestId).get().getUser().getId() ) {
             User user = userService.getUserWithAuthorities().get();
@@ -81,6 +81,6 @@ public class ResponseVolunteerRequestService {
             });
         else throw new ResponseAcceptException();
     }
-
+    */
 
 }
