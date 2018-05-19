@@ -18,7 +18,7 @@ export class AuthService {
   }
 
   login(loginCredentials: LoginCredentials): Observable<boolean> {
-    return this.http.post(environment.apiEndpoint + 'authenticate', loginCredentials).pipe(
+    return this.http.post(environment.apiEndpoint + '/authenticate', loginCredentials).pipe(
       map((jwtToken: JWTToken) => {
         this._saveToken(jwtToken);
         this.userService.isLoggedIn = true;

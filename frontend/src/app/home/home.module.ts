@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
-import { NguCarouselModule } from '@ngu/carousel';
-import { MatAutocompleteModule } from '@angular/material';
+
+import { HomeRoutingModule } from './home-routing.module';
+import { HomeComponent } from "./home.component";
+import { ListOfRequestComponent } from "../layouts/list-of-request/list-of-request.component";
+import { LayoutModule } from "../shared/layout.module";
 
 @NgModule({
   imports: [
-    NguCarouselModule,
-    MatAutocompleteModule
+    LayoutModule,
+    HomeRoutingModule
   ],
-  exports:[
-    NguCarouselModule,
-    MatAutocompleteModule
+  declarations: [
+    HomeComponent,
+    ListOfRequestComponent
   ]
 })
 export class HomeModule {

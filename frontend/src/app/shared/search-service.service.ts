@@ -9,7 +9,7 @@ import 'rxjs/add/operator/switchMap';
 
 @Injectable()
 export class SearchService {
-  private _url = environment.apiEndpoint + 'vrequest/solr/';
+  private _url = environment.apiEndpoint + '/vrequest/solr/';
   queryUrl: string = '';
 
   constructor(private _http: HttpClient) { }

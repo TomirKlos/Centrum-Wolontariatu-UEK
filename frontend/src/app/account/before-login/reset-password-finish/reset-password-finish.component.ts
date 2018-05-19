@@ -38,7 +38,7 @@ export class ResetPasswordFinishComponent implements OnInit {
       newPassword: this.formGroup.get('passwords').get('password').value
     };
 
-    this.http.post(environment.apiEndpoint + 'reset-password/finish', body, { observe: 'response' })
+    this.http.post(environment.apiEndpoint + '/reset-password/finish', body, { observe: 'response' })
       .subscribe(
         ok => {
           this.sb.open('Hasło zostało zmienione', { duration: 3000 });

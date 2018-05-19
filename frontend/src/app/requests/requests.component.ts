@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/filter';
 
 @Component({
-  selector: 'app-account',
-  styles: [ '#container { width: 100%; max-width: 400px;}' ],
+  selector: 'app-requests',
+  styles: [ '#container { width: 100%; max-width: 900px;}' ],
   template: `
     <div fxLayout="row" fxLayoutAlign="center">
       <div id="container">
@@ -13,6 +11,9 @@ import 'rxjs/add/operator/filter';
     </div>
   `,
 })
-export class AccountComponent {
+export class RequestsComponent {
+
+  constructor() {
+  }
 
 }
