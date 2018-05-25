@@ -1,23 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
 import { VolunteerRequestVM } from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
-import { MatAutocompleteModule } from '@angular/material';
+import { MatAutocompleteModule, MatPaginator, PageEvent, MatSort } from '@angular/material';
 
 import { RequestDialogService } from '../../requests/shared/request-dialog.service';
+
+import { RequestService } from '../../requests/shared/request.service';
+import { ServerDataSource } from '../../shared/server-data-source';
+
 
 @Component({
   selector: 'app-list-of-request',
   templateUrl: './list-of-request.component.html',
   styleUrls: [ './list-of-request.component.scss' ]
 })
-export class ListOfRequestComponent implements OnInit {
+export class ListOfRequestComponent implements OnInit, AfterViewInit {
+  pathToStaticContent = "http://localhost:8080/static/";
+  staticNotFoundImage = "http://localhost:8080/static/brak-obrazka.jpg"
+
   results: Object;
   searchTerm$ = new Subject<string>();
 
-  constructor(private searchService: SearchService, private _dialogService: RequestDialogService) {
+  //paginator
+  length = 50;
+  pageIndex = 0;
+  pageSize = 5;
+
+  pageEvent: PageEvent;
+
+  //data source
+  dataSource: ServerDataSource<VolunteerRequestVM>;
+
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _requestService: RequestService) {
     this.searchService.search(this.searchTerm$)
     .subscribe(results => {
       this.results = results;
@@ -30,7 +50,11 @@ export class ListOfRequestComponent implements OnInit {
   public bales;
 
  ngOnInit() {
-    this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG","http://bi.gazeta.pl/im/32/1d/f8/z16260402Q,Maciej-Wilusz.jpg"];
+  this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
+  this.dataSource.relativePathToServerResource = '';
+  this.dataSource.loadAcceptedVrPage();
+
+    this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG"];
     this.carouselBanner = {
       grid: { xs: 1, sm: 1, md: 1, lg: 1, all: 0 },
       slide: 1,
@@ -71,6 +95,10 @@ export class ListOfRequestComponent implements OnInit {
       loop: true,
       touch: true
     };
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.initAfterViewInit();
   }
 
   /* It will be triggered on every slide*/
