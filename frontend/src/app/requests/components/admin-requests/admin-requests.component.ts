@@ -26,7 +26,7 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dataSource = new ServerDataSource(this._adminRequestService, this.paginator, this.sort);
+    this.dataSource = new ServerDataSource(this._adminRequestService, this.paginator, this.sort, "volunteerRequest");
     this.dataSource.loadPage();
   }
 

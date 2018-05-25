@@ -22,10 +22,15 @@ export interface VolunteerRequestVM {
   expirationDate: number;
   forStudents: boolean
   forTutors: boolean;
-  images: string[];
+  pictures: Pictures[];
   title: string;
   types: string[];
   volunteersAmount: 0;
+}
+
+export interface Pictures{
+  id: number;
+  referenceToPicture: string;
 }
 
 export interface Page<T> {

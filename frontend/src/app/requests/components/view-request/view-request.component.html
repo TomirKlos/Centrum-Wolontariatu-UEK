@@ -6,9 +6,13 @@
   </mat-card-header>
 
   <mat-card-content>
-
-    <div>{{ request.description }}</div>
-
+    <ng-container *ngIf="request.pictures[0]!=null; else elseTemplate">
+          <img class="searchImage" aria-hidden [src]="pathToStaticContent+request.pictures[0].referenceToPicture" height="200" />
+    </ng-container>
+    <ng-template #elseTemplate>
+          <img class="searchImage" aria-hidden [src]="staticNotFoundImage" height="200" /> 
+    </ng-template>
+      <div [innerHTML]="replaceLineBreak(request.description)"></div>
 
   </mat-card-content>
 </mat-card>

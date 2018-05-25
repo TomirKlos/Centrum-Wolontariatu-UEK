@@ -14,7 +14,8 @@ export class ServerDataSource<T> implements DataSource<T> {
   constructor(
     private _serverResourceService: ServerResourceService<T>,
     private _paginator: MatPaginator,
-    private _sort: MatSort
+    private _sort: MatSort,
+    private dataType: string
   ) {
   }
 
@@ -34,11 +35,19 @@ export class ServerDataSource<T> implements DataSource<T> {
 
   initAfterViewInit() {
     this._sort.sortChange.subscribe(() => this._paginator.pageIndex = 0);
-
-    merge(this._sort.sortChange, this._paginator.page)
+    if(this.dataType=="volunteerRequest"){
+      merge(this._sort.sortChange, this._paginator.page)
       .pipe(
         tap(() => this.loadPage())
       ).subscribe();
+    }
+    if(this.dataType=="volunteerRequestAcceptedOnly"){
+      merge(this._sort.sortChange, this._paginator.page)
+      .pipe(
+        tap(() => this.loadAcceptedVrPage())
+      ).subscribe();
+    }
+
   }
 
   loadPage() {
@@ -49,11 +58,11 @@ export class ServerDataSource<T> implements DataSource<T> {
     ).subscribe(d => this._data.next(d.content));
   }
 
-  loadSimplePage() {
+  loadAcceptedVrPage() {
     this._serverResourceService.getPageFromRelativePath(this.relativePathToServerResource,
-      { name: 'page', value: 0 },
-      { name: 'size', value: 10 },
-      { name: 'sort', value: "" }
+      { name: 'search', value: "accepted=in=1" },
+      { name: 'page', value: this._paginator.pageIndex },
+      { name: 'size', value: 5 }
     ).subscribe(d => this._data.next(d.content));
   }
 }

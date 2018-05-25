@@ -25,6 +25,7 @@ import { RequestDialogService } from './requests/shared/request-dialog.service';
 import { ViewRequestResolverService } from './requests/shared/request-resolver.service';
 import { ViewRequestDialogComponent } from './requests/components/view-request/view-request-dialog.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +41,8 @@ import { ViewRequestDialogComponent } from './requests/components/view-request/v
     ListOfRequestModule,
     NguCarouselModule,
     MatAutocompleteModule,
+
+
 
     // module of app parts
     HomeModule,

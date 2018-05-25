@@ -21,7 +21,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort);
+    this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort, "VolunteerRequest");
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
   }
