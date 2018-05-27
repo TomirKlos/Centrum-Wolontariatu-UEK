@@ -5,11 +5,13 @@ import { HomeComponent } from "./home.component";
 import { ListOfRequestComponent } from "../layouts/list-of-request/list-of-request.component";
 import { LayoutModule } from "../shared/layout.module";
 import { RelativeDatePipe } from '../shared/relativeDate.pipe';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   imports: [
     LayoutModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    MatTooltipModule
   ],
   declarations: [
     HomeComponent,

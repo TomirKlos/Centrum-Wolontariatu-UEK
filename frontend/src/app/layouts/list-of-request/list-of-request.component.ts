@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
-import { VolunteerRequestVM, Page } from '../../shared/interfaces';
+import { VolunteerRequestVM, Page, Category } from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
 import { MatAutocompleteModule, MatPaginator, PageEvent, MatSort } from '@angular/material';
@@ -126,6 +126,16 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   onClickResetSearchButton(){
     this.dataSource.loadAcceptedVrPage();
+  }
+
+  getCategoriesFromVolunteerRequest(categories: Category[]): string{
+    var userCategories: string = "";
+    if(categories!=null)
+    categories.forEach((category, index) => {
+      if(index!=0)
+        userCategories=userCategories + category.name + ", ";
+      })
+      return userCategories.substr(0,userCategories.length-2);
   }
 
 }
