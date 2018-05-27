@@ -8,6 +8,7 @@ import { AuthGuardService } from '../shared/auth/gurads/auth-guard.service';
 import { AdsComponent } from './ads.component';
 import { AddAdComponent } from './components/add-ad/add-ad.component';
 import { AdminAdComponent } from './components/admin-ad/admin-ad.component';
+import { MyAdssComponent } from './components/my-ads/my-ads.component';
 
 
 const routes: Routes = [ {
@@ -16,6 +17,7 @@ const routes: Routes = [ {
   children: [
     { path: 'add', component: AddAdComponent },
     { path: 'admin', component: AdminAdComponent, canActivate: [ AdminGuardService ] },
+    { path: 'mine', component: MyAdssComponent, canActivate: [ AuthGuardService ] },
 
   ]
 } ];

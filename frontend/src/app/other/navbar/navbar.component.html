@@ -39,6 +39,16 @@
         </div>
       </mat-menu>
 
+      <button mat-button [matMenuTriggerFor]="menu4" *appHasAnyRole="['authenticated']">
+          Wolontariusz
+        </button>
+        <mat-menu #menu4="matMenu">
+          <div>
+            <button mat-menu-item routerLink="/ads/admin">Wolontariusze admin</button>
+            <button mat-menu-item routerLink="/ads/mine">Moje ogłoszenia</button>
+          </div>
+        </mat-menu>
+
       <button routerLink="requests/add" mat-button>
         Dodaj ogłoszenie
       </button>

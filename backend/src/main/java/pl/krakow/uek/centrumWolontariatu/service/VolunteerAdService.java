@@ -88,7 +88,7 @@ public class VolunteerAdService {
                     volunteerAd.setTitle(volunteerAdVm.getTitle());
 
                     User user = userService.getUserWithAuthorities().get();
-                    
+
                     if (volunteerAdVm.getCategories() != null) { volunteerAd.setCategories(getCategoriesFromAd(volunteerAdVm.getCategories())); }
                     volunteerAd.setTypes(getTypesFromAd(volunteerAdVm.getTypes()));
 

@@ -8,6 +8,8 @@ import { AdService } from './shared/ad.service';
 import { AdsRoutingModule } from './ads-routing.module';
 import { AddAdComponent } from './components/add-ad/add-ad.component';
 import { AdminAdComponent } from './components/admin-ad/admin-ad.component';
+import { MyAdssComponent } from './components/my-ads/my-ads.component';
+import { MyAdsService } from './components/my-ads/my-ads.service';
 
 
 
@@ -21,12 +23,15 @@ import { AdminAdComponent } from './components/admin-ad/admin-ad.component';
   ],
   declarations: [
     AddAdComponent,
-    AdminAdComponent
+    AdminAdComponent,
+    MyAdssComponent,
+
     
 
   ],
   providers: [
     AdService,
+    MyAdsService,
     
 
   ],
