@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import {CommonModule} from "@angular/common";
-import { RelativeDatePipe } from './relativeDate.pipe';
+import { RelativeDatePipe } from '../../shared/relativeDate.pipe';
+
 
 
 @NgModule({
