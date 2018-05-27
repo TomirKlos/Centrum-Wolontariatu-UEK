@@ -11,8 +11,7 @@ import { VolunteerRequestVM } from '../../../shared/interfaces';
 export class ViewRequestComponent implements OnInit {
   request: VolunteerRequestVM;
 
-  constructor(private _route: ActivatedRoute) {
-  }
+  constructor(private _route: ActivatedRoute) {}
 
   ngOnInit() {
     this._route.data.subscribe((d: { request: VolunteerRequestVM }) => this.request = d.request);

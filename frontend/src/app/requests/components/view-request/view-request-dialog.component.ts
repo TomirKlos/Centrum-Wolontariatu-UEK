@@ -11,6 +11,8 @@ export class ViewRequestDialogComponent {
   request: VolunteerRequestVM;
   pathToStaticContent = "http://localhost:8080/static/";
   staticNotFoundImage = "http://localhost:8080/static/brak-obrazka.jpg"
+  viewApplyForm: boolean = false;
+
 
   constructor(
     public dialogRef: MatDialogRef<ViewRequestDialogComponent>,
@@ -21,5 +23,10 @@ export class ViewRequestDialogComponent {
   replaceLineBreak(s:string) {
     return s && s.replace(/\n/g,' <br /> ');
   }
+
+  showApplyForm(){
+    this.viewApplyForm = !this.viewApplyForm;
+  }
+
 
 }

@@ -14,5 +14,11 @@
     </ng-template>
       <div [innerHTML]="replaceLineBreak(request.description)"></div>
 
+      <button mat-raised-button color="primary" type="submit" (click)="showApplyForm()">Zaaplikuj!</button>
+      <div *ngIf="viewApplyForm">
+          <app-apply-request [id]="request.id"></app-apply-request>
+      </div>
+     
+
   </mat-card-content>
 </mat-card>
