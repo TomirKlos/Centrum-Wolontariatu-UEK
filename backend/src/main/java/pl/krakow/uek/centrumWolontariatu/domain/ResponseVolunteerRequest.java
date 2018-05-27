@@ -34,6 +34,9 @@ public class ResponseVolunteerRequest implements Serializable {
     @Column(name = "confirmation")
     private byte confirmation = 0;
 
+    @Column(name = "seen")
+    private byte seen = 0;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "volunteer_request_id", nullable = false)
     private VolunteerRequest volunteerRequest;

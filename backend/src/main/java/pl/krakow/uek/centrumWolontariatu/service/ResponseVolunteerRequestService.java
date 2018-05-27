@@ -2,18 +2,25 @@ package pl.krakow.uek.centrumWolontariatu.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.krakow.uek.centrumWolontariatu.domain.ResponseVolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequestDTO;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.ResponseVolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerRequestRepository;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.ResponseAcceptException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.VolunteerRequestResponsesPermissionException;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.ResponseVolunteerRequestVM;
+
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
@@ -31,23 +38,52 @@ public class ResponseVolunteerRequestService {
         this.userService = userService;
     }
 
-    public void apply(String description, long volunteerRequestId){
-        if(userService.getUserWithAuthorities().get().getId()!=volunteerRequestRepository.findById(volunteerRequestId).get().getUser().getId() ) {
+    public void apply(ResponseVolunteerRequestVM responseVolunteerRequestVM){
+        if(userService.getUserWithAuthorities().get().getId()!=volunteerRequestRepository.findById(responseVolunteerRequestVM.getVolunteerRequestId()).get().getUser().getId() ) {
             User user = userService.getUserWithAuthorities().get();
             ResponseVolunteerRequest responseVolunteerRequest = new ResponseVolunteerRequest();
-            responseVolunteerRequest.setDescription(description);
+            responseVolunteerRequest.setDescription(responseVolunteerRequestVM.getDescription());
             responseVolunteerRequest.setUser(user);
-            responseVolunteerRequest.setVolunteerRequest(volunteerRequestRepository.getOne(volunteerRequestId));
+            responseVolunteerRequest.setVolunteerRequest(volunteerRequestRepository.getOne(responseVolunteerRequestVM.getVolunteerRequestId()));
+
+            ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+            long epochMillis = utc.toEpochSecond() * 1000;
+            responseVolunteerRequest.setTimestamp(epochMillis);
+
             responseVolunteerRequestRepository.save(responseVolunteerRequest);
             log.debug("User id={} applied for Volunteer Request id={}", user.getId(), responseVolunteerRequest.getVolunteerRequest().getId());
         } else throw new BadRequestAlertException("You cannot apply for your own Volunteer Request", "volunteerRequestManagement", "cannotaplyforownvolunteerrequest");
-
     }
 
+
     public Page<ResponseVolunteerRequestDTO> getAllByVolunteerRequestId(long volunteerRequestId, Pageable pageable){
-        if(isUserOwnerOfVolunteerRequest(volunteerRequestId) )
-             return responseVolunteerRequestRepository.findAllByVolunteerRequestId(pageable, volunteerRequestId);
+        Page<ResponseVolunteerRequestDTO> page;
+        if(isUserOwnerOfVolunteerRequest(volunteerRequestId) ){
+            page = responseVolunteerRequestRepository.findAllByVolunteerRequestId(pageable, volunteerRequestId);
+            setSeenFlag(page);
+            return page;
+        }
+
         else throw new VolunteerRequestResponsesPermissionException();
+    }
+
+    public long getAllUnseen(long volunteerRequestId){
+        if(isUserOwnerOfVolunteerRequest(volunteerRequestId) ){
+
+            return responseVolunteerRequestRepository.countByVolunteerRequestIdAndSeen(volunteerRequestId, (byte)0);
+        }
+
+        else throw new VolunteerRequestResponsesPermissionException();
+    }
+
+
+    private void setSeenFlag(Page<ResponseVolunteerRequestDTO> pageResponseVr){
+        for(ResponseVolunteerRequestDTO responseVolunteerRequestDTO: pageResponseVr.getContent()){
+            responseVolunteerRequestRepository.findById(responseVolunteerRequestDTO.getId()).map(responseVolunteerRequest -> {
+                responseVolunteerRequest.setSeen((byte)1);
+                return responseVolunteerRequestRepository.save(responseVolunteerRequest);
+            });
+        }
     }
 
     private boolean isUserOwnerOfVolunteerRequest(long volunteerRequestId){
@@ -62,15 +98,42 @@ public class ResponseVolunteerRequestService {
         }).orElseThrow(ResponseAcceptException::new);
     }
 
+    //should be CacheEvict cuz it changes
+    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
     public void acceptResponse(long responseId){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
             responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {
                 response.setAccepted(parse(true));
                 responseVolunteerRequestRepository.save(response);
+
+                volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
+                    if(volunteerRequest.getVolunteersAmount()>0){
+                        volunteerRequest.setVolunteersAmount(volunteerRequest.getVolunteersAmount()-1);
+                        return volunteerRequestRepository.save(volunteerRequest);
+                    }else return null;
+                });
                 log.debug("User id={} accepted Volunteer Response id={} user={}", userService.getUserId(), response.getId(), response.getId());
             });
         else throw new ResponseAcceptException();
     }
+
+    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
+    public void disableAcceptedResponse(long responseId){
+        if(isUserOwnerOfVolunteerRequestByResponse(responseId))
+            responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {
+                response.setAccepted(parse(false));
+                responseVolunteerRequestRepository.save(response);
+
+                volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
+                        volunteerRequest.setVolunteersAmount(volunteerRequest.getVolunteersAmount()+1);
+                        return volunteerRequestRepository.save(volunteerRequest);
+
+                });
+                log.debug("User id={} disabled accepted Volunteer Response id={} user={}", userService.getUserId(), response.getId(), response.getId());
+            });
+        else throw new ResponseAcceptException();
+    }
+    
 
     public void confirmResponse(long responseId){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
