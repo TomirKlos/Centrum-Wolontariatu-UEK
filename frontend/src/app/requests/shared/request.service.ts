@@ -13,4 +13,8 @@ export class RequestService extends ServerResourceService<VolunteerRequestVM> {
     this._url = this._url + '/vrequest';
   }
 
+  public getGroups() {
+    return this._http.get(this._url + "/category/");
+  }
+
 }

@@ -133,7 +133,7 @@ public class ResponseVolunteerRequestService {
             });
         else throw new ResponseAcceptException();
     }
-    
+
 
     public void confirmResponse(long responseId){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))

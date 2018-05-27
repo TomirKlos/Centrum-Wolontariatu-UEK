@@ -36,6 +36,10 @@ export interface responseVolunteerRequestVM {
   seen: number;
 }
 
+export interface Category {
+  name: string;
+}
+
 export interface Pictures{
   id: number;
   referenceToPicture: string;

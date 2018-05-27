@@ -17,6 +17,7 @@ import { ViewApplyRequestComponent } from './components/my-requests/view-apply-r
 import { ViewApplyRequestDialogComponent } from './components/my-requests/view-apply-request/view-apply-request-dialog.component';
 import { MyRequestsService } from './components/my-requests/my-requests.service';
 import { ApplyService } from './components/my-requests/view-apply-request/apply-request.service';
+import { MatSelectModule } from '@angular/material';
 
 
 
@@ -25,6 +26,7 @@ import { ApplyService } from './components/my-requests/view-apply-request/apply-
   imports: [
     LayoutModule,
     RequestsRoutingModule,
+    MatSelectModule
     
   ],
   declarations: [
