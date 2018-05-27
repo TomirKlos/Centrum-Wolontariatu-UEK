@@ -24,8 +24,11 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
 
   results: Object;
+  resultsAd: Object;
   searchTerm$ = new Subject<string>();
+  searchAdTerm$ = new Subject<string>();
   searchValue: string;
+  searchAdValue: string;
 
   //paginator
   length = 50;
@@ -46,6 +49,11 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     this.searchService.search(this.searchTerm$)
     .subscribe(results => {
       this.results = results;
+    }); 
+
+    this.searchService.searchAd(this.searchAdTerm$)
+    .subscribe(results => {
+      this.resultsAd = results;
     }); 
   }
 
@@ -124,7 +132,15 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
       this.dataSource.generateFilteredSearchPage(this.searchTerm$);
       this.results=null;
     }
-      
+  }
+
+  searchAdContent(){
+    if(this.searchAdValue=="")
+      this.dataSourceAds.loadAcceptedVrPage();
+    else if(this.searchAdValue!=""){
+      this.dataSourceAds.generateFilteredSearchPage(this.searchAdTerm$);
+      this.resultsAd=null;
+    }
   }
 
   openDialog(element: VolunteerRequestVM): void {
@@ -133,6 +149,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   onClickResetSearchButton(){
     this.dataSource.loadAcceptedVrPage();
+  }
+
+  onClickResetSearchButtonAd(){
+    this.dataSourceAds.loadAcceptedVrPage();
   }
 
   getCategoriesFromVolunteerRequest(categories: Category[]): string{

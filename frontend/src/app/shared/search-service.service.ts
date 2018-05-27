@@ -10,6 +10,7 @@ import 'rxjs/add/operator/switchMap';
 @Injectable()
 export class SearchService {
   private _url = environment.apiEndpoint + '/vrequest/solr/';
+  private _urlAd = environment.apiEndpoint + '/vAd/solr/';
   queryUrl: string = '';
 
   constructor(private _http: HttpClient) { }
@@ -20,10 +21,23 @@ export class SearchService {
       .switchMap(term => this.searchEntries(term));
   }
 
+  searchAd(terms: Observable<string>) {
+    return terms.debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(term => this.searchEntriesAd(term));
+  }
+
   searchEntries(term:string) {
     if(term.length>2){
       return this._http.get(this._url + term);
     }
     return this._http.get(this._url + "t");
+  }
+
+  searchEntriesAd(term:string) {
+    if(term.length>2){
+      return this._http.get(this._urlAd + term);
+    }
+    return this._http.get(this._urlAd + "t");
   }
 }

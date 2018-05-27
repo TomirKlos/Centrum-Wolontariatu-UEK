@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -240,6 +241,19 @@ public class VolunteerAdService {
     public List<VolunteerAdDTO> getVolunteerAdBySolr(String text){
         if(text.length()>=3)
             return volunteerAdSearchDao.searchVolunteerAdByQuery(text);
+        return null;
+    }
+
+    public Page<VolunteerAdDTO> getVolunteerAdBySolrPage(Pageable pageable, String text){
+        List<Long> id = new ArrayList<>();
+        if(text.length()>=3) {
+            List<VolunteerAdDTO> volunteerAdDTOSBySolr = volunteerAdSearchDao.searchVolunteerAdByQuery(text);
+            long start = pageable.getOffset();
+            long end = (start + pageable.getPageSize()) > volunteerAdDTOSBySolr.size() ? volunteerAdDTOSBySolr.size() : (start + pageable.getPageSize());
+
+            return new PageImpl<>(volunteerAdDTOSBySolr.subList((int)start, (int)end), pageable, volunteerAdDTOSBySolr.size());
+
+        }
         return null;
     }
 

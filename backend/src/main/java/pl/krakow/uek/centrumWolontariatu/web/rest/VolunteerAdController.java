@@ -105,6 +105,11 @@ public class VolunteerAdController {
         return volunteerAdService.getVolunteerAdBySolr(text);
     }
 
+    @GetMapping("solrPage/{text}")
+    public Page<VolunteerAdDTO> getVolunteerRequestBySolrPage(@PathVariable String text, Pageable pageable) {
+        return volunteerAdService.getVolunteerAdBySolrPage(pageable, text);
+    }
+
     @PostMapping(path = "/picture", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
     public Set<String> addPicture(@RequestBody MultipartFile[] file) {
