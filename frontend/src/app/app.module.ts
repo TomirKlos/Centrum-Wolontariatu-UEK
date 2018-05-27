@@ -24,6 +24,7 @@ import { SearchService } from './shared/search-service.service';
 import { RequestDialogService } from './requests/shared/request-dialog.service';
 import { ViewRequestResolverService } from './requests/shared/request-resolver.service';
 import { ViewRequestDialogComponent } from './requests/components/view-request/view-request-dialog.component';
+import { AdsModule } from './ads/ads.module';
 
 
 
@@ -53,6 +54,7 @@ import { ViewRequestDialogComponent } from './requests/components/view-request/v
     AccountModule,
     AdminModule,
     RequestsModule,
+    AdsModule,
 
     OtherModule,
     AppRoutingModule,

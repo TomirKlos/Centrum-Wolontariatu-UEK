@@ -109,37 +109,49 @@
                 </mat-autocomplete>
           </mat-form-field>
 
-          <mat-card *ngFor="let number of [0,1,2,3,4]" class="box">
-              <div class="outter">
-                  <div class="inner">
-                      <img class="advertImage" mat-card-md-image src="https://material.angular.io/assets/img/examples/shiba1.jpg">
-                      <mat-card-title>
-                          Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul Tytul
-                      </mat-card-title>
-                      <mat-card-subtitle>Poszukiwani studenci: 2</mat-card-subtitle>
-                      <mat-card-content>
-                      <!--    <p>
-                              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-                          </p> -->
-                          <p>
-                            The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-                            The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-                            The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+          <mat-card *ngFor="let row of dataSourceAds.connect() | async" class="box" (click)="openDialog(row)">
+                <div class="outter">
+                        <div class="inner">
+                            <ng-container *ngIf="row.pictures[0]!=null; else elseTemplate">
+                                  <div class="parentAdvertImage">
+                                      <img class="advertImage" mat-card-md-image [src]="pathToStaticContent+row.pictures[0].referenceToPicture">
+                                  </div>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                                  <img class="advertImage" mat-card-md-image src="https://i.imgur.com/0TdfLx8.jpg">
+                            </ng-template>
                             
-                            The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-                            The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-                        </p>
-                      </mat-card-content>
-                  </div>
-                  <mat-card-actions>
-                      <mat-card-footer>
-                          1 maj 2018: 16:55
-                      </mat-card-footer>
-                      <div class="footer-left">
-                          Dodano przez: student
-                      </div>
-                  </mat-card-actions>
-              </div>
+                            
+                            <mat-card-title>
+                                {{ row.title }}
+                            </mat-card-title>
+                            <mat-card-subtitle>subtitle</mat-card-subtitle>
+      
+                            <mat-card-content>
+                                <p>
+                                    {{ row.description }}
+                                </p>
+                            </mat-card-content>
+                        </div>
+                        <mat-card-actions>
+                            <mat-card-footer>
+                                {{row.timestamp | relativeDatePipe}}
+                            </mat-card-footer>
+                            <div class="footer-left">
+                                Dodano przez: student |  
+                                <ng-container *ngIf="row.categories==0; else elseTemplateCategories">
+                                      -
+                                      </ng-container>
+                                      <ng-template #elseTemplateCategories>
+                                        {{row.categories[0].name}}
+                                        <span *ngIf="row.categories.length > 1" class="example-additional-selection">
+                                           (+{{row.categories.length - 1}} <span matTooltip="{{getCategoriesFromVolunteerRequest(row.categories)}}">pozostałych </span>)
+                                          </span>
+                                          
+                                      </ng-template>
+                            </div>
+                        </mat-card-actions>
+                    </div>
           </mat-card>
       </mat-card>
   </div>

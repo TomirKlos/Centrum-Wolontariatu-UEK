@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
-import { VolunteerRequestVM, Page, Category } from '../../shared/interfaces';
+import { VolunteerRequestVM, Page, Category, VolunteerAdVM } from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
 import { MatAutocompleteModule, MatPaginator, PageEvent, MatSort } from '@angular/material';
@@ -10,6 +10,7 @@ import { RequestDialogService } from '../../requests/shared/request-dialog.servi
 
 import { RequestService } from '../../requests/shared/request.service';
 import { ServerDataSource } from '../../shared/server-data-source';
+import { AdService } from '../../ads/shared/ad.service';
 
 
 @Component({
@@ -35,12 +36,13 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   //data source
   dataSource: ServerDataSource<VolunteerRequestVM>;
+  dataSourceAds: ServerDataSource<VolunteerAdVM>;
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('searchName') input:ElementRef;
 
-  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _requestService: RequestService) {
+  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _requestService: RequestService, private _adService: AdService) {
     this.searchService.search(this.searchTerm$)
     .subscribe(results => {
       this.results = results;
@@ -57,6 +59,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
   this.dataSource.relativePathToServerResource = '';
   this.dataSource.loadAcceptedVrPage();
+
+  this.dataSourceAds = new ServerDataSource<VolunteerAdVM>(this._adService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
+  this.dataSourceAds.relativePathToServerResource = '';
+  this.dataSourceAds.loadAcceptedVrPage();
 
     this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG"];
     this.carouselBanner = {
@@ -103,6 +109,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource.initAfterViewInit();
+    this.dataSourceAds.initAfterViewInit();
   }
 
   /* It will be triggered on every slide*/

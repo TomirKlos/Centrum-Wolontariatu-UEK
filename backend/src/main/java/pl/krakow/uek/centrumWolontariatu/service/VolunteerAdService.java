@@ -88,8 +88,8 @@ public class VolunteerAdService {
                     volunteerAd.setTitle(volunteerAdVm.getTitle());
 
                     User user = userService.getUserWithAuthorities().get();
-
-                    volunteerAd.setCategories(getCategoriesFromAd(volunteerAdVm.getCategories()));
+                    
+                    if (volunteerAdVm.getCategories() != null) { volunteerAd.setCategories(getCategoriesFromAd(volunteerAdVm.getCategories())); }
                     volunteerAd.setTypes(getTypesFromAd(volunteerAdVm.getTypes()));
 
                     volunteerAdRepository.save(volunteerAd);
@@ -194,9 +194,10 @@ public class VolunteerAdService {
 
     private Set<VolunteerAdType> getTypesFromAd(Set<String> types) {
         HashSet<VolunteerAdType> volunteerAdTypes = new HashSet<>();
-        for (String string : types) {
-            volunteerAdTypes.add(new VolunteerAdType(string));
-        }
+        if(types!=null)
+            for (String string : types) {
+                volunteerAdTypes.add(new VolunteerAdType(string));
+            }
         return volunteerAdTypes;
     }
 

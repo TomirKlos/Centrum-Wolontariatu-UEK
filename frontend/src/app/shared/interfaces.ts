@@ -45,6 +45,16 @@ export interface Pictures{
   referenceToPicture: string;
 }
 
+export interface VolunteerAdVM {
+  categories: string[];
+  description: string;
+  expirationDate: number;
+  pictures: Pictures[];
+  title: string;
+  types: string[];
+  id: number;
+}
+
 export interface Page<T> {
   content: T[];
   first: boolean;
