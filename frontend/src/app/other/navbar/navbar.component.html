@@ -12,23 +12,34 @@
       <!--</button>-->
       <!--<mat-menu #menu2="matMenu">-->
       <!--<div>-->
-      <!--<button mat-menu-item routerLink="/admin/users">Użytkownicy</button>-->
+      <!--<button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
       <!--<button mat-menu-item routerLink="/requests/admin">Zgłoszenia</button>-->
       <!--</div>-->
       <!--</mat-menu>-->
 
+      <button mat-button [matMenuTriggerFor]="menu3" *appHasAnyRole="['ROLE_ADMIN']">
+      Admin
+      </button>
+      <mat-menu #menu3="matMenu">
+      <div>
+      <button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
+      <button mat-menu-item routerLink="/requests/admin">Ogłoszenia</button>
+      <button mat-menu-item routerLink="/admin/categories">Kategorie</button>
+      </div>
+      </mat-menu>
+
       <button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['authenticated']">
-        Zgłoszenia
+        Ogłoszenia
       </button>
       <mat-menu #menu2="matMenu">
         <div>
-          <button mat-menu-item routerLink="/requests/admin">Zgłoszenia admin</button>
-          <button mat-menu-item routerLink="/requests/mine">Moje zgłoszenia</button>
+          <button mat-menu-item routerLink="/requests/admin">Ogłoszenia admin</button>
+          <button mat-menu-item routerLink="/requests/mine">Moje ogłoszenia</button>
         </div>
       </mat-menu>
 
       <button routerLink="requests/add" mat-button>
-        Dodaj zgłoszenie
+        Dodaj ogłoszenie
       </button>
 
     </div>
