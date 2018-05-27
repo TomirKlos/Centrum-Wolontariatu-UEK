@@ -97,6 +97,11 @@ public class VolunteerRequestController {
         return volunteerRequestService.getVolunteerRequestBySolr(text);
     }
 
+    @GetMapping("/vrequest/solrPage/{text}")
+    public Page<VolunteerRequestDTO> getVolunteerRequestBySolrPage(@PathVariable String text, Pageable pageable) {
+        return volunteerRequestService.getVolunteerRequestBySolrPage(pageable, text);
+    }
+
     @PostMapping(path = "/vrequest/picture", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
     public Set<String> addPicture(@RequestBody MultipartFile[] file) {

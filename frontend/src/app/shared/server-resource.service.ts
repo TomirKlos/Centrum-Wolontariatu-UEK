@@ -23,7 +23,6 @@ export abstract class ServerResourceService<T> {
         params = params.set(param.name, param.value.toString());
       }
     }
-
     return this._http.get(this._url + '/' + path, { params: params }) as Observable<Page<T>>;
   }
 
@@ -46,5 +45,17 @@ export abstract class ServerResourceService<T> {
         return err;
       })
     );
+  }
+
+  filterResultsBySearch(terms: Observable<string>, page: number, size: number): Observable<Page<T>> {
+    return terms.debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(term => this.searchEntries(term, page, size)) as Observable<Page<T>>;
+  }
+
+  searchEntries(term: string, page: number, size: number) {
+    if(term.length>2){
+      return this._http.get(this._url + "/solrPage/" + term + "?page=" + page + "&size=" + size);
+    }
   }
 }

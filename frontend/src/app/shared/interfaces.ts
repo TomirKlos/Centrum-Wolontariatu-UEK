@@ -25,7 +25,15 @@ export interface VolunteerRequestVM {
   pictures: Pictures[];
   title: string;
   types: string[];
-  volunteersAmount: 0;
+  volunteersAmount: number;
+  id: number;
+}
+
+export interface responseVolunteerRequestVM {
+  description: string;
+  user: User;
+  id: number;
+  seen: number;
 }
 
 export interface Pictures{

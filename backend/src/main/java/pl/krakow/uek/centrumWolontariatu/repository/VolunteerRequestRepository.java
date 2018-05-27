@@ -8,6 +8,7 @@ import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface VolunteerRequestRepository extends JpaRepository<VolunteerRequest, Long>, JpaSpecificationExecutor<VolunteerRequest> {
@@ -19,5 +20,7 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
     Page<VolunteerRequestDTO> findAllBy(Pageable pageable);
 
     Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable, long id);
+
+    Page<VolunteerRequestDTO> findAllByIdIn(Pageable pageable, List<Long> list);
 
 }

@@ -17,7 +17,7 @@ const myImports = [
 ];
 
 const myDeclarations: any[] = [
-  HasAnyRoleDirective
+  HasAnyRoleDirective,
 ];
 
 const myExports = myImports.concat(myDeclarations);

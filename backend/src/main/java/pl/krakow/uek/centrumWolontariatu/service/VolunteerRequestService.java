@@ -254,5 +254,18 @@ public class VolunteerRequestService {
         return null;
     }
 
+    public Page<VolunteerRequestDTO> getVolunteerRequestBySolrPage(Pageable pageable, String text){
+        List<Long> id = new ArrayList<>();
+        if(text.length()>=3) {
+            List<VolunteerRequestDTO> volunteerRequestDTOSBySolr = volunteerRequestSearchDao.searchVolunteerRequestByQuery(text);
+            long start = pageable.getOffset();
+            long end = (start + pageable.getPageSize()) > volunteerRequestDTOSBySolr.size() ? volunteerRequestDTOSBySolr.size() : (start + pageable.getPageSize());
+
+            return new PageImpl<>(volunteerRequestDTOSBySolr.subList((int)start, (int)end), pageable, volunteerRequestDTOSBySolr.size());
+
+        }
+        return null;
+    }
+
 
 }

@@ -8,6 +8,10 @@ import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequest
 import pl.krakow.uek.centrumWolontariatu.service.ResponseVolunteerRequestService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.ResponseVolunteerRequestVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/responseVr/")
@@ -23,8 +27,8 @@ public class ResponseVolunteerRequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void apply(@RequestParam String description, @RequestParam long volunteerRequestId) {
-        responseVolunteerRequestService.apply(description, volunteerRequestId);
+    public void apply(@RequestBody ResponseVolunteerRequestVM responseVolunteerRequestVM) {
+        responseVolunteerRequestService.apply(responseVolunteerRequestVM);
     }
 
     @GetMapping
@@ -37,9 +41,19 @@ public class ResponseVolunteerRequestController {
         responseVolunteerRequestService.acceptResponse(idVM.getId());
     }
 
+    @PostMapping("disableAccepted")
+    public void disableAcceptedVolunteerRequest(@RequestBody IdVM idVM) {
+        responseVolunteerRequestService.disableAcceptedResponse(idVM.getId());
+    }
+
     @PostMapping("confirm")
     public void confirmVolunteerRequest(@RequestBody IdVM idVM) {
         responseVolunteerRequestService.confirmResponse(idVM.getId());
+    }
+
+    @GetMapping("unseen")
+    public long getAllUnseenResponsesNumber(@RequestParam long volunteerRequestId){
+        return responseVolunteerRequestService.getAllUnseen(volunteerRequestId);
     }
 
 }

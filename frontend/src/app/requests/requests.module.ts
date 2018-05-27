@@ -12,6 +12,13 @@ import { AdminRequestsComponent } from './components/admin-requests/admin-reques
 import { ViewRequestDialogComponent } from './components/view-request/view-request-dialog.component';
 import { RequestDialogService } from './shared/request-dialog.service';
 import { MyRequestsComponent } from './components/my-requests/my-requests.component';
+import { ApplyRequestComponent } from './apply-request/apply-request.component';
+import { ViewApplyRequestComponent } from './components/my-requests/view-apply-request/view-apply-request.component';
+import { ViewApplyRequestDialogComponent } from './components/my-requests/view-apply-request/view-apply-request-dialog.component';
+import { MyRequestsService } from './components/my-requests/my-requests.service';
+import { ApplyService } from './components/my-requests/view-apply-request/apply-request.service';
+import { RelativeDatePipe } from './shared/relativeDate.pipe';
+
 
 
 
@@ -28,14 +35,21 @@ import { MyRequestsComponent } from './components/my-requests/my-requests.compon
     ViewRequestDialogComponent,
     AdminRequestsComponent,
     MyRequestsComponent,
+    ApplyRequestComponent,
+    ViewApplyRequestComponent,
+    ViewApplyRequestDialogComponent,
+
   ],
   providers: [
     RequestService,
     RequestDialogService,
-    ViewRequestResolverService
+    ViewRequestResolverService,
+    MyRequestsService,
+    ApplyService,
   ],
   entryComponents: [
-    ViewRequestDialogComponent
+    ViewRequestDialogComponent,
+    ViewApplyRequestDialogComponent,
   ]
 })
 export class RequestsModule {

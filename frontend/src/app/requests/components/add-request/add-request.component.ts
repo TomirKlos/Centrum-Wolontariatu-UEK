@@ -31,6 +31,7 @@ export class AddRequestComponent implements OnInit {
       forStudents: [ false ],
       forTutors: [ false ],
       images: [ this.fileHash ], 
+      volunteersAmount: [ ],
     });
   }
 

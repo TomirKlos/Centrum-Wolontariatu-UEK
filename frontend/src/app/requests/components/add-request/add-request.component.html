@@ -22,6 +22,10 @@
         <mat-checkbox formControlName="forTutors">Dla pracowników</mat-checkbox>
       </div>
 
+      <mat-form-field>
+          <input matInput type="text" placeholder="Ilość poszukiwanych osób" formControlName="volunteersAmount">
+        </mat-form-field>
+
        <input type="file" multiple (change)="onFileSelected($event)">
       <button mat-button color="primary" (click)="onUpload()">Prześlij zdjęcie</button>
       <div *ngFor="let item of fileHash">
