@@ -4,6 +4,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from "./home.component";
 import { ListOfRequestComponent } from "../layouts/list-of-request/list-of-request.component";
 import { LayoutModule } from "../shared/layout.module";
+import { RelativeDatePipe } from '../shared/relativeDate.pipe';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { LayoutModule } from "../shared/layout.module";
   ],
   declarations: [
     HomeComponent,
-    ListOfRequestComponent
+    ListOfRequestComponent,
+    RelativeDatePipe
   ]
 })
 export class HomeModule {

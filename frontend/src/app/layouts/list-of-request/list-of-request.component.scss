@@ -70,6 +70,7 @@ mat-card.outer{
 
 .inner{
     max-height: 182px;
+    height: 182px;
     white-space: inherit;
     padding-top:5px;
     overflow:hidden;
@@ -191,6 +192,7 @@ mat-card-subtitle{
 img.advertImage{
   float: left; 
   display: inline;
+  object-fit: cover;
 }
 
 ngu-carousel{

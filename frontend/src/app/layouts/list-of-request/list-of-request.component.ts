@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
-import { VolunteerRequestVM } from '../../shared/interfaces';
+import { VolunteerRequestVM, Page } from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
 import { MatAutocompleteModule, MatPaginator, PageEvent, MatSort } from '@angular/material';
@@ -21,8 +21,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   pathToStaticContent = "http://localhost:8080/static/";
   staticNotFoundImage = "http://localhost:8080/static/brak-obrazka.jpg"
 
+
   results: Object;
   searchTerm$ = new Subject<string>();
+  searchValue: string;
 
   //paginator
   length = 50;
@@ -36,6 +38,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('searchName') input:ElementRef;
 
   constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _requestService: RequestService) {
     this.searchService.search(this.searchTerm$)
@@ -50,6 +53,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   public bales;
 
  ngOnInit() {
+  this.paginator.pageSize=this.pageSize;
   this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
   this.dataSource.relativePathToServerResource = '';
   this.dataSource.loadAcceptedVrPage();
@@ -107,11 +111,21 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   }
 
   searchContent(){
-    console.log("chuj")
+    if(this.searchValue=="")
+      this.dataSource.loadAcceptedVrPage();
+    else if(this.searchValue!=""){
+      this.dataSource.generateFilteredSearchPage(this.searchTerm$);
+      this.results=null;
+    }
+      
   }
 
   openDialog(element: VolunteerRequestVM): void {
     this._dialogService.open(element);
+  }
+
+  onClickResetSearchButton(){
+    this.dataSource.loadAcceptedVrPage();
   }
 
 }

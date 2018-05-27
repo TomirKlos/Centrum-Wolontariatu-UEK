@@ -16,7 +16,10 @@
                   <mat-icon class="form-icon">search</mat-icon>
                   Szukaj wolontariatu
               </mat-placeholder>
-              <input (keyup)="$event.keyCode == 13 ? searchContent() : null" type="text" aria-label="Number" matInput (keyup)="searchTerm$.next($event.target.value)" [matAutocomplete]="auto">
+              <input (keyup)="$event.keyCode == 13 ? searchContent() : null" type="text" aria-label="Number" #searchName matInput (keyup)="searchTerm$.next($event.target.value)" [matAutocomplete]="auto" (input)="searchValue = $event.target.value" >
+                <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchName.value=''; searchValue=''; onClickResetSearchButton()">
+                    <mat-icon>close</mat-icon>
+                </button>
               <mat-autocomplete #auto="matAutocomplete">
                   <mat-option *ngFor="let result of results " [value]="result.title" (click)="openDialog(result)">
                         <ng-container *ngIf="result.pictures[0]!=null; else elseTemplate">
@@ -37,7 +40,9 @@
               <div class="outter">
                   <div class="inner">
                       <ng-container *ngIf="row.pictures[0]!=null; else elseTemplate">
-                            <img class="advertImage" mat-card-md-image [src]="pathToStaticContent+row.pictures[0].referenceToPicture">
+                            <div class="parentAdvertImage">
+                                <img class="advertImage" mat-card-md-image [src]="pathToStaticContent+row.pictures[0].referenceToPicture">
+                            </div>
                       </ng-container>
                       <ng-template #elseTemplate>
                             <img class="advertImage" mat-card-md-image src="https://i.imgur.com/0TdfLx8.jpg">
@@ -47,7 +52,7 @@
                       <mat-card-title>
                           {{ row.title }}
                       </mat-card-title>
-                      <mat-card-subtitle>Poszukiwani studenci: 2</mat-card-subtitle>
+                      <mat-card-subtitle>Poszukiwane osoby: {{row.volunteersAmount}}</mat-card-subtitle>
 
                       <mat-card-content>
                           <p>
@@ -57,7 +62,7 @@
                   </div>
                   <mat-card-actions>
                       <mat-card-footer>
-                          1 maj 2018: 16:55
+                          {{row.timestamp | relativeDatePipe}}
                       </mat-card-footer>
                       <div class="footer-left">
                           Dodano przez: student
