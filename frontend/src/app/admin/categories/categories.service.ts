@@ -6,6 +6,7 @@ import { Category } from '../../shared/interfaces';
 import { SnackBarService } from '../../shared/snack-bar.service';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { CategoryImpl } from './categories.component';
 
 @Injectable()
 export class CategoriesService extends GenericService<Category> {
@@ -26,7 +27,6 @@ export class CategoriesService extends GenericService<Category> {
   }
 
   createCategory(categoryName: String){
-    console.log(categoryName)
     return this._http.post(this._url + '/category/', { categoryName });
   }
 }

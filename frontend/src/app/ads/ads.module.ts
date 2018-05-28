@@ -25,6 +25,7 @@ import { MyAdsService } from './components/my-ads/my-ads.service';
     AddAdComponent,
     AdminAdComponent,
     MyAdssComponent,
+    AdsComponent
 
     
 

@@ -22,8 +22,7 @@ export class CategoriesComponent implements OnInit {
   totalElements = 0;
   addCategoryShow: boolean = false;
 
-  //this is not a bug, createCategory() not working without this feature.
-  categoryToAdd: Category = new CategoryImpl;
+  categoryToAdd: CategoryImpl = new CategoryImpl;
   
   categories: Category[] = [];
 
@@ -53,7 +52,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   createCategory(): void {
-    this._categoriesService.createCategory(this.categoryToAdd.name)
+   this._categoriesService.createCategory(this.categoryToAdd.categoryName)
        .subscribe( data => {
           alert("Kategoria została utworzona");
           this._loadCategoryPage()
@@ -63,5 +62,5 @@ export class CategoriesComponent implements OnInit {
 
 }
 export class CategoryImpl{
-  categoryName: string;
+  categoryName: String;
 }

@@ -6,7 +6,7 @@
             <h3>Dodaj <a><mat-icon (click)="addCategory()">person_add</mat-icon></a> </h3>
             <div class="row" *ngIf=addCategoryShow>
                     <mat-form-field class="example-full-width">
-                        <input [(ngModel)]="categoryToAdd.name" matInput placeholder="Nazwa nowej kategorii" >
+                        <input [(ngModel)]="categoryToAdd.categoryName" matInput placeholder="Nazwa nowej kategorii" >
                         <mat-hint>Proszę podać nazwę nowej kategorii</mat-hint>
                       </mat-form-field>
                       <button mat-button color="primary" (click)="createCategory()">

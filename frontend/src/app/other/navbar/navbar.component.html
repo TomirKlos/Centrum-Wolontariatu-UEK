@@ -20,7 +20,7 @@
       <button mat-button [matMenuTriggerFor]="menu3" *appHasAnyRole="['ROLE_ADMIN']">
       Admin
       </button>
-      <mat-menu #menu3="matMenu">
+      <mat-menu #menu3="matMenu"><mat-icon>keyboard_arrow_down</mat-icon>
       <div>
       <button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
       <button mat-menu-item routerLink="/requests/admin">Ogłoszenia</button>
