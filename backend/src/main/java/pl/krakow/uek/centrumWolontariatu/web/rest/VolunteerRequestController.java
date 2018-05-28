@@ -115,5 +115,12 @@ public class VolunteerRequestController {
         return new ResponseEntity<>(volunteerAds, HttpStatus.OK);
     }
 
+    @GetMapping("/vrequest/mineId")
+    @ResponseBody
+    public ResponseEntity<List<Long>> findAllMineIds(Pageable pageable) {
+        List<Long> volunteerAdsIds = volunteerRequestService.findAllMineIdsByUserId(pageable);
+        return new ResponseEntity<>(volunteerAdsIds, HttpStatus.OK);
+    }
+
 
 }

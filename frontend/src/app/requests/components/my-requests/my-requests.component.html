@@ -45,7 +45,12 @@
               <button mat-button color="warn" (click)="showApplications(element.id)">
                   <button mat-icon-button (click)="clearCount()">
                       <mat-icon class="icon" color="primary">message</mat-icon>
-                      <span class="badge" *ngIf="badgeCount > 0">{{badgeCount}}</span>
+                      <ng-container *ngIf="getBadgeById(element.id)==null; else elseTemplate">
+                        
+                      </ng-container>
+                      <ng-template #elseTemplate>
+                          <span class="badge" *ngIf="getBadgeById(element.id).text > 0">{{getBadgeById(element.id).text}}</span>
+                      </ng-template>
                      <!-- <span class="badge" *ngIf="badgeCount > 0" ng-init="getBadgeCount(element.id)">{{getBadgeCount(element.id)}}</span>
                      -->
                   </button>

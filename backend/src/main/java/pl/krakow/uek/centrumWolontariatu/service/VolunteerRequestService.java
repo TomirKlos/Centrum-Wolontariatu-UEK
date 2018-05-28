@@ -229,6 +229,16 @@ public class VolunteerRequestService {
         return volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
     }
 
+    @Transactional
+    public List<Long> findAllMineIdsByUserId(Pageable pageable) {
+
+        List<Long> idList = new ArrayList<>();
+        for(VolunteerRequestDTO volunteerRequestDTO: volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId())){
+            idList.add(volunteerRequestDTO.getId());
+        }
+        return idList;
+    }
+    
     public void deleteType(String name){
         volunteerRequestTypeRepository.deleteById(name);
     }

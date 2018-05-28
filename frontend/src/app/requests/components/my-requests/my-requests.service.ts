@@ -11,7 +11,7 @@ export class MyRequestsService extends ServerResourceService<responseVolunteerRe
 
   constructor(_http: HttpClient, _snackBar: SnackBarService) {
     super(_http, _snackBar);
-    this._url = this._url + '/responseVr';
+    this._url = this._url;
   }
 
   loadApplications(id: number) {
@@ -24,15 +24,25 @@ export class MyRequestsService extends ServerResourceService<responseVolunteerRe
   }
 
   getBadgeCount(id: number) {
-    return this._http.get(this._url + "unseen/" + id).pipe(
+    return this._http.get(this._url + "/responseVr/unseen" + id).pipe(
       catchError(err => {
         this._snackBar.warning();
         return err;
       })
     );
   }
+
   get(id: number){
-    return this._http.get(this._url + "/unseen"+ id);
+    return this._http.get(this._url + "/responseVr/unseen?volunteerRequestId="+ id);
+  }
+
+  getIDs() {
+    return this._http.get(this._url + "/vrequest/mineId").pipe(
+      catchError(err => {
+        this._snackBar.warning();
+        return err;
+      })
+    );
   }
 
 }

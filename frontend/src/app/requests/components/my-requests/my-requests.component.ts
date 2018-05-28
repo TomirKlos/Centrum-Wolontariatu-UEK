@@ -26,6 +26,11 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
 
   badgeCount = 5;
 
+  chuj: String[] = [];
+  chuj2: BadgeData[] = [];
+
+  badgePrepared: boolean = false;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -43,6 +48,9 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
 
+    this.getIds();
+    this.badgePrepared = true;
+
   }
 
   ngAfterViewInit() {
@@ -57,9 +65,44 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
     this._dialogService.openApplicationsPanel(request);
   }
 
-  getBadgeCount(id: number){
+  getBadgeCount(id: any){
     this._myRequestsService.get(id).debounceTime(10000).subscribe((data)=>{
+      this.chuj.push(data as string)
       return data;
     });
+  }
+
+  getIds(){
+    this._myRequestsService.getIDs().subscribe((data)=>{
+      (data as number[]).forEach(element => {
+        
+        this._myRequestsService.get(element).debounceTime(10000).subscribe((data)=>{
+          var badgeData = new BadgeData(element, data);
+          this.chuj2.push(badgeData);
+          return data;
+        });
+      });
+      return data;
+    });
+  }
+
+  getBadgeById(id:number){
+    for (var i = 0; i < this.chuj2.length; i++) {
+        if (this.chuj2[i]["id"] === id) {
+            return this.chuj2[i];
+        }
+    }
+    return null;
+  }
+
+}
+
+export class BadgeData{
+  private id:number;
+  private text: string;
+
+  constructor(id,text) {
+      this.id = id;
+      this.text = text;
   }
 }
