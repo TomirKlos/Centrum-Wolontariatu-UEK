@@ -15,7 +15,7 @@ const routes: Routes = [ {
   path: 'ads',
   component: AdsComponent,
   children: [
-    { path: 'add', component: AddAdComponent },
+    { path: 'add', component: AddAdComponent, canActivate: [ AuthGuardService ] },
     { path: 'admin', component: AdminAdComponent, canActivate: [ AdminGuardService ] },
     { path: 'mine', component: MyAdssComponent, canActivate: [ AuthGuardService ] },
 

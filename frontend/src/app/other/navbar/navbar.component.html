@@ -18,9 +18,9 @@
       <!--</mat-menu>-->
 
       <button mat-button [matMenuTriggerFor]="menu3" *appHasAnyRole="['ROLE_ADMIN']">
-      Admin
+      Admin <mat-icon>keyboard_arrow_down</mat-icon>
       </button>
-      <mat-menu #menu3="matMenu"><mat-icon>keyboard_arrow_down</mat-icon>
+      <mat-menu #menu3="matMenu">
       <div>
       <button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
       <button mat-menu-item routerLink="/requests/admin">Ogłoszenia</button>
@@ -30,7 +30,7 @@
       </mat-menu>
 
       <button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['authenticated']">
-        Ogłoszenia
+        Ogłoszenia<mat-icon>keyboard_arrow_down</mat-icon>
       </button>
       <mat-menu #menu2="matMenu">
         <div>
@@ -40,7 +40,7 @@
       </mat-menu>
 
       <button mat-button [matMenuTriggerFor]="menu4" *appHasAnyRole="['authenticated']">
-          Wolontariusz
+          Wolontariusz<mat-icon>keyboard_arrow_down</mat-icon>
         </button>
         <mat-menu #menu4="matMenu">
           <div>

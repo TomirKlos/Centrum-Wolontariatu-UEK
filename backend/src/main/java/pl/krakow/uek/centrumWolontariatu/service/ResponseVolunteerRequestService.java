@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.krakow.uek.centrumWolontariatu.domain.ResponseVolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
@@ -38,6 +39,8 @@ public class ResponseVolunteerRequestService {
         this.userService = userService;
     }
 
+   // @PreAuthorize("#responseVolunteerRequestVm.name == principal.name")
+   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_LECTURER')")
     public void apply(ResponseVolunteerRequestVM responseVolunteerRequestVM){
         if(userService.getUserWithAuthorities().get().getId()!=volunteerRequestRepository.findById(responseVolunteerRequestVM.getVolunteerRequestId()).get().getUser().getId() ) {
             User user = userService.getUserWithAuthorities().get();

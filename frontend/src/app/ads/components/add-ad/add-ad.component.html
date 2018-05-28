@@ -16,12 +16,15 @@
               <textarea matInput placeholder="Opis" matTextareaAutosize matAutosizeMinRows="5"
                         matAutosizeMaxRows="20" formControlName="description"></textarea>
             </mat-form-field>
-      
-             <input type="file" multiple (change)="onFileSelected($event)">
-            <button mat-button color="primary" (click)="onUpload()">Prześlij zdjęcie</button>
+
+             <input style="display: none" type="file" multiple (change)="onFileSelected($event)" #fileInput>
+             
+             <button mat-button color="primary" (click)="fileInput.click()">Dodaj zdjęcie<mat-icon>add_photo_alternate</mat-icon></button>
+
+            <!-- <button mat-button color="primary" (click)="onUpload()">Prześlij zdjęcie</button> -->
+
             <div *ngFor="let item of fileHash">
-              <img [src]="pathToStaticContent+item" height="40"> <a (click)="deletePicture(item)"> usuń</a>
-      
+              <img [src]="pathToStaticContent+item" height="40"> <a (click)="deletePicture(item)">  <mat-icon color="warn">delete_forever</mat-icon></a>
             </div>
             
       

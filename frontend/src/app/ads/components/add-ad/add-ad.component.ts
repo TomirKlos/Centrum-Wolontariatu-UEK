@@ -56,7 +56,9 @@ export class AddAdComponent implements OnInit {
 
   onFileSelected(event){
     this.selectedFile = <File[]> event.target.files;
+    this.onUpload();
   }
+
 
   onUpload(){
     const fd = new FormData();

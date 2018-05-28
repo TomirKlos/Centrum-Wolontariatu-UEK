@@ -81,7 +81,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/api/authenticate",
                 "/api/register",
                 "/api/activate",
-                "/api/reset-password/**"
+                "/api/reset-password/**",
+                "/api/vrequest/",
+                "/api/vAd/",
+                "/api/vAd/solr/**",
+                "/api/vAd/solrPage/**",
+                "/api/vrequest/solr/**",
+                "/api/vrequest/solrPage/**"
             ).permitAll()
             .antMatchers("/api/**").authenticated()
         .and()
