@@ -17,4 +17,8 @@ export class RequestService extends ServerResourceService<VolunteerRequestVM> {
     return this._http.get(this._url + "/category/");
   }
 
+  public getMine() {
+    return this._http.get(this._url + "/mine");
+  }
+
 }

@@ -229,6 +229,7 @@ public class VolunteerRequestService {
         return volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
     }
 
+
     @Transactional
     public List<Long> findAllMineIdsByUserId(Pageable pageable) {
 
@@ -238,7 +239,7 @@ public class VolunteerRequestService {
         }
         return idList;
     }
-    
+
     public void deleteType(String name){
         volunteerRequestTypeRepository.deleteById(name);
     }

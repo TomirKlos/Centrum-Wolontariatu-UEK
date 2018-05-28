@@ -11,6 +11,7 @@ import { RequestDialogService } from '../../requests/shared/request-dialog.servi
 import { RequestService } from '../../requests/shared/request.service';
 import { ServerDataSource } from '../../shared/server-data-source';
 import { AdService } from '../../ads/shared/ad.service';
+import { AdDialogService } from '../../ads/shared/ad-dialog.service';
 
 
 @Component({
@@ -45,7 +46,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('searchName') input:ElementRef;
 
-  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _requestService: RequestService, private _adService: AdService) {
+  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService) {
     this.searchService.search(this.searchTerm$)
     .subscribe(results => {
       this.results = results;
@@ -145,6 +146,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   openDialog(element: VolunteerRequestVM): void {
     this._dialogService.open(element);
+  }
+
+  openDialogAd(element: VolunteerAdVM): void {
+    this._adDialogService.open(element);
   }
 
   onClickResetSearchButton(){

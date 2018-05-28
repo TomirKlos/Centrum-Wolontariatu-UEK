@@ -97,7 +97,7 @@
                       <mat-icon>close</mat-icon>
                   </button>
                 <mat-autocomplete #autoAd="matAutocomplete">
-                    <mat-option *ngFor="let result of resultsAd " [value]="result.title" (click)="openDialog(result)">
+                    <mat-option *ngFor="let result of resultsAd " [value]="result.title" (click)="openDialogAd(result)">
                           <ng-container *ngIf="result.pictures[0]!=null; else elseTemplate">
                                   <img class="searchImage" aria-hidden [src]="pathToStaticContent+result.pictures[0].referenceToPicture" height="25" /> {{result.title}} <a style="font-size: 10px;">{{result.description}}</a>
                             </ng-container>
@@ -109,7 +109,7 @@
                 </mat-autocomplete>
             </mat-form-field>
 
-          <mat-card *ngFor="let row of dataSourceAds.connect() | async" class="box" (click)="openDialog(row)">
+          <mat-card *ngFor="let row of dataSourceAds.connect() | async" class="box" (click)="openDialogAd(row)">
                 <div class="outter">
                         <div class="inner">
                             <ng-container *ngIf="row.pictures[0]!=null; else elseTemplate">

@@ -19,7 +19,7 @@ const routes: Routes = [ {
     { path: 'add', component: AddRequestComponent, canActivate: [ AuthGuardService ] },
     { path: 'admin', component: AdminRequestsComponent, canActivate: [ AdminGuardService ] },
     { path: 'mine', component: MyRequestsComponent, canActivate: [ AuthGuardService ] },
-    { path: ':id', component: ViewRequestComponent, canActivate: [ AuthGuardService ], resolve: { request: ViewRequestResolverService },  },
+    { path: ':id', component: ViewRequestComponent, resolve: { request: ViewRequestResolverService }  },
     { path: 'apply', component: ApplyRequestComponent, canActivate: [ AuthGuardService ] },
     { path: 'applications', component: ViewApplyRequestComponent, canActivate: [ AuthGuardService ] },
     

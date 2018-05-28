@@ -10,6 +10,12 @@ import { AddAdComponent } from './components/add-ad/add-ad.component';
 import { AdminAdComponent } from './components/admin-ad/admin-ad.component';
 import { MyAdssComponent } from './components/my-ads/my-ads.component';
 import { MyAdsService } from './components/my-ads/my-ads.service';
+import { AdDialogService } from './shared/ad-dialog.service';
+import { ViewAdDialogComponent } from './components/view-request/view-ad-dialog.component';
+import { ViewAdComponent } from './components/view-request/view-ad.component';
+import { InviteAdComponent,  } from './components/invite-ad/invite-ad.component';
+import { FormsModule } from '@angular/forms';
+import { InviteChooseRequestDialogComponent } from './components/invite-ad/invite-chooseRequest-dialog.component';
 
 
 
@@ -18,14 +24,20 @@ import { MyAdsService } from './components/my-ads/my-ads.service';
   imports: [
     AdsRoutingModule,
     LayoutModule,
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
     
   ],
   declarations: [
     AddAdComponent,
     AdminAdComponent,
     MyAdssComponent,
-    AdsComponent
+    AdsComponent,
+    ViewAdComponent,
+    ViewAdDialogComponent,
+    InviteAdComponent,
+    InviteChooseRequestDialogComponent
+    
 
     
 
@@ -33,10 +45,14 @@ import { MyAdsService } from './components/my-ads/my-ads.service';
   providers: [
     AdService,
     MyAdsService,
+    AdDialogService,
     
 
   ],
   entryComponents: [
+    ViewAdDialogComponent,
+    InviteChooseRequestDialogComponent
+
 
   ]
 })

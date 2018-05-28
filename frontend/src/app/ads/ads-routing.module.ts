@@ -9,6 +9,8 @@ import { AdsComponent } from './ads.component';
 import { AddAdComponent } from './components/add-ad/add-ad.component';
 import { AdminAdComponent } from './components/admin-ad/admin-ad.component';
 import { MyAdssComponent } from './components/my-ads/my-ads.component';
+import { ViewAdComponent } from './components/view-request/view-ad.component';
+import { ViewAdResolverService } from './shared/ad-resolver.service';
 
 
 const routes: Routes = [ {
@@ -18,6 +20,7 @@ const routes: Routes = [ {
     { path: 'add', component: AddAdComponent, canActivate: [ AuthGuardService ] },
     { path: 'admin', component: AdminAdComponent, canActivate: [ AdminGuardService ] },
     { path: 'mine', component: MyAdssComponent, canActivate: [ AuthGuardService ] },
+    { path: ':id', component: ViewAdComponent, resolve: { request: ViewAdResolverService }  },
 
   ]
 } ];
