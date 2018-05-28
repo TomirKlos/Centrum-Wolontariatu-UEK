@@ -1,0 +1,32 @@
+a{
+    text-decoration: none; 
+    color:rgb(155, 155, 196);
+  }
+
+footer{
+    margin-top: 25px; 
+    background-color:#3F51B5;
+    position:absolute;
+    bottom:0;
+    width:100%;
+
+    mat-card{
+        top:5px;
+
+        mat-card-header{
+            top: 5px; 
+            background-color:rgb(46, 74, 146); 
+            box-shadow: inset 1px 1px 5px black;
+        }
+
+        mat-card-content{
+            background-color:#3F51B5; 
+            box-shadow: inset 1px 1px 5px black;
+            background-image: url('https://e-uczelnia.uek.krakow.pl/xtras/logo_uek.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: bottom center;
+            min-height:100px
+        }
+    }
+  }
