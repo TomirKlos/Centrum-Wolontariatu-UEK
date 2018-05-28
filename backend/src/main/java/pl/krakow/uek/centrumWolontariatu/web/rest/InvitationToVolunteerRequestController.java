@@ -8,6 +8,7 @@ import pl.krakow.uek.centrumWolontariatu.repository.DTO.InvitationToVolunteerReq
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.service.InvitationToVolunteerRequestService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.InvitationToVolunteerRequestVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.ResponseVolunteerRequestVM;
 
@@ -30,7 +31,17 @@ public class InvitationToVolunteerRequestController {
     }
 
     @GetMapping
-    public Page<InvitationToVolunteerRequestDTO> getAllInvitation(@RequestParam long userId, Pageable pageable){
-        return invitationToVolunteerRequestService.getAllByUserId(userId, pageable);
+    public Page<InvitationToVolunteerRequestDTO> getAllByInvitationId(@RequestParam long adId, Pageable pageable){
+        return invitationToVolunteerRequestService.getAllByInvitationId(adId, pageable);
+    }
+
+    @PostMapping("/accept")
+    public void acceptInvitationRequest(@RequestBody IdVM idVM) {
+        invitationToVolunteerRequestService.acceptInvitation(idVM.getId());
+    }
+
+    @PostMapping("/disableAccepted")
+    public void disableAcceptedInvitationRequest(@RequestBody IdVM idVM) {
+        invitationToVolunteerRequestService.disableAcceptedInvitation(idVM.getId());
     }
 }

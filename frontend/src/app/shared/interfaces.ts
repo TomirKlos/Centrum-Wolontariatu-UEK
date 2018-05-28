@@ -36,6 +36,13 @@ export interface responseVolunteerRequestVM {
   seen: number;
 }
 
+export interface InvitationVolunteerRequestVM {
+  description: string;
+  volunteerAdId: number;
+  volunteerRequestId: number;
+  seen: number;
+}
+
 export interface Category {
   name: string;
 }

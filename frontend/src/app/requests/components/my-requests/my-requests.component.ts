@@ -26,8 +26,8 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
 
   badgeCount = 5;
 
-  chuj: String[] = [];
-  chuj2: BadgeData[] = [];
+  badgeTemp: String[] = [];
+  badgeData: BadgeData[] = [];
 
   badgePrepared: boolean = false;
 
@@ -67,7 +67,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
 
   getBadgeCount(id: any){
     this._myRequestsService.get(id).debounceTime(10000).subscribe((data)=>{
-      this.chuj.push(data as string)
+      this.badgeTemp.push(data as string)
       return data;
     });
   }
@@ -78,7 +78,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
         
         this._myRequestsService.get(element).debounceTime(10000).subscribe((data)=>{
           var badgeData = new BadgeData(element, data);
-          this.chuj2.push(badgeData);
+          this.badgeData.push(badgeData);
           return data;
         });
       });
@@ -87,9 +87,9 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   }
 
   getBadgeById(id:number){
-    for (var i = 0; i < this.chuj2.length; i++) {
-        if (this.chuj2[i]["id"] === id) {
-            return this.chuj2[i];
+    for (var i = 0; i < this.badgeData.length; i++) {
+        if (this.badgeData[i]["id"] === id) {
+            return this.badgeData[i];
         }
     }
     return null;

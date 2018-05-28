@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ViewAdDialogComponent } from '../components/view-request/view-ad-dialog.component';
+import { ViewInvitationDialogComponent } from '../components/view-volunteer-invitation/view-invitation-dialog.component';
 
 @Injectable()
 export class AdDialogService {
@@ -15,10 +16,10 @@ export class AdDialogService {
     });
   }
 
- /* openApplicationsPanel(id: number) {
-    return this._dialog.open(ViewApplyRequestDialogComponent, {
+  openApplicationsPanel(id: number) {
+    return this._dialog.open(ViewInvitationDialogComponent, {
       data: id,
       panelClass: 'app-dialog-container'
     });
-  }*/
+  }
 }

@@ -27,6 +27,4 @@ export class ViewRequestDialogComponent {
   showApplyForm(){
     this.viewApplyForm = !this.viewApplyForm;
   }
-
-
 }

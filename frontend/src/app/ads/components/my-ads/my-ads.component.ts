@@ -14,6 +14,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AdService } from '../../shared/ad.service';
 import { RequestDialogService } from '../../../requests/shared/request-dialog.service';
 import { MyAdsService } from './my-ads.service';
+import { AdDialogService } from '../../shared/ad-dialog.service';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
   constructor(
     private _adService: AdService, 
    // private _applyService: ApplyService,
-    private _dialogService: RequestDialogService, 
+    private _dialogService: AdDialogService,
     private _http: HttpClient,
     private _myAdsService: MyAdsService,
   ) {
@@ -56,9 +57,9 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
     this._dialogService.open(request);
   }
 
- /* showApplications(request: number){
+  showApplications(request: number){
     this._dialogService.openApplicationsPanel(request);
-  } */
+  } 
 
 
 }

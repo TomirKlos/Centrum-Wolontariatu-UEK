@@ -16,6 +16,8 @@ import { ViewAdComponent } from './components/view-request/view-ad.component';
 import { InviteAdComponent,  } from './components/invite-ad/invite-ad.component';
 import { FormsModule } from '@angular/forms';
 import { InviteChooseRequestDialogComponent } from './components/invite-ad/invite-chooseRequest-dialog.component';
+import { ViewInvitationDialogComponent } from './components/view-volunteer-invitation/view-invitation-dialog.component';
+import { InvitationService } from './components/view-volunteer-invitation/invitation.service';
 
 
 
@@ -36,7 +38,9 @@ import { InviteChooseRequestDialogComponent } from './components/invite-ad/invit
     ViewAdComponent,
     ViewAdDialogComponent,
     InviteAdComponent,
-    InviteChooseRequestDialogComponent
+    InviteChooseRequestDialogComponent,
+    ViewInvitationDialogComponent
+
     
 
     
@@ -46,12 +50,15 @@ import { InviteChooseRequestDialogComponent } from './components/invite-ad/invit
     AdService,
     MyAdsService,
     AdDialogService,
+    InvitationService
     
 
   ],
   entryComponents: [
     ViewAdDialogComponent,
-    InviteChooseRequestDialogComponent
+    InviteChooseRequestDialogComponent,
+    ViewInvitationDialogComponent
+
 
 
   ]

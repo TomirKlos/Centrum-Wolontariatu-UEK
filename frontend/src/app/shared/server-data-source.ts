@@ -78,6 +78,14 @@ export class ServerDataSource<T> implements DataSource<T> {
     ).subscribe(d => this._data.next(d.content));
   }
 
+  loadInvitationPage(id: number) {
+    this._serverResourceService.getPage(
+      { name: 'adId', value: id },
+      { name: 'page', value: 0 },
+      { name: 'size', value: 10 }
+    ).subscribe(d => this._data.next(d.content));
+  }
+
   generateFilteredSearchPage(textSearch: Subject<string>){
     this.textSearch = textSearch;
     return this.loadFilteredBySearchPage();
