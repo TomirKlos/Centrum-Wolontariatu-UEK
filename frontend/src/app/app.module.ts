@@ -21,14 +21,8 @@ import { ListOfRequestModule } from './layouts/list-of-request/list-of-request.m
 import { NguCarouselModule } from '@ngu/carousel';
 import { MatAutocompleteModule } from '@angular/material';
 import { SearchService } from './shared/search-service.service';
-import { RequestDialogService } from './requests/shared/request-dialog.service';
-import { ViewRequestResolverService } from './requests/shared/request-resolver.service';
-import { ViewRequestDialogComponent } from './requests/components/view-request/view-request-dialog.component';
 import { AdsModule } from './ads/ads.module';
 import { FooterComponent } from './other/footer/footer.component';
-
-
-
 
 
 @NgModule({
@@ -50,7 +44,6 @@ import { FooterComponent } from './other/footer/footer.component';
     MatAutocompleteModule,
 
 
-
     // module of app parts
     HomeModule,
     AccountModule,
@@ -68,7 +61,7 @@ import { FooterComponent } from './other/footer/footer.component';
     SearchService,
   ],
 
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }
