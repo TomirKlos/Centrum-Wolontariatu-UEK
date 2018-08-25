@@ -3,11 +3,11 @@ import {CommonModule} from "@angular/common";
 import { RelativeDatePipe } from '../../shared/relativeDate.pipe';
 
 
-
+/*
 @NgModule({
   declarations:[RelativeDatePipe],
   imports:[CommonModule],
   exports:[RelativeDatePipe]
 })
 
-export class MainPipe{}
+export class MainPipe{} */
