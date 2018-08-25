@@ -8,8 +8,8 @@ import { LayoutModule } from '../shared/layout.module';
 @NgModule({
   imports: [
     CommonModule,
-    OtherRoutingModule,
-    LayoutModule
+    LayoutModule,
+    OtherRoutingModule
   ],
   declarations: [
     SidenavComponent
