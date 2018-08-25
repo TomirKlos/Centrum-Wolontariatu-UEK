@@ -77,9 +77,4 @@ export class ViewInvitationDialogComponent {
   prepareConfirm(id: number){
     this.showConfirmApply = !this.showConfirmApply;
   }
-
-  openDialog(id: number): void {
-    this._dialogService.open(request);
-  }
-
 }
