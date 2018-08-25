@@ -3,21 +3,20 @@
           <mat-card-title>Moje zgłoszenia jako wolontariusz</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <button mat-button color="warn" (click)="getBadgeCount(35)">{{badgeexd}}</button>
-      
+
           <div id="my-table-container">
             <mat-table [dataSource]="dataSource" matSort>
-      
+
               <ng-container matColumnDef="id">
                 <mat-header-cell *matHeaderCellDef fxFlex="50px" mat-sort-header>id</mat-header-cell>
                 <mat-cell *matCellDef="let element" fxFlex="50px"> {{ element.id }}</mat-cell>
               </ng-container>
-      
+
               <ng-container matColumnDef="title">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>tytuł</mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.title }}</mat-cell>
               </ng-container>
-      
+
               <ng-container matColumnDef="accepted">
                 <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="120px">Aktywny</mat-header-cell>
                 <mat-cell *matCellDef="let element" fxFlex="120px">
@@ -28,7 +27,7 @@
                   </mat-chip-list>
                 </mat-cell>
               </ng-container>
-      
+
               <ng-container matColumnDef="delete">
                 <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
                 <mat-cell *matCellDef="let element" fxFlex="100px">
@@ -38,7 +37,7 @@
                   </button>
                 </mat-cell>
               </ng-container>
-      
+
               <ng-container matColumnDef="application">
                   <mat-header-cell *matHeaderCellDef fxFlex="100px">Zaproszenia</mat-header-cell>
                   <mat-cell *matCellDef="let element" fxFlex="100px">
@@ -52,22 +51,22 @@
                     </button>
                   </mat-cell>
                 </ng-container>
-      
+
               <ng-container matColumnDef="editVr">
                 <mat-header-cell *matHeaderCellDef fxFlex="100px">Podgląd</mat-header-cell>
                 <mat-cell *matCellDef="let element" fxFlex="100px">
                   <button mat-button color="primary" (click)="openDialog(element)">
                     <!--<button mat-button color="primary" [routerLink]="['/requests/', element.id]">-->
-      
+
                     <mat-icon>edit</mat-icon>
                     podgląd
                   </button>
                 </mat-cell>
               </ng-container>
-      
+
               <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
               <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
-      
+
             </mat-table>
           </div>
           <mat-paginator #paginator
@@ -78,4 +77,3 @@
           </mat-paginator>
         </mat-card-content>
       </mat-card>
-      

@@ -1,14 +1,13 @@
 
-      
+
           <form [formGroup]="formGroup" #form="ngForm">
-      
+
             <mat-form-field>
               <textarea matInput placeholder="Opis" matTextareaAutosize matAutosizeMinRows="5"
                         matAutosizeMaxRows="20" formControlName="description"></textarea>
             </mat-form-field>
-            <h1>{{ childMessage }}</h1>
-            <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid || buttonDisabled"
-                    (click)="apply(id)">
+            <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid"
+                    (click)="apply()">
               Dodaj
             </button>
           </form>

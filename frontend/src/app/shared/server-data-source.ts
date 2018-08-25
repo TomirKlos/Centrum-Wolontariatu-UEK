@@ -32,6 +32,10 @@ export class ServerDataSource<T> implements DataSource<T> {
     return this._data.asObservable();
   }
 
+  connectToSource(): Observable<T[]> {
+    return this._data.asObservable();
+  }
+
   disconnect() {
     this._data.complete();
   }

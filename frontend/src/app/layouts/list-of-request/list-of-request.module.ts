@@ -1,6 +1,5 @@
-import { NgModule } from '@angular/core';
-import { NguCarouselModule } from '@ngu/carousel';
-import { MatAutocompleteModule } from '@angular/material';
+import {NgModule} from '@angular/core';
+
 
 @NgModule({
   imports: [
@@ -8,7 +7,7 @@ import { MatAutocompleteModule } from '@angular/material';
   ],
   exports:[
 
-  ]
+  ],
 })
 export class ListOfRequestModule {
 }

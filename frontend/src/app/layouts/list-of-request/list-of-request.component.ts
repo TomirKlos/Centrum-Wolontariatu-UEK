@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
-import { VolunteerRequestVM, Page, Category, VolunteerAdVM } from '../../shared/interfaces';
+import { VolunteerRequestVM, Category, VolunteerAdVM } from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
-import { MatAutocompleteModule, MatPaginator, PageEvent, MatSort } from '@angular/material';
+import { MatPaginator, PageEvent, MatSort } from '@angular/material';
 
 import { RequestDialogService } from '../../requests/shared/request-dialog.service';
 
@@ -21,7 +21,7 @@ import { AdDialogService } from '../../ads/shared/ad-dialog.service';
 })
 export class ListOfRequestComponent implements OnInit, AfterViewInit {
   pathToStaticContent = "http://localhost:8080/static/";
-  staticNotFoundImage = "http://localhost:8080/static/brak-obrazka.jpg"
+  staticNotFoundImage = "http://localhost:8080/static/brak-obrazka.jpg";
 
 
   results: Object;
@@ -44,18 +44,18 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild('searchName') input:ElementRef;
+  @ViewChild('searchName') input: ElementRef;
 
   constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService) {
     this.searchService.search(this.searchTerm$)
     .subscribe(results => {
       this.results = results;
-    }); 
+    });
 
     this.searchService.searchAd(this.searchAdTerm$)
     .subscribe(results => {
       this.resultsAd = results;
-    }); 
+    });
   }
 
   public carouselBanner: NguCarousel;

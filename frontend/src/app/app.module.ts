@@ -61,7 +61,7 @@ import { FooterComponent } from './other/footer/footer.component';
     SearchService,
   ],
 
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 }

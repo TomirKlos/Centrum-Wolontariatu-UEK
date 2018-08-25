@@ -18,7 +18,6 @@ import { FormsModule } from '@angular/forms';
 import { InviteChooseRequestDialogComponent } from './components/invite-ad/invite-chooseRequest-dialog.component';
 import { ViewInvitationDialogComponent } from './components/view-volunteer-invitation/view-invitation-dialog.component';
 import { InvitationService } from './components/view-volunteer-invitation/invitation.service';
-import {ViewApplyRequestComponent} from './components/view-volunteer-invitation/view-invitation.component';
 
 
 
@@ -41,9 +40,6 @@ import {ViewApplyRequestComponent} from './components/view-volunteer-invitation/
     InviteAdComponent,
     InviteChooseRequestDialogComponent,
     ViewInvitationDialogComponent,
-    ViewApplyRequestComponent,
-
-
   ],
   providers: [
     AdService,

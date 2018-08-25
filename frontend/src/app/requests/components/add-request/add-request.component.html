@@ -47,9 +47,9 @@
         <img [src]="pathToStaticContent+item" height="40"> <a (click)="deletePicture(item)"> usuń</a>
 
       </div>
-      
 
-      <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid || buttonDisabled"
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid"
               (click)="submit()">
         Dodaj
       </button>

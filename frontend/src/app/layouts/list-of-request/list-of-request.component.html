@@ -11,7 +11,7 @@
       <h1 class="sectionTitle">Wolontariat</h1>
       <mat-card class="outer">
         <!-- To je szukajka, zostaw mi do podpięcia -->
-          <mat-form-field class="example-full-width" (ngSubmit)="xxxx()">
+          <mat-form-field class="example-full-width">
               <mat-placeholder>
                   <mat-icon class="form-icon">search</mat-icon>
                   Szukaj wolontariatu
@@ -28,7 +28,7 @@
                           <ng-template #elseTemplate>
                                 <img class="searchImage" aria-hidden src="https://i.imgur.com/0TdfLx8.jpg" height="25" /> {{result.title}} <a style="font-size: 10px;">{{result.description}}</a>
                           </ng-template>
-                    
+
 
                      <!-- <img class="searchImage" aria-hidden src="https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg" height="25" /> {{result.title}} <a style="font-size: 10px;">{{result.description}}</a>
                      -->
@@ -36,7 +36,7 @@
               </mat-autocomplete>
           </mat-form-field>
 
-          <mat-card *ngFor="let row of dataSource.connect() | async" class="box" (click)="openDialog(row)">
+          <mat-card *ngFor="let row of dataSource.connectToSource() | async" class="box" (click)="openDialog(row)">
               <div class="outter">
                   <div class="inner">
                       <ng-container *ngIf="row.pictures[0]!=null; else elseTemplate">
@@ -47,8 +47,8 @@
                       <ng-template #elseTemplate>
                             <img class="advertImage" mat-card-md-image src="https://i.imgur.com/0TdfLx8.jpg">
                       </ng-template>
-                      
-                      
+
+
                       <mat-card-title>
                           {{ row.title }}
                       </mat-card-title>
@@ -65,7 +65,7 @@
                           {{row.timestamp | relativeDatePipe}}
                       </mat-card-footer>
                       <div class="footer-left">
-                          Dodano przez: student |  
+                          Dodano przez: student |
                           <ng-container *ngIf="row.categories==0; else elseTemplateCategories">
                                 -
                                 </ng-container>
@@ -74,7 +74,7 @@
                                   <span *ngIf="row.categories.length > 1" class="example-additional-selection">
                                      (+{{row.categories.length - 1}} <span matTooltip="{{getCategoriesFromVolunteerRequest(row.categories)}}">pozostałych </span>)
                                     </span>
-                                    
+
                                 </ng-template>
                       </div>
                   </mat-card-actions>
@@ -87,7 +87,7 @@
       <h1 class="sectionTitle">Wolontariusze</h1>
       <mat-card class="outer">
 
-          <mat-form-field class="example-full-width" (ngSubmit)="xxxx()">
+          <mat-form-field class="example-full-width">
                 <mat-placeholder>
                     <mat-icon class="form-icon">search</mat-icon>
                     Szukaj wolontariuszy
@@ -104,12 +104,12 @@
                             <ng-template #elseTemplate>
                                   <img class="searchImage" aria-hidden src="https://i.imgur.com/0TdfLx8.jpg" height="25" /> {{result.title}} <a style="font-size: 10px;">{{result.description}}</a>
                             </ng-template>
-                            
+
                       </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
 
-          <mat-card *ngFor="let row of dataSourceAds.connect() | async" class="box" (click)="openDialogAd(row)">
+          <mat-card *ngFor="let row of dataSourceAds.connectToSource() | async" class="box" (click)="openDialogAd(row)">
                 <div class="outter">
                         <div class="inner">
                             <ng-container *ngIf="row.pictures[0]!=null; else elseTemplate">
@@ -120,13 +120,13 @@
                             <ng-template #elseTemplate>
                                   <img class="advertImage" mat-card-md-image src="https://i.imgur.com/0TdfLx8.jpg">
                             </ng-template>
-                            
-                            
+
+
                             <mat-card-title>
                                 {{ row.title }}
                             </mat-card-title>
                             <mat-card-subtitle>subtitle</mat-card-subtitle>
-      
+
                             <mat-card-content>
                                 <p>
                                     {{ row.description }}
@@ -138,7 +138,7 @@
                                 {{row.timestamp | relativeDatePipe}}
                             </mat-card-footer>
                             <div class="footer-left">
-                                Dodano przez: student |  
+                                Dodano przez: student |
                                 <ng-container *ngIf="row.categories==0; else elseTemplateCategories">
                                       -
                                       </ng-container>
@@ -147,7 +147,7 @@
                                         <span *ngIf="row.categories.length > 1" class="example-additional-selection">
                                            (+{{row.categories.length - 1}} <span matTooltip="{{getCategoriesFromVolunteerRequest(row.categories)}}">pozostałych </span>)
                                           </span>
-                                          
+
                                       </ng-template>
                             </div>
                         </mat-card-actions>
@@ -161,7 +161,7 @@
     [pageIndex]="pageIndex"
     [pageSize]="pageSize"
     [pageSizeOptions]="[5, 10, 25, 100]"
-    (page)="pageEvent = $event; pageChange($event)"
+    (page)="pageEvent = $event;"
 ></mat-paginator>
 
 

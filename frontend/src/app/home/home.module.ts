@@ -1,17 +1,20 @@
 import { NgModule } from '@angular/core';
 
 import { HomeRoutingModule } from './home-routing.module';
-import { HomeComponent } from "./home.component";
-import { ListOfRequestComponent } from "../layouts/list-of-request/list-of-request.component";
-import { LayoutModule } from "../shared/layout.module";
+import { HomeComponent } from './home.component';
+import { ListOfRequestComponent } from '../layouts/list-of-request/list-of-request.component';
+import { LayoutModule } from '../shared/layout.module';
 import { RelativeDatePipe } from '../shared/relativeDate.pipe';
-import { MatTooltipModule } from '@angular/material';
+import {
+  MatTooltipModule
+} from '@angular/material';
 
 @NgModule({
   imports: [
     LayoutModule,
     HomeRoutingModule,
-    MatTooltipModule
+    MatTooltipModule,
+
   ],
   declarations: [
     HomeComponent,

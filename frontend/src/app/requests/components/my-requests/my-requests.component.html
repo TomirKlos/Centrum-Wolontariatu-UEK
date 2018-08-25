@@ -3,7 +3,6 @@
     <mat-card-title>Moje ogłoszenia</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-      <button mat-button color="warn" (click)="getBadgeCount(35)">{{badgeexd}}</button>
 
     <div id="my-table-container">
       <mat-table [dataSource]="dataSource" matSort>
@@ -46,7 +45,7 @@
                   <button mat-icon-button (click)="clearCount()">
                       <mat-icon class="icon" color="primary">message</mat-icon>
                       <ng-container *ngIf="getBadgeById(element.id)==null; else elseTemplate">
-                        
+
                       </ng-container>
                       <ng-template #elseTemplate>
                           <span class="badge" *ngIf="getBadgeById(element.id).text > 0">{{getBadgeById(element.id).text}}</span>

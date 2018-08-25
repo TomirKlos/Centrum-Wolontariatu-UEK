@@ -13,7 +13,6 @@ import { ViewRequestDialogComponent } from './components/view-request/view-reque
 import { RequestDialogService } from './shared/request-dialog.service';
 import { MyRequestsComponent } from './components/my-requests/my-requests.component';
 import { ApplyRequestComponent } from './apply-request/apply-request.component';
-import { ViewApplyRequestComponent } from './components/my-requests/view-apply-request/view-apply-request.component';
 import { ViewApplyRequestDialogComponent } from './components/my-requests/view-apply-request/view-apply-request-dialog.component';
 import { MyRequestsService } from './components/my-requests/my-requests.service';
 import { ApplyService } from './components/my-requests/view-apply-request/apply-request.service';
@@ -27,7 +26,7 @@ import { MatSelectModule } from '@angular/material';
     LayoutModule,
     RequestsRoutingModule,
     MatSelectModule
-    
+
   ],
   declarations: [
     RequestsComponent,
@@ -37,7 +36,6 @@ import { MatSelectModule } from '@angular/material';
     AdminRequestsComponent,
     MyRequestsComponent,
     ApplyRequestComponent,
-    ViewApplyRequestComponent,
     ViewApplyRequestDialogComponent,
 
   ],

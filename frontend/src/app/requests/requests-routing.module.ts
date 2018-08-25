@@ -10,7 +10,7 @@ import { AdminGuardService } from '../shared/auth/gurads/admin-guard.service';
 import { MyRequestsComponent } from './components/my-requests/my-requests.component';
 import { AuthGuardService } from '../shared/auth/gurads/auth-guard.service';
 import { ApplyRequestComponent } from './apply-request/apply-request.component';
-import { ViewApplyRequestComponent } from './components/my-requests/view-apply-request/view-apply-request.component';
+import {ViewApplyRequestDialogComponent} from './components/my-requests/view-apply-request/view-apply-request-dialog.component';
 
 const routes: Routes = [ {
   path: 'requests',
@@ -21,8 +21,8 @@ const routes: Routes = [ {
     { path: 'mine', component: MyRequestsComponent, canActivate: [ AuthGuardService ] },
     { path: ':id', component: ViewRequestComponent, resolve: { request: ViewRequestResolverService }  },
     { path: 'apply', component: ApplyRequestComponent, canActivate: [ AuthGuardService ] },
-    { path: 'applications', component: ViewApplyRequestComponent, canActivate: [ AuthGuardService ] },
-    
+    { path: 'applications', component: ViewApplyRequestDialogComponent, canActivate: [ AuthGuardService ] },
+
     //todo add authGuardService to 'applications' path
 
   ]

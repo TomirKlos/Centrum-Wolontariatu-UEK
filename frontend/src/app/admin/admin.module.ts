@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     LayoutModule,
     AdminRoutingModule,
-    FormsModule
+    FormsModule,
   ],
   declarations: [
     AdminComponent,

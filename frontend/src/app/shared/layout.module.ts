@@ -4,7 +4,7 @@ import { MaterialModule } from './material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HasAnyRoleDirective } from './auth/has-any-role.directive';
-import { MatAutocompleteModule } from '@angular/material';
+import {MatAutocompleteModule, MatExpansionModule} from '@angular/material';
 import { NguCarouselModule } from '@ngu/carousel';
 
 const myImports = [
@@ -14,6 +14,7 @@ const myImports = [
   FlexLayoutModule,
   MatAutocompleteModule,
   NguCarouselModule,
+  MatExpansionModule,
 ];
 
 const myDeclarations: any[] = [
@@ -24,7 +25,15 @@ const myExports = myImports.concat(myDeclarations);
 
 @NgModule({
   imports: myImports,
-  exports: myExports,
+  exports: [
+    CommonModule,
+    MaterialModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
+    MatAutocompleteModule,
+    NguCarouselModule,
+    HasAnyRoleDirective
+  ],
   declarations: myDeclarations
 })
 export class LayoutModule {

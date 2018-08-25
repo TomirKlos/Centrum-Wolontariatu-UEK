@@ -5,8 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { SnackBarService } from '../../shared/snack-bar.service';
 
-import { ImageUploadModule } from "angular2-image-upload";
-import { VolunteerRequestVM } from '../../shared/interfaces';
 
 
 @Component({
