@@ -16,6 +16,8 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerRequestVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'delete', 'editVr' ];
 
+  totalElements: number;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -28,6 +30,12 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.dataSource = new ServerDataSource(this._adminRequestService, this.paginator, this.sort, "volunteerRequest");
     this.dataSource.loadPage();
+
+    this._adminRequestService.getPage().subscribe(d => {
+      if (d && d.totalElements) {
+        this.totalElements = d.totalElements;
+      }
+    });
   }
 
   ngAfterViewInit() {

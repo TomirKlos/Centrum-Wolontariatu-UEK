@@ -43,7 +43,7 @@ export class ServerDataSource<T> implements DataSource<T> {
   initAfterViewInit() {
     this._sort.sortChange.subscribe(() => this._paginator.pageIndex = 0);
 
-    if(this.dataType=="volunteerRequest"){
+    if(this.dataType === "volunteerRequest" || this.dataType === "volunteerAd"){
       merge(this._sort.sortChange, this._paginator.page)
       .pipe(
         tap(() => this.loadPage())

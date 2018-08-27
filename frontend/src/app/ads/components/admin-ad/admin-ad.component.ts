@@ -17,6 +17,8 @@ export class AdminAdComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerAdVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'delete', 'editVr' ];
 
+  totalElements: number;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -27,8 +29,14 @@ export class AdminAdComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dataSource = new ServerDataSource(this._adminAdService, this.paginator, this.sort, "volunteerAd");
+    this.dataSource = new ServerDataSource(this._adminAdService, this.paginator, this.sort, 'volunteerAd');
     this.dataSource.loadPage();
+
+    this._adminAdService.getPage().subscribe(d => {
+      if (d && d.totalElements) {
+        this.totalElements = d.totalElements;
+      }
+    });
   }
 
   ngAfterViewInit() {

@@ -19,6 +19,7 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
  // dataSourceBadge: ServerDataSource<responseVolunteerRequestVM>;
 //  dataSourceApplications: ServerDataSource<responseVolunteerRequestVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr' ];
+  totalElements: number;
 
   badgeCount = 5;
 
@@ -39,6 +40,11 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
 
+    this._adService.getPage().subscribe(d => {
+      if (d && d.totalElements) {
+        this.totalElements = d.totalElements;
+      }
+    });
   }
 
   ngAfterViewInit() {

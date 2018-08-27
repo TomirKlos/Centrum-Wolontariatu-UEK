@@ -24,6 +24,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   dataSourceApplications: ServerDataSource<responseVolunteerRequestVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr' ];
 
+  totalElements: number;
   badgeCount = 5;
 
   badgeTemp: String[] = [];
@@ -35,21 +36,27 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private _requestService: RequestService, 
+    private _requestService: RequestService,
     private _applyService: ApplyService,
-    private _dialogService: RequestDialogService, 
+    private _dialogService: RequestDialogService,
     private _http: HttpClient,
     private _myRequestsService: MyRequestsService,
   ) {
   }
 
   ngOnInit() {
-    this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort, "VolunteerRequest");
+    this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort, "volunteerRequest");
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
 
     this.getIds();
     this.badgePrepared = true;
+
+    this._requestService.getPage().subscribe(d => {
+      if (d && d.totalElements) {
+        this.totalElements = d.totalElements;
+      }
+    });
 
   }
 
@@ -75,7 +82,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   getIds(){
     this._myRequestsService.getIDs().subscribe((data)=>{
       (data as number[]).forEach(element => {
-        
+
         this._myRequestsService.get(element).debounceTime(10000).subscribe((data)=>{
           var badgeData = new BadgeData(element, data);
           this.badgeData.push(badgeData);

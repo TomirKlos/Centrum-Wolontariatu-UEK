@@ -17,13 +17,12 @@ import { CategoriesService } from './categories.service';
     CategoriesService
   ]
 })
-export class CategoriesComponent implements OnInit {
+export class CategoriesComponent implements OnInit, AfterViewInit {
   columnsToDisplay = [ 'name', 'delete' ];
-  totalElements = 0;
+  totalElements: number;
   addCategoryShow: boolean = false;
 
   categoryToAdd: CategoryImpl = new CategoryImpl;
-  
   categories: Category[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -34,6 +33,20 @@ export class CategoriesComponent implements OnInit {
 
   ngOnInit() {
     this._loadCategoryPage();
+
+    this._categoriesService.getPage().subscribe(d => {
+      if (d && d.totalElements) {
+        this.totalElements = d.totalElements;
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        tap(() => this._loadCategoryPage())
+      )
+      .subscribe();
   }
 
   _loadCategoryPage(){
@@ -55,8 +68,8 @@ export class CategoriesComponent implements OnInit {
    this._categoriesService.createCategory(this.categoryToAdd.categoryName)
        .subscribe( data => {
           alert("Kategoria została utworzona");
-          this._loadCategoryPage()
-        });  
+          this._loadCategoryPage();
+        });
   }
 
 

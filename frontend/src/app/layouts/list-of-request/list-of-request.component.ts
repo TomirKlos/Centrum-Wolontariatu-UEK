@@ -69,9 +69,21 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   this.dataSource.relativePathToServerResource = '';
   this.dataSource.loadAcceptedVrPage();
 
+   this._requestService.getPage().subscribe(d => {
+     if (d && d.totalElements) {
+       this.length = d.totalElements;
+     }
+   });
+
   this.dataSourceAds = new ServerDataSource<VolunteerAdVM>(this._adService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
   this.dataSourceAds.relativePathToServerResource = '';
   this.dataSourceAds.loadAcceptedVrPage();
+
+   this._adService.getPage().subscribe(d => {
+     if (d && d.totalElements && this.length < d.totalElements) {
+       this.length = d.totalElements;
+     }
+   });
 
     this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG"];
     this.carouselBanner = {
