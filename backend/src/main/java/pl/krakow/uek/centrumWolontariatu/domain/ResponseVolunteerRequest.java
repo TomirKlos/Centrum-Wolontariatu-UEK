@@ -34,6 +34,9 @@ public class ResponseVolunteerRequest implements Serializable {
     @Column(name = "confirmation")
     private byte confirmation = 0;
 
+    @Column(name = "feedback")
+    private String feedback;
+
     @Column(name = "seen")
     private byte seen = 0;
 

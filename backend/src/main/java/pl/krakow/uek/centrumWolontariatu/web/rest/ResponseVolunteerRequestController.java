@@ -9,6 +9,7 @@ import pl.krakow.uek.centrumWolontariatu.service.ResponseVolunteerRequestService
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.ResponseVolunteerRequestVM;
+import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerConfirmationVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
 import java.util.List;
@@ -47,8 +48,8 @@ public class ResponseVolunteerRequestController {
     }
 
     @PostMapping("confirm")
-    public void confirmVolunteerRequest(@RequestBody IdVM idVM) {
-        responseVolunteerRequestService.confirmResponse(idVM.getId());
+    public void confirmVolunteerRequest(@RequestBody VolunteerConfirmationVM volunteerConfirmationVM) {
+        responseVolunteerRequestService.confirmResponse(volunteerConfirmationVM.getId(), volunteerConfirmationVM.getFeedback());
     }
 
     @GetMapping("unseen")

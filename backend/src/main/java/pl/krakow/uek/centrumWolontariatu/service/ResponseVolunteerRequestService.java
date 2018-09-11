@@ -31,16 +31,18 @@ public class ResponseVolunteerRequestService {
     private final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     private final ResponseVolunteerRequestRepository responseVolunteerRequestRepository;
     private final VolunteerRequestRepository volunteerRequestRepository;
+    private final VolunteerCertificateService volunteerCertificateService;
     private final UserService userService;
 
-    public ResponseVolunteerRequestService(ResponseVolunteerRequestRepository responseVolunteerRequestRepository, VolunteerRequestRepository volunteerRequestRepository, UserService userService) {
+    public ResponseVolunteerRequestService(ResponseVolunteerRequestRepository responseVolunteerRequestRepository, VolunteerRequestRepository volunteerRequestRepository, VolunteerCertificateService volunteerCertificateService, UserService userService) {
         this.responseVolunteerRequestRepository = responseVolunteerRequestRepository;
         this.volunteerRequestRepository = volunteerRequestRepository;
+        this.volunteerCertificateService = volunteerCertificateService;
         this.userService = userService;
     }
 
-   // @PreAuthorize("#responseVolunteerRequestVm.name == principal.name")
-   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_LECTURER')")
+    // @PreAuthorize("#responseVolunteerRequestVm.name == principal.name")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_LECTURER')")
     public void apply(ResponseVolunteerRequestVM responseVolunteerRequestVM){
         if(userService.getUserWithAuthorities().get().getId()!=volunteerRequestRepository.findById(responseVolunteerRequestVM.getVolunteerRequestId()).get().getUser().getId() ) {
             User user = userService.getUserWithAuthorities().get();
@@ -138,12 +140,15 @@ public class ResponseVolunteerRequestService {
     }
 
 
-    public void confirmResponse(long responseId){
+    public void confirmResponse(long responseId, String feedback){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
             responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {
                 response.setConfirmation(parse(true));
+                response.setFeedback(feedback);
                 responseVolunteerRequestRepository.save(response);
-                log.debug("User id={} confirmed Volunteer Response id={} and user={}", userService.getUserId(), response.getId(), response.getUser().getId());
+
+                volunteerCertificateService.sendVolunteerToCertification(response);
+                log.debug("User id={} confirmed and send to certification Volunteer Response id={} and user={}", userService.getUserId(), response.getId(), response.getUser().getId());
             });
         else throw new ResponseAcceptException();
     }
