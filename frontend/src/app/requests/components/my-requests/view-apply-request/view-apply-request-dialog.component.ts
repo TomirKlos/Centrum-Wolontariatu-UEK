@@ -5,6 +5,7 @@ import { VolunteerRequestVM, responseVolunteerRequestVM } from '../../../../shar
 import { ServerDataSource } from '../../../../shared/server-data-source';
 import { ApplyService } from './apply-request.service';
 import { SnackBarService } from '../../../../shared/snack-bar.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-apply-view-request-dialog',
@@ -15,6 +16,7 @@ export class ViewApplyRequestDialogComponent {
     showApply: boolean = false;
     showConfirmApply:boolean = false;
     applyToShow: responseVolunteerRequestVM;
+    formGroup: FormGroup;
 
     //data source
     dataSource: ServerDataSource<responseVolunteerRequestVM>;
@@ -24,6 +26,7 @@ export class ViewApplyRequestDialogComponent {
     public dialogRef: MatDialogRef<ViewApplyRequestDialogComponent>,
     private _applyService: ApplyService,
     public _snackBar: SnackBarService,
+    private _fb: FormBuilder,
 
     @Inject(MAT_DIALOG_DATA) public data: number) {
       console.log(data.valueOf)
@@ -32,7 +35,11 @@ export class ViewApplyRequestDialogComponent {
     this.dataSource = new ServerDataSource<responseVolunteerRequestVM>(this._applyService, null, new MatSort, "applications");
     this.dataSource.relativePathToServerResource = '';
     this.dataSource.loadApplicationPage(this.application);
-    console.log(this.dataSource)
+    console.log(this.dataSource);
+
+    this.formGroup = this._fb.group({
+      feedback: [ '', [ Validators.required ] ],
+    });
   }
 
   replaceLineBreak(s:string) {
@@ -62,7 +69,7 @@ export class ViewApplyRequestDialogComponent {
   }
 
   confirm(id: number) {
-    this._applyService.confirm(id).subscribe(() => {
+    this._applyService.confirm(id, this.formGroup.get('feedback').value).subscribe(() => {
       this.dataSource.loadApplicationPage(this.application),
       this.prepareConfirm(id);
       this.showApply=false;

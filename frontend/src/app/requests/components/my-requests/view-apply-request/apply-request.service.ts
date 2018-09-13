@@ -33,8 +33,8 @@ export class ApplyService extends ServerResourceService<responseVolunteerRequest
     );
   }
 
-  confirm(id: number) {
-    return this._http.post(this._url + '/confirm', { id }).pipe(
+  confirm(id: number, feedback: string) {
+    return this._http.post(this._url + '/confirm', { id, feedback }).pipe(
       catchError(err => {
         this._snackBar.warning();
         return err;

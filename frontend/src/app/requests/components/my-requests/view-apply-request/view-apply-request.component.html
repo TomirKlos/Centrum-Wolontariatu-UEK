@@ -4,12 +4,12 @@
             <h1>Aplikacja na ogłoszenie</h1>
           </mat-card-title>
         </mat-card-header>
-      
+
        <!-- <mat-card-content *ngFor="let row of dataSource.connect() | async">
             <div [innerHTML]="replaceLineBreak(row.description)"></div>
-      
+
             <button mat-raised-button color="primary" type="submit" (click)="showApplyForm()">Zaaplikuj!</button>
-      
+
         </mat-card-content>
       </mat-card> -->
 
@@ -20,35 +20,45 @@
              <br><br>
              <ng-container *ngIf="applyToShow.accepted; else elseTemplate">
                 <button mat-raised-button color="warn" (click)="disableAccept(applyToShow.id)">Cofnij akceptację zgłoszenia</button>
-                
+
                 <ng-container *ngIf="applyToShow.confirmation; else elseTemplate2">
                     <button mat-raised-button disabled (click)="prepareConfirm(applyToShow.id)">Potwierdź uczestnictwo</button>
                 </ng-container>
                 <ng-template #elseTemplate2>
+                  <div>
+                    <br>
+                    <mat-form-field>
+                        <form [formGroup]="formGroup" #form="ngForm">
+                        <textarea matInput placeholder="Twoja opinia o wolontariuszu i jego pracy" matTextareaAutosize matAutosizeMinRows="5"
+                         matAutosizeMaxRows="20" matAutosizeMinCols="100" formControlName="feedback"></textarea>
+                        </form>
+                    </mat-form-field>
+                    <br>
+                  </div>
                     <button mat-raised-button color="primary" (click)="prepareConfirm(applyToShow.id)">Potwierdź uczestnictwo</button>
                 </ng-template>
-                
+
              </ng-container>
              <ng-template #elseTemplate>
                 <button mat-raised-button color="primary" (click)="changeAccepted(applyToShow.id)">Zaakceptuj to zgłoszenie</button>
              </ng-template>
-             
+
              <button mat-raised-button color="basic" (click)="closeApplication(applyToShow.id)">Zamknij to zgłoszenie</button>
             </div>
             <br>
             <ng-container *ngIf="showConfirmApply">
                 <span>Potwierdzenia uczestnictwa nie można cofnąć! Zalecamy potwierdzanie uczestnictwa po zakończonym wolontariacie.</span>
-                <button mat-raised-button color="warn" (click)="confirm(applyToShow.id)">Potwierdź</button>
+                <button mat-raised-button color="warn" type="submit" (click)="confirm(applyToShow.id)">Potwierdź</button>
                 <button mat-raised-button color="basic" (click)="prepareConfirm(applyToShow.id)">Anuluj</button>
-                
+
             </ng-container>
 
-            
+
             <br>
-        
+
             <div id="my-table-container">
               <mat-table [dataSource]="dataSource" matSort>
-        
+
                 <ng-container matColumnDef="id">
                   <mat-header-cell *matHeaderCellDef fxFlex="50px" mat-sort-header>id</mat-header-cell>
                   <mat-cell *matCellDef="let element" fxFlex="50px"> {{ element.id }}</mat-cell>
@@ -75,7 +85,7 @@
                         </mat-chip-list>
                       </mat-cell>
                     </ng-container>
-        
+
                 <ng-container matColumnDef="description">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>description</mat-header-cell>
                   <mat-cell *matCellDef="let element"> {{ element.description }}</mat-cell>
@@ -86,16 +96,16 @@
                     <mat-cell *matCellDef="let element" fxFlex="100px">
                       <button mat-button color="primary" (click)="showApplication(element)">
                         <!--<button mat-button color="primary" [routerLink]="['/requests/', element.id]">-->
-          
+
                         <mat-icon>edit</mat-icon>
                         podgląd
                       </button>
                     </mat-cell>
                   </ng-container>
-        
+
                 <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
-        
+
               </mat-table>
             </div>
             <mat-paginator #paginator
@@ -106,5 +116,4 @@
             </mat-paginator>
           </mat-card-content>
         </mat-card>
-        
-      
+
