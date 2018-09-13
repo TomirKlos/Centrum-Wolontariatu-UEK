@@ -1,0 +1,69 @@
+<mat-card style>
+  <mat-card-header>
+    <mat-card-title>Certyfikaty </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div>
+      <button mat-button color="primary" (click)="getCsv()"> Pobierz plik CSV z oczekującymi na certyfikat </button>
+
+      <a #downloadCsv></a>
+      <mat-table #table [dataSource]="certificatesData" matSort>
+
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef fxFlex="50px" mat-sort-header>id</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="50px"> {{ element.id }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="certified">
+          <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="170px">Certyfikat wydano?</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="170px">
+
+            <button mat-button [color]="(element.certified ? 'primary' : 'warn')" (click)="downloadSingleCsv(element.id)">
+              {{ (element.certified ? 'Tak' : 'Nie (pobierz)') }}
+            </button>
+
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="user.firstName">
+          <mat-header-cell *matHeaderCellDef fxFlex="120px" mat-sort-header>Imie</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="120px"> {{ element.user.firstName }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="user.lastName">
+          <mat-header-cell *matHeaderCellDef fxFlex="120px" mat-sort-header>Nazwisko</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="120px"> {{ element.user.lastName }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef fxFlex="200px" mat-sort-header>email wolontariusza</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="200px"> {{ element.user.email }}</mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="volunteerRequest.id">
+          <mat-header-cell *matHeaderCellDef fxFlex="120px" mat-sort-header>Id wolontariatu</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="120px"> {{ element.volunteerRequest.id }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="volunteerRequest.user.email">
+          <mat-header-cell *matHeaderCellDef fxFlex="170px" mat-sort-header>email tworcy ogloszenia</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="170px"> {{ element.volunteerRequest.user.email }}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+
+      </mat-table>
+    </div>
+
+    <mat-paginator #paginator
+                   [length]="totalElements"
+                   [pageSize]="20"
+                   [pageSizeOptions]="[10, 20, 50]"
+                   [showFirstLastButtons]="true">
+
+    </mat-paginator>
+
+  </mat-card-content>
+</mat-card>

@@ -47,6 +47,14 @@ export interface Category {
   name: string;
 }
 
+export interface Certificate {
+  id: number;
+  certified: boolean;
+  feedback: string;
+  user: User;
+  volunteerRequest: VolunteerRequestVM;
+}
+
 export interface Pictures{
   id: number;
   referenceToPicture: string;

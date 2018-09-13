@@ -6,6 +6,7 @@ import { AuthGuardService } from '../shared/auth/gurads/auth-guard.service';
 import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
 import { CategoriesComponent } from './categories/categories.component';
+import { CertificatesComponent } from './certificates/certificates.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,10 @@ const routes: Routes = [
       {
         path: 'categories',
         component: CategoriesComponent
+      },
+      {
+        path: 'certificates',
+        component: CertificatesComponent
       },
     ]
   }

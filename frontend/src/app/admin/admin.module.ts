@@ -6,6 +6,7 @@ import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { FormsModule } from '@angular/forms';
+import {CertificatesComponent} from './certificates/certificates.component';
 
 @NgModule({
   imports: [
@@ -16,8 +17,8 @@ import { FormsModule } from '@angular/forms';
   declarations: [
     AdminComponent,
     UsersComponent,
-    CategoriesComponent
-
+    CategoriesComponent,
+    CertificatesComponent
   ],
   entryComponents: [
   ]

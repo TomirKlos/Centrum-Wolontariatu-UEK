@@ -41,7 +41,7 @@ export class AddRequestComponent implements OnInit {
         description: [ '', [ Validators.required ] ],
         forStudents: [ false ],
         forTutors: [ false ],
-        images: [ this.fileHash ], 
+        images: [ this.fileHash ],
         volunteersAmount: [ ],
         categories: [ ],
       });
@@ -65,7 +65,7 @@ export class AddRequestComponent implements OnInit {
     const fd = new FormData();
    /* this.selectedFile.forEach((file) =>{
       fd.append('file', file, file.name)
-    })*/ 
+    })*/
     for(var i = 0; i < this.selectedFile.length; i++){
       fd.append('file', this.selectedFile[i], this.selectedFile[i].name)
     }
@@ -76,7 +76,7 @@ export class AddRequestComponent implements OnInit {
         this.fileHash.push(element);
       });
       console.log(this.fileHash)
-      
+
     })
   }
 
