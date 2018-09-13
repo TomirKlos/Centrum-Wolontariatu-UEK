@@ -30,6 +30,10 @@ export abstract class ServerResourceService<T> {
     return this.getPageFromRelativePath('', ...httpParams);
   }
 
+  getPageWithUrl(path: string, ...httpParams: Param[]): Observable<Page<T>> {
+    return this.getPageFromRelativePath(path, ...httpParams);
+  }
+
   getOne(id: number): Observable<T> {
     return this._http.get(this._url + '/' + id) as Observable<T>;
   }

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
-import { VolunteerRequestVM } from '../../../../shared/interfaces';
 import { SnackBarService } from '../../../../shared/snack-bar.service';
 import { ServerResourceService } from '../../../../shared/server-resource.service';
 import { responseVolunteerRequestVM } from '../../../../shared/interfaces';

@@ -1,17 +1,19 @@
-import { Component, Inject, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator } from '@angular/material';
+import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator, PageEvent} from '@angular/material';
 
-import { VolunteerRequestVM, responseVolunteerRequestVM } from '../../../../shared/interfaces';
+import { responseVolunteerRequestVM } from '../../../../shared/interfaces';
 import { ServerDataSource } from '../../../../shared/server-data-source';
 import { ApplyService } from './apply-request.service';
 import { SnackBarService } from '../../../../shared/snack-bar.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {merge} from 'rxjs/observable/merge';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-apply-view-request-dialog',
   templateUrl: './view-apply-request.component.html',
 })
-export class ViewApplyRequestDialogComponent {
+export class ViewApplyRequestDialogComponent implements OnInit, AfterViewInit {
     application: number;
     showApply: boolean = false;
     showConfirmApply:boolean = false;
@@ -21,6 +23,15 @@ export class ViewApplyRequestDialogComponent {
     //data source
     dataSource: ServerDataSource<responseVolunteerRequestVM>;
     columnsToDisplay = [ 'id', 'accepted', 'confirmed', 'description', 'showApply' ];
+
+    totalElements: number;
+    pageIndex = 0;
+    pageSize = 5;
+
+    pageEvent: PageEvent;
+
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     public dialogRef: MatDialogRef<ViewApplyRequestDialogComponent>,
@@ -32,14 +43,31 @@ export class ViewApplyRequestDialogComponent {
       console.log(data.valueOf)
     this.application = data;
 
-    this.dataSource = new ServerDataSource<responseVolunteerRequestVM>(this._applyService, null, new MatSort, "applications");
+    this.formGroup = this._fb.group({
+      feedback: [ '', [ Validators.required ] ],
+    });
+  }
+  ngOnInit() {
+    this.paginator.pageSize = this.pageSize;
+    this.dataSource = new ServerDataSource<responseVolunteerRequestVM>(this._applyService, this.paginator, this.sort, "applications");
     this.dataSource.relativePathToServerResource = '';
     this.dataSource.loadApplicationPage(this.application);
     console.log(this.dataSource);
 
-    this.formGroup = this._fb.group({
-      feedback: [ '', [ Validators.required ] ],
+    this._applyService.getPageWithUrl('?volunteerRequestId=' + this.application.toString()).subscribe(d => {
+      if (d && d.totalElements) {
+        this.totalElements = d.totalElements;
+      }
     });
+  }
+
+  ngAfterViewInit(){
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        tap(() => this.dataSource.loadApplicationPage(this.application))
+      )
+      .subscribe( );
+    this.dataSource.initAfterViewInit();
   }
 
   replaceLineBreak(s:string) {
@@ -72,7 +100,7 @@ export class ViewApplyRequestDialogComponent {
     this._applyService.confirm(id, this.formGroup.get('feedback').value).subscribe(() => {
       this.dataSource.loadApplicationPage(this.application),
       this.prepareConfirm(id);
-      this.showApply=false;
+      this.showApply = false;
       this._snackBar.open('Wolontariat został potwierdzony');
     });
   }

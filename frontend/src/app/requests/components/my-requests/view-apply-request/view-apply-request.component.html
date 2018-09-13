@@ -109,10 +109,12 @@
               </mat-table>
             </div>
             <mat-paginator #paginator
-                           [length]="dataSource.totalElements"
-                           [pageSize]="20"
+                           [length]="totalElements"
+                           [pageIndex]="pageIndex"
+                           [pageSize]="pageSize"
                            [pageSizeOptions]="[5, 10, 20]"
-                           [showFirstLastButtons]="true">
+                           [showFirstLastButtons]="true"
+                           (page)="pageEvent = $event;">
             </mat-paginator>
           </mat-card-content>
         </mat-card>

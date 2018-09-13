@@ -7,6 +7,7 @@ import { merge } from 'rxjs/observable/merge';
 import { Subject } from 'rxjs/Subject';
 
 import { ServerResourceService } from './server-resource.service';
+import {Page} from './interfaces';
 
 export class ServerDataSource<T> implements DataSource<T> {
   relativePathToServerResource = '';
@@ -77,16 +78,16 @@ export class ServerDataSource<T> implements DataSource<T> {
   loadApplicationPage(id: number) {
     this._serverResourceService.getPage(
       { name: 'volunteerRequestId', value: id },
-      { name: 'page', value: 0 },
-      { name: 'size', value: 5 }
+      { name: 'page', value: this._paginator.pageIndex },
+      { name: 'size', value: this._paginator.pageSize }
     ).subscribe(d => this._data.next(d.content));
   }
 
   loadInvitationPage(id: number) {
     this._serverResourceService.getPage(
       { name: 'adId', value: id },
-      { name: 'page', value: 0 },
-      { name: 'size', value: 10 }
+      { name: 'page', value: this._paginator.pageIndex },
+      { name: 'size', value: this._paginator.pageSize }
     ).subscribe(d => this._data.next(d.content));
   }
 
