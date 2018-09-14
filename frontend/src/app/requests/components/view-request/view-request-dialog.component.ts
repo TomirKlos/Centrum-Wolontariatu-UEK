@@ -6,6 +6,7 @@ import { VolunteerRequestVM } from '../../../shared/interfaces';
 @Component({
   selector: 'app-view-request-dialog',
   templateUrl: './view-request.component.html',
+  styleUrls: [ './view-request.component.scss' ]
 })
 export class ViewRequestDialogComponent {
   request: VolunteerRequestVM;

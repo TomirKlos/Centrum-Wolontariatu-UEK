@@ -6,6 +6,7 @@ import { VolunteerAdVM } from '../../../shared/interfaces';
 @Component({
   selector: 'app-view-ad-dialog',
   templateUrl: './view-ad.component.html',
+  styleUrls: [ './view-ad.component.scss' ]
 })
 export class ViewAdDialogComponent {
   ad: VolunteerAdVM;

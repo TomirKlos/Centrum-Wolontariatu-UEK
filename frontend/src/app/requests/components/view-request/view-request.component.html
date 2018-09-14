@@ -6,14 +6,15 @@
   </mat-card-header>
 
   <mat-card-content>
-    <ng-container *ngIf="request.pictures[0]!=null; else elseTemplate">
-          <img class="searchImage" aria-hidden [src]="pathToStaticContent+request.pictures[0].referenceToPicture" height="200" />
-    </ng-container>
-    <ng-template #elseTemplate>
-          <img class="searchImage" aria-hidden [src]="staticNotFoundImage" height="200" /> 
-    </ng-template>
-      <div [innerHTML]="replaceLineBreak(request.description)"></div>
-
+    <div class="scroll-content">
+      <ng-container *ngIf="request.pictures[0]!=null; else elseTemplate">
+            <img class="searchImage" aria-hidden [src]="pathToStaticContent+request.pictures[0].referenceToPicture" height="200" />
+      </ng-container>
+      <ng-template #elseTemplate>
+            <img class="searchImage" aria-hidden [src]="staticNotFoundImage" height="200" />
+      </ng-template>
+        <div [innerHTML]="replaceLineBreak(request.description)"></div>
+    </div>
       <button *appHasAnyRole="['authenticated']" mat-raised-button color="primary" type="submit" (click)="showApplyForm()">Zaaplikuj!</button>
       <div *ngIf="viewApplyForm">
           <app-apply-request [id]="request.id"></app-apply-request>

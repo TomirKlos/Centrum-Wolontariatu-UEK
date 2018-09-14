@@ -6,14 +6,15 @@
         </mat-card-header>
 
         <mat-card-content>
-          <ng-container *ngIf="ad.pictures[0]!=null; else elseTemplate">
-                <img class="searchImage" aria-hidden [src]="pathToStaticContent+ad.pictures[0].referenceToPicture" height="200" />
-          </ng-container>
-          <ng-template #elseTemplate>
-                <img class="searchImage" aria-hidden [src]="staticNotFoundImage" height="200" />
-          </ng-template>
-            <div [innerHTML]="replaceLineBreak(ad.description)"></div>
-
+          <div class="scroll-content">
+            <ng-container *ngIf="ad.pictures[0]!=null; else elseTemplate">
+                  <img class="searchImage" aria-hidden [src]="pathToStaticContent+ad.pictures[0].referenceToPicture" height="200" />
+            </ng-container>
+            <ng-template #elseTemplate>
+                  <img class="searchImage" aria-hidden [src]="staticNotFoundImage" height="200" />
+            </ng-template>
+              <div [innerHTML]="replaceLineBreak(ad.description)"></div>
+          </div>
             <button *appHasAnyRole="['authenticated']" mat-raised-button color="primary" type="submit" (click)="showApplyForm()">Zaproś do wolontariatu!</button>
             <div *ngIf="viewApplyForm">
                  <app-invite-ad [id]="ad.id"></app-invite-ad>
