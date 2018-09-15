@@ -2,13 +2,9 @@ import { Component, OnInit, Input, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { ImageUploadModule } from "angular2-image-upload";
 import { environment } from '../../../../environments/environment';
 import { SnackBarService } from '../../../shared/snack-bar.service';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
-import { RequestService } from '../../../requests/shared/request.service';
-import { Category, VolunteerAdVM, VolunteerRequestVM, Page } from '../../../shared/interfaces';
-import { CategoryImpl } from '../../../admin/categories/categories.component';
+import { MatDialog } from '@angular/material';
 import { InviteChooseRequestDialogComponent } from './invite-chooseRequest-dialog.component';
 
 
@@ -29,7 +25,7 @@ export class InviteAdComponent implements OnInit {
   vrequestId: number;
   name: string;
 
-  
+
 
   constructor(private _fb: FormBuilder, private _http: HttpClient, private _sb: SnackBarService, public dialog: MatDialog) {
   }
@@ -67,7 +63,7 @@ export class InviteAdComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.vrequestId = result;
+      this.name = result;
     });
   }
 

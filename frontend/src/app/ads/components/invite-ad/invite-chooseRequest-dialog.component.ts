@@ -11,11 +11,10 @@ import { RequestService } from "../../../requests/shared/request.service";
   export class InviteChooseRequestDialogComponent implements OnInit {
 
     formGroup: FormGroup;
-
     categoriesData: String[] = [];
-
     requestsData: VolunteerRequestVM[] = [];
-  
+    chosenTitle: string;
+
     constructor(
       public dialogRef: MatDialogRef<InviteChooseRequestDialogComponent>,
       private _fb: FormBuilder,
@@ -29,14 +28,18 @@ import { RequestService } from "../../../requests/shared/request.service";
             this.requestsData.push(element);
           });
         });
-        
+
         this.formGroup = this._fb.group({
           vrequest: [ ],
         });
       }
-  
+
     onNoClick(): void {
       this.dialogRef.close();
     }
-  
+
+    setChosen(s: string){
+      this.chosenTitle = s;
+    }
+
   }

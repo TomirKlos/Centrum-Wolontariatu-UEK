@@ -5,15 +5,15 @@
                     <mat-form-field>
                                         <mat-select formControlName="vrequest" name="vrequest" id="vrequest" placeholder="Ogłoszenia">
                                             <mat-select-trigger>
-                                            {{formGroup.get('vrequest').value ? (formGroup.get('vrequest').value[0]==null ? '' : formGroup.get('vrequest').value[0]) : ''}}
+                                              {{chosenTitle ? (chosenTitle==null ? '' : chosenTitle) : ''}}
                                             </mat-select-trigger>
-                                            <mat-option *ngFor="let request of requestsData" [value]="request.id">{{request.title}}</mat-option>
+                                            <mat-option *ngFor="let request of requestsData" [value]="request.id" (click)="setChosen(request.title)">{{request.title}}</mat-option>
                                         </mat-select>
                                         </mat-form-field>
-                             </form> 
+                             </form>
 
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cofnij</button>
-  <button mat-button [mat-dialog-close]="formGroup.get('vrequest').value" cdkFocusInitial>Ok</button>
+  <button mat-button [mat-dialog-close]="chosenTitle" cdkFocusInitial>Ok</button>
 </div>

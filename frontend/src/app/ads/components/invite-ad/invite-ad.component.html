@@ -7,8 +7,8 @@
 
                         <button mat-raised-button (click)="openDialog()">Wybierz swój wolontariat</button>
 
-                      <li *ngIf="vrequestId">
-                        Wybrałeś wolontariat o ID: <i>{{vrequestId}}</i>
+                      <li *ngIf="name">
+                        Wybrałeś wolontariat: <i>{{name}}</i>
                       </li>
                 <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid"
                         (click)="apply()">
