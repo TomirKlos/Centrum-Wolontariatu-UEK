@@ -31,10 +31,8 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
     this.dataSource = new ServerDataSource(this._adminRequestService, this.paginator, this.sort, "volunteerRequest");
     this.dataSource.loadPage();
 
-    this._adminRequestService.getPage().subscribe(d => {
-      if (d && d.totalElements) {
-        this.totalElements = d.totalElements;
-      }
+    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+      this.totalElements = d;
     });
   }
 

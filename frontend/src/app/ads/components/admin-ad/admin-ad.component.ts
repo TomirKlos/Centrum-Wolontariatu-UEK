@@ -32,10 +32,8 @@ export class AdminAdComponent implements OnInit, AfterViewInit {
     this.dataSource = new ServerDataSource(this._adminAdService, this.paginator, this.sort, 'volunteerAd');
     this.dataSource.loadPage();
 
-    this._adminAdService.getPage().subscribe(d => {
-      if (d && d.totalElements) {
-        this.totalElements = d.totalElements;
-      }
+    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+      this.totalElements = d;
     });
   }
 

@@ -32,7 +32,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   searchAdValue: string;
 
   //paginator
-  length = 50;
+  length = 0;
   pageIndex = 0;
   pageSize = 5;
 
@@ -69,9 +69,9 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   this.dataSource.relativePathToServerResource = '';
   this.dataSource.loadAcceptedVrPage();
 
-   this._requestService.getPage().subscribe(d => {
-     if (d && d.totalElements) {
-       this.length = d.totalElements;
+   this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+     if (this.length < d) {
+       this.length = d;
      }
    });
 
@@ -79,9 +79,9 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   this.dataSourceAds.relativePathToServerResource = '';
   this.dataSourceAds.loadAcceptedVrPage();
 
-   this._adService.getPage().subscribe(d => {
-     if (d && d.totalElements && this.length < d.totalElements) {
-       this.length = d.totalElements;
+   this.dataSourceAds.connectToSourceElementsNumber().subscribe(d => {
+     if (this.length < d) {
+       this.length = d;
      }
    });
 
@@ -139,20 +139,20 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   }
 
   searchContent(){
-    if(this.searchValue=="")
+    if (this.searchValue == "")
       this.dataSource.loadAcceptedVrPage();
-    else if(this.searchValue!=""){
+    else if(this.searchValue != ""){
       this.dataSource.generateFilteredSearchPage(this.searchTerm$);
-      this.results=null;
+      this.results = null;
     }
   }
 
   searchAdContent(){
-    if(this.searchAdValue=="")
+    if(this.searchAdValue == "")
       this.dataSourceAds.loadAcceptedVrPage();
-    else if(this.searchAdValue!=""){
+    else if(this.searchAdValue != ""){
       this.dataSourceAds.generateFilteredSearchPage(this.searchAdTerm$);
-      this.resultsAd=null;
+      this.resultsAd = null;
     }
   }
 
@@ -174,10 +174,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   getCategoriesFromVolunteerRequest(categories: Category[]): string{
     var userCategories: string = "";
-    if(categories!=null)
+    if(categories != null)
     categories.forEach((category, index) => {
-      if(index!=0)
-        userCategories=userCategories + category.name + ", ";
+      if(index != 0)
+        userCategories = userCategories + category.name + ", ";
       })
       return userCategories.substr(0,userCategories.length-2);
   }

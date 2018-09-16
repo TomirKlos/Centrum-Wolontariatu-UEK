@@ -52,12 +52,9 @@ export class ViewApplyRequestDialogComponent implements OnInit, AfterViewInit {
     this.dataSource = new ServerDataSource<responseVolunteerRequestVM>(this._applyService, this.paginator, this.sort, "applications");
     this.dataSource.relativePathToServerResource = '';
     this.dataSource.loadApplicationPage(this.application);
-    console.log(this.dataSource);
 
-    this._applyService.getPageWithUrl('?volunteerRequestId=' + this.application.toString()).subscribe(d => {
-      if (d && d.totalElements) {
-        this.totalElements = d.totalElements;
-      }
+    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+      this.totalElements = d;
     });
   }
 

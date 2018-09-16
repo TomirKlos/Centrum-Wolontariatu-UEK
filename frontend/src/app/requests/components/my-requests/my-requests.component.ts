@@ -20,8 +20,6 @@ import { ApplyService } from './view-apply-request/apply-request.service';
 })
 export class MyRequestsComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerRequestVM>;
-  dataSourceBadge: ServerDataSource<responseVolunteerRequestVM>;
-  dataSourceApplications: ServerDataSource<responseVolunteerRequestVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr' ];
 
   totalElements: number;
@@ -48,14 +46,12 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
 
+    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+      this.totalElements = d;
+    });
+
     this.getIds();
     this.badgePrepared = true;
-
-    this._requestService.getPage().subscribe(d => {
-      if (d && d.totalElements) {
-        this.totalElements = d.totalElements;
-      }
-    });
 
   }
 
@@ -67,22 +63,22 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
     this._dialogService.open(request);
   }
 
-  showApplications(request: number){
+  showApplications(request: number) {
     this._dialogService.openApplicationsPanel(request);
   }
 
-  getBadgeCount(id: any){
-    this._myRequestsService.get(id).debounceTime(10000).subscribe((data)=>{
+  getBadgeCount(id: any) {
+    this._myRequestsService.get(id).debounceTime(10000).subscribe((data) => {
       this.badgeTemp.push(data as string)
       return data;
     });
   }
 
   getIds(){
-    this._myRequestsService.getIDs().subscribe((data)=>{
+    this._myRequestsService.getIDs().subscribe((data) => {
       (data as number[]).forEach(element => {
 
-        this._myRequestsService.get(element).debounceTime(10000).subscribe((data)=>{
+        this._myRequestsService.get(element).debounceTime(10000).subscribe((data) => {
           var badgeData = new BadgeData(element, data);
           this.badgeData.push(badgeData);
           return data;
@@ -92,9 +88,9 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getBadgeById(id:number){
+  getBadgeById(id: number) {
     for (var i = 0; i < this.badgeData.length; i++) {
-        if (this.badgeData[i]["id"] === id) {
+        if (this.badgeData[i]['id'] === id) {
             return this.badgeData[i];
         }
     }
@@ -102,10 +98,10 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   }
 
 
-  clearCount(id: number){
+  clearCount(id: number) {
     for (var i = 0; i < this.badgeData.length; i++) {
-      if (this.badgeData[i]["id"] === id) {
-        this.badgeData[i]["id"] = 0;
+      if (this.badgeData[i]['id'] === id) {
+        this.badgeData[i]['id'] = 0;
       }
     }
     return null;
@@ -113,11 +109,11 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
 
 }
 
-export class BadgeData{
-  private id:number;
+export class BadgeData {
+  private id: number;
   private text: string;
 
-  constructor(id,text) {
+  constructor(id, text) {
       this.id = id;
       this.text = text;
   }

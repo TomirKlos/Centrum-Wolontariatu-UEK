@@ -27,7 +27,6 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
 
   constructor(
     private _adService: AdService,
-   // private _applyService: ApplyService,
     private _dialogService: AdDialogService,
     private _http: HttpClient,
     private _myAdsService: MyAdsService,
@@ -39,14 +38,13 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
 
+    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+      this.totalElements = d;
+    });
+
     this.getIds();
     this.badgePrepared = true;
 
-    this._adService.getPage().subscribe(d => {
-      if (d && d.totalElements) {
-        this.totalElements = d.totalElements;
-      }
-    });
   }
 
   ngAfterViewInit() {

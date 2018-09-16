@@ -20,12 +20,10 @@ export class InviteAdComponent implements OnInit {
   formGroupVM: FormGroup;
 
   submitButtonDisabled = false;
-  volunteerRequestId: number = 72;
+  volunteerRequestId: number;
 
   vrequestId: number;
   name: string;
-
-
 
   constructor(private _fb: FormBuilder, private _http: HttpClient, private _sb: SnackBarService, public dialog: MatDialog) {
   }

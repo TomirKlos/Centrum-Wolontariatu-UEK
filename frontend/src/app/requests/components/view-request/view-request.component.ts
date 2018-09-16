@@ -18,11 +18,11 @@ export class ViewRequestComponent implements OnInit {
     this._route.data.subscribe((d: { request: VolunteerRequestVM }) => this.request = d.request);
   }
 
-  replaceLineBreak(s:string) {
+  replaceLineBreak(s: string) {
     return s && s.replace(/\n/g,' <br /> ');
   }
 
-  showApplyForm(){
+  showApplyForm() {
     this.viewApplyForm = !this.viewApplyForm;
   }
 }
