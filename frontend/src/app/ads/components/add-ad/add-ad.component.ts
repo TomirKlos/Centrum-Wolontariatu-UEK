@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import { SnackBarService } from '../../../shared/snack-bar.service';
 
-import { ImageUploadModule } from "angular2-image-upload";
-import { Category } from '../../../shared/interfaces';
 import { RequestService } from '../../../requests/shared/request.service';
 
 
@@ -40,7 +38,7 @@ export class AddAdComponent implements OnInit {
       this.formGroup = this._fb.group({
         title: [ '', [ Validators.required ] ],
         description: [ '', [ Validators.required ] ],
-        images: [ this.fileHash ], 
+        images: [ this.fileHash ],
       });
   }
 
@@ -54,7 +52,7 @@ export class AddAdComponent implements OnInit {
     );
   }
 
-  onFileSelected(event){
+  onFileSelected(event) {
     this.selectedFile = <File[]> event.target.files;
     this.onUpload();
   }
@@ -64,7 +62,7 @@ export class AddAdComponent implements OnInit {
     const fd = new FormData();
    /* this.selectedFile.forEach((file) =>{
       fd.append('file', file, file.name)
-    })*/ 
+    })*/
     for(var i = 0; i < this.selectedFile.length; i++){
       fd.append('file', this.selectedFile[i], this.selectedFile[i].name)
     }
@@ -75,7 +73,7 @@ export class AddAdComponent implements OnInit {
         this.fileHash.push(element);
       });
       console.log(this.fileHash)
-      
+
     })
   }
 

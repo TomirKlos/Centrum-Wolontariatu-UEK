@@ -87,7 +87,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/api/vAd/solr/**",
                 "/api/vAd/solrPage/**",
                 "/api/vrequest/solr/**",
-                "/api/vrequest/solrPage/**"
+                "/api/vrequest/solrPage/**",
+                "/api/carouselbanner/"
             ).permitAll()
             .antMatchers("/api/**").authenticated()
         .and()

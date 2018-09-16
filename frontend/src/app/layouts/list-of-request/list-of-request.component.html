@@ -1,6 +1,17 @@
 <ngu-carousel [inputs]="carouselBanner" (onMove)="onmoveFn($event)">
-  <ngu-item *ngFor="let Banner of carouselBanerItems" NguCarouselItem class="bannerStyle" [ngStyle]="{'background-image': 'url('+Banner+')'}">
-    <h1>1</h1>
+  <ngu-item *ngFor="let Banner of carouselBannerItems" NguCarouselItem class="bannerStyle" [ngStyle]="{'background-image': 'url(http://localhost:8080/static/'+Banner.referenceToPicture+')'}">
+    <div id="bannerContainer">
+      <div id="bannerTitle">
+        <h1>{{Banner.title}}</h1>
+      </div>
+
+      <hr>
+      <div id="description">
+          <h4>{{Banner.description}}</h4>
+      </div>
+
+    </div>
+
 </ngu-item>
   <button NguCarouselPrev class='leftRs'>&lt;</button>
   <button NguCarouselNext class='rightRs'>&gt;</button>

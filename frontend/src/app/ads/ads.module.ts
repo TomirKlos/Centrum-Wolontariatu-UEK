@@ -45,7 +45,7 @@ import { InvitationService } from './components/view-volunteer-invitation/invita
     AdService,
     MyAdsService,
     AdDialogService,
-    InvitationService
+    InvitationService,
 
 
   ],

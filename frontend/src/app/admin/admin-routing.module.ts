@@ -7,6 +7,7 @@ import { AdminComponent } from './admin.component';
 import { UsersComponent } from './users/users.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { CertificatesComponent } from './certificates/certificates.component';
+import {BannerComponent} from './banner/banner.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
       {
         path: 'certificates',
         component: CertificatesComponent
+      },
+      {
+        path: 'banners',
+        component: BannerComponent
       },
     ]
   }

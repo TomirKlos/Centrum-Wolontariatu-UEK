@@ -9,4 +9,5 @@ public class UserConstant {
     public static final int PASSWORD_MAX_LENGTH = 100;
     public static final String UPLOADED_FOLDER_REQUESTS = "E://images//requests//";
     public static final String UPLOADED_FOLDER_AD = "E://images//ad//";
+    public static final String UPLOADED_FOLDER_CAROUSEL_BANNER = "E://images//banner//";
 }

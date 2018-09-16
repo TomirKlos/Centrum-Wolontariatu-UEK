@@ -1,0 +1,76 @@
+<mat-card style>
+  <mat-card-header>
+    <mat-card-title>Bannery </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <h3>Dodaj <a><mat-icon (click)="addBanner()">person_add</mat-icon></a> </h3>
+    <div class="row" *ngIf=addBannerShow>
+
+      <form [formGroup]="formGroup" #form="ngForm">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Tytuł" formControlName="title">
+        </mat-form-field>
+
+        <mat-form-field>
+              <textarea matInput placeholder="Opis" matTextareaAutosize matAutosizeMinRows="5"
+                        matAutosizeMaxRows="20" formControlName="description"></textarea>
+        </mat-form-field>
+
+        <input style="display: none" type="file" multiple (change)="onFileSelected($event)" #fileInput>
+
+        <button mat-button color="primary" (click)="fileInput.click()">Dodaj zdjęcie<mat-icon>add_photo_alternate</mat-icon></button>
+
+        <div *ngFor="let item of fileHash">
+          <img [src]="pathToStaticContent+fileHash" height="40"> <a (click)="deletePicture(item)">  <mat-icon color="warn">delete_forever</mat-icon></a>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid"
+                (click)="submit()">Dodaj
+        </button>
+      </form>
+
+      <button mat-button color="primary" (click)="submit()">
+        <mat-icon>add</mat-icon>
+        Utwórz
+      </button>
+    </div> -->
+
+    <div>
+      <mat-table #table [dataSource]="banners" matSort>
+
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef fxFlex="200px" mat-sort-header>tytul</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="200px"> {{ element.title }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="thumbnail">
+          <mat-header-cell *matHeaderCellDef fxFlex="200px" mat-sort-header>miniaturka</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="200px"><img [src]="pathToStaticContent+element.referenceToPicture" height="50"> </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef fxFlex="100px">Usuń</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="100px">
+            <button mat-button color="warn" (click)="deleteCategory(element.id)">
+              <mat-icon>delete</mat-icon>
+              Usuń
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+
+      </mat-table>
+    </div>
+
+    <mat-paginator #paginator
+                   [length]="totalElements"
+                   [pageSize]="20"
+                   [pageSizeOptions]="[10, 20, 50]"
+                   [showFirstLastButtons]="true">
+
+    </mat-paginator>
+
+  </mat-card-content>
+</mat-card>

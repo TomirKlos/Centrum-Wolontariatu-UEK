@@ -60,7 +60,7 @@ public class VolunteerCertificateService {
         prepareCsv(stringBuilder);
 
         setVolunteerCertificated(volunteerCertificate);
-        
+
         addRowToCsv(stringBuilder, volunteerCertificate);
 
         return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);

@@ -70,6 +70,12 @@ export interface VolunteerAdVM {
   id: number;
 }
 
+export interface Banner {
+  description: string;
+  title: string;
+  referenceToPicture: string;
+}
+
 export interface Page<T> {
   content: T[];
   first: boolean;

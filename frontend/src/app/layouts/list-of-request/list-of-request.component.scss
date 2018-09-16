@@ -47,7 +47,7 @@ mat-card{
       top: 5px;
       right:32px;
       font-size: 11px;
-      color:#ADADAD ;  
+      color:#ADADAD ;
   }
 }
 
@@ -57,7 +57,7 @@ img{
 }
 
 mat-card.outer{
-  background-color:#f4f4f4; 
+  background-color:#f4f4f4;
   border-radius:9px;
   min-width:240px;
 }
@@ -90,7 +90,7 @@ mat-form-field{
   top: 5px;
   left: 11px;
   font-size: 11px;
-  color: #ADADAD ;  
+  color: #ADADAD ;
   padding-right:95px;
 }
 
@@ -143,12 +143,55 @@ mat-card-subtitle{
   opacity: 1;
 }
 
-.bannerStyle h1 {
-  text-align: center;
-  line-height: 400px;
-  background: rgba(0,0,0,.32);
+.bannerStyle #bannerContainer {
+  align: center;
+  height: 400px;
+  background-color: rgba(0,0,0,.32);
   color: #fff;
   margin: 0;
+}
+
+.bannerStyle #bannerContainer hr{
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.75), rgba(0, 0, 0, 0));
+}
+
+.bannerStyle #bannerTitle{
+  padding-top:180px;
+}
+
+#bannerTitle h1 {
+  text-align: center;
+  background: rgba(0,0,0,.22);
+  color: #ECECEC;
+  -webkit-filter: blur(0.25px);
+  -moz-filter: blur(0.25px);
+  -o-filter: blur(0.25px);
+  -ms-filter: blur(0.25px);
+  filter: blur(0.25px);
+}
+
+#description {
+  float:right;
+  margin: 0;
+  margin-right:8%;
+  display: inline-block;
+  max-height: 100px;
+}
+
+ h4 {
+  text-align: right;
+  background: rgba(0,0,0,.12);
+  color: #ECECEC;
+  margin: 0;
+  padding:5px;
+  -webkit-filter: blur(0.25px);
+  -moz-filter: blur(0.25px);
+  -o-filter: blur(0.25px);
+  -ms-filter: blur(0.25px);
+  filter: blur(0.25px);
+ //margin-right:250px;
 }
 
 .bannerStyle{
@@ -181,8 +224,8 @@ mat-card-subtitle{
 }
 
 .sectionTitle{
-  text-align:center; 
-  color: gray; 
+  text-align:center;
+  color: gray;
   margin-top:15px;
 }
 
@@ -191,7 +234,7 @@ mat-card-subtitle{
 }
 
 img.advertImage{
-  float: left; 
+  float: left;
   display: inline;
   object-fit: cover;
 }

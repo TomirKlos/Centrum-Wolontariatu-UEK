@@ -7,6 +7,8 @@ import { UsersComponent } from './users/users.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { FormsModule } from '@angular/forms';
 import {CertificatesComponent} from './certificates/certificates.component';
+import {BannerComponent} from './banner/banner.component';
+import {BannerService} from './banner/banner.service';
 
 @NgModule({
   imports: [
@@ -18,7 +20,11 @@ import {CertificatesComponent} from './certificates/certificates.component';
     AdminComponent,
     UsersComponent,
     CategoriesComponent,
-    CertificatesComponent
+    CertificatesComponent,
+    BannerComponent
+  ],
+  providers: [
+    BannerService
   ],
   entryComponents: [
   ]

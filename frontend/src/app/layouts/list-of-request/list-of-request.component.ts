@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
-import { VolunteerRequestVM, Category, VolunteerAdVM } from '../../shared/interfaces';
+import {VolunteerRequestVM, Category, VolunteerAdVM, Banner} from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
 import { MatPaginator, PageEvent, MatSort } from '@angular/material';
@@ -12,6 +12,8 @@ import { RequestService } from '../../requests/shared/request.service';
 import { ServerDataSource } from '../../shared/server-data-source';
 import { AdService } from '../../ads/shared/ad.service';
 import { AdDialogService } from '../../ads/shared/ad-dialog.service';
+import {BannerService} from '../../admin/banner/banner.service';
+import {forEach} from '@angular/router/src/utils/collection';
 
 
 @Component({
@@ -46,7 +48,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('searchName') input: ElementRef;
 
-  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService) {
+  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService, private _bannerService: BannerService) {
     this.searchService.search(this.searchTerm$)
     .subscribe(results => {
       this.results = results;
@@ -59,11 +61,27 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   }
 
   public carouselBanner: NguCarousel;
-  public carouselBanerItems: Array<any>;
+  public carouselBanerItems: Array<any> = [];
+  public carouselBannerItems: Banner[] = [];
   public carouselBanerTitles: Array<any>;
   public bales;
 
  ngOnInit() {
+   this._bannerService.getBanners().subscribe((data: Banner[]) => {
+     data.forEach( element => {
+       console.log(element.referenceToPicture);
+       this.carouselBanerItems.push('http://localhost:8080/static/' + element.referenceToPicture);
+
+     });
+   });
+
+   this._bannerService.getBanners().subscribe((data: Banner[]) => {
+     data.forEach( element => {
+       console.log(element.referenceToPicture);
+       this.carouselBannerItems.push(element);
+     });
+   });
+
   this.paginator.pageSize=this.pageSize;
   this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
   this.dataSource.relativePathToServerResource = '';
@@ -85,7 +103,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
      }
    });
 
-    this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG"];
+   // this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG"];
     this.carouselBanner = {
       grid: { xs: 1, sm: 1, md: 1, lg: 1, all: 0 },
       slide: 1,
