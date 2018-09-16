@@ -1,5 +1,7 @@
 package pl.krakow.uek.centrumWolontariatu.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.domain.CarouselBanner;
@@ -34,10 +36,11 @@ public class CarouselBannerService {
         this.userService = userService;
     }
 
+    @Cacheable(value = "carouselBannerGetAll")
     public List<CarouselBanner> getAll(){
         return carouselBannerRepository.findAll();
     }
-
+    @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
     public void crateBanner(CarouselBannerVM carouselBannerVM){
         CarouselBanner carouselBanner = new CarouselBanner();
         carouselBanner.setDescription(carouselBannerVM.getDescription());
@@ -80,7 +83,7 @@ public class CarouselBannerService {
         }
         return hashPicturesWithReferences;
     }
-
+    @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
     public void deleteBanner(Long id){
         carouselBannerRepository.deleteById(id);
     }
