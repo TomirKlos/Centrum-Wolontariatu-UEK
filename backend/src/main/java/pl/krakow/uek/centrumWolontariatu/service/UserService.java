@@ -30,13 +30,16 @@ public class UserService {
     }
 
 
-    public User registerUser(String email, String password) {
+    public User registerUser(String email, String password, String firstName, String lastName) {
         if (!mailDomainToAuthoritiesService.emailFromAllowedDomain(email)) {
             throw new EmailNotAllowedException();
         }
         User newUser = new User();
 
         newUser.setEmail(email);
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setPassword(encryptedPassword);
 

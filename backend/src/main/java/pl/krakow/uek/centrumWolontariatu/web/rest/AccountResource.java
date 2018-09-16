@@ -40,7 +40,7 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody UserVM userVM) {
+    public void registerAccount(@Valid @RequestBody UserRegisterVM userVM) {
 
         if (!checkPasswordLength(userVM.getPassword())) {
             throw new InvalidPasswordException();
@@ -48,7 +48,7 @@ public class AccountResource {
         userRepository.findByEmail(userVM.getEmail().toLowerCase()).ifPresent(u -> {
             throw new EmailAlreadyUsedException();
         });
-        User user = userService.registerUser(userVM.getEmail(), userVM.getPassword());
+        User user = userService.registerUser(userVM.getEmail(), userVM.getPassword(), userVM.getFirstName(), userVM.getLastName());
 
 //        mailService.sendActivationEmail(user);
     }

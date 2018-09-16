@@ -19,14 +19,28 @@
         && !formGroup.get('email').hasError('required')
         && !formGroup.get('email').hasError('email')
       ">
-          Email email musi być uczelnianym.
+          Email musi być uczelniany.
         </mat-error>
         <mat-error *ngIf="formGroup.get('email').hasError('matchValue')">
-          Podany adres email jest w bazie
+          Podany adres email już istnieje.
         </mat-error>
       </mat-form-field>
 
       <app-passwords-form-group (passwordsFormEmitter)="getPasswordsFormGroup($event)"></app-passwords-form-group>
+
+      <mat-form-field>
+        <input matInput type="text" placeholder="Imie" formControlName="firstName">
+        <mat-error *ngIf="formGroup.get('firstName').hasError('required')">
+          Imie jest <strong>wymagane</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="text" placeholder="Nazwisko" formControlName="lastName">
+        <mat-error *ngIf="formGroup.get('firstName').hasError('required')">
+          Nazwisko jest <strong>wymagane</strong>
+        </mat-error>
+      </mat-form-field>
 
       <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid || buttonDisabled"
               (click)="signup()">

@@ -15,6 +15,7 @@ export class SignupComponent implements OnInit {
   formGroup: FormGroup;
   buttonDisabled = false;
   private _emailValidators = [ Validators.required, Validators.email, Validators.pattern(/.*(uek.krakow.pl)$/) ];
+  private _userDataValidators = [ Validators.required ];
 
   constructor(private _fb: FormBuilder, private _http: HttpClient, private _sb: SnackBarService, private _router: Router) {
   }
@@ -22,6 +23,8 @@ export class SignupComponent implements OnInit {
   ngOnInit() {
     this.formGroup = this._fb.group({
       email: [ '', this._emailValidators ],
+      firstName: ['', this._userDataValidators],
+      lastName: ['', this._userDataValidators]
     });
   }
 
@@ -29,7 +32,9 @@ export class SignupComponent implements OnInit {
     this.buttonDisabled = true;
     const body = {
       email: this.formGroup.get('email').value,
-      password: this.formGroup.get('passwords').get('password').value
+      password: this.formGroup.get('passwords').get('password').value,
+      firstName: this.formGroup.get('firstName').value,
+      lastName: this.formGroup.get('lastName').value,
     };
 
     this._http.post(environment.apiEndpoint + '/register', body, { observe: 'response' })
