@@ -42,7 +42,7 @@
             <mat-header-cell *matHeaderCellDef fxFlex="100px">Aplikacje</mat-header-cell>
             <mat-cell *matCellDef="let element" fxFlex="100px">
               <button mat-button color="warn" (click)="showApplications(element.id)">
-                  <button mat-icon-button (click)="clearCount()">
+                  <button mat-icon-button (click)="clearCount(element.id)">
                       <mat-icon class="icon" color="primary">message</mat-icon>
                       <ng-container *ngIf="getBadgeById(element.id)==null; else elseTemplate">
 

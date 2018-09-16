@@ -63,7 +63,8 @@ export class InviteAdComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.name = result;
+      this.vrequestId = result[0];
+      this.name = result[1];
     });
   }
 

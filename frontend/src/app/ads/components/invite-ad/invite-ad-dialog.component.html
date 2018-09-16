@@ -15,5 +15,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cofnij</button>
-  <button mat-button [mat-dialog-close]="chosenTitle" cdkFocusInitial>Ok</button>
+  <button mat-button [mat-dialog-close]="[formGroup.get('vrequest').value, chosenTitle]" cdkFocusInitial>Ok</button>
 </div>

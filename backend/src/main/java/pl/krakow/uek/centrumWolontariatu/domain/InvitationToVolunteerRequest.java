@@ -37,4 +37,8 @@ public class InvitationToVolunteerRequest {
         @JoinColumn(name = "volunteer_request_id", nullable = false)
         private VolunteerRequest volunteerRequest;
 
+        @ManyToOne(fetch = FetchType.EAGER)
+        @JoinColumn(name = "volunteer_ad_id", nullable = false)
+        private VolunteerAd volunteerAd;
+
 }

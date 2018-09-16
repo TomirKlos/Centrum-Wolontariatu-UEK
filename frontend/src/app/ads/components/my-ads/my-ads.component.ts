@@ -16,12 +16,11 @@ import { AdDialogService } from '../../shared/ad-dialog.service';
 })
 export class MyAdssComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerAdVM>;
- // dataSourceBadge: ServerDataSource<responseVolunteerRequestVM>;
-//  dataSourceApplications: ServerDataSource<responseVolunteerRequestVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr' ];
   totalElements: number;
 
-  badgeCount = 5;
+  badgeData: BadgeData[] = [];
+  badgePrepared: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -39,6 +38,9 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
     this.dataSource = new ServerDataSource<VolunteerAdVM>(this._adService, this.paginator, this.sort, 'volunteerAd');
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
+
+    this.getIds();
+    this.badgePrepared = true;
 
     this._adService.getPage().subscribe(d => {
       if (d && d.totalElements) {
@@ -58,6 +60,46 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
   showApplications(request: number){
     this._dialogService.openApplicationsPanel(request);
   }
+  getIds(){
+    this._myAdsService.getIDs().subscribe((data)=>{
+      (data as number[]).forEach(element => {
 
+        this._myAdsService.get(element).debounceTime(10000).subscribe((data)=>{
+          var badgeData = new BadgeData(element, data);
+          this.badgeData.push(badgeData);
+          return data;
+        });
+      });
+      return data;
+    });
+  }
 
+  getBadgeById(id:number){
+    for (var i = 0; i < this.badgeData.length; i++) {
+      if (this.badgeData[i]["id"] === id) {
+        return this.badgeData[i];
+      }
+    }
+    return null;
+  }
+
+  clearCount(id: number){
+    for (var i = 0; i < this.badgeData.length; i++) {
+      if (this.badgeData[i]["id"] === id) {
+        this.badgeData[i]["id"] = 0;
+      }
+    }
+    return null;
+  }
+
+}
+
+export class BadgeData{
+  private id:number;
+  private text: string;
+
+  constructor(id,text) {
+    this.id = id;
+    this.text = text;
+  }
 }

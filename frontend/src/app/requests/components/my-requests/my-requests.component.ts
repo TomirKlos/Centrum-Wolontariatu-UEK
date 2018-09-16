@@ -25,7 +25,6 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr' ];
 
   totalElements: number;
-  badgeCount = 5;
 
   badgeTemp: String[] = [];
   badgeData: BadgeData[] = [];
@@ -98,6 +97,16 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
         if (this.badgeData[i]["id"] === id) {
             return this.badgeData[i];
         }
+    }
+    return null;
+  }
+
+
+  clearCount(id: number){
+    for (var i = 0; i < this.badgeData.length; i++) {
+      if (this.badgeData[i]["id"] === id) {
+        this.badgeData[i]["id"] = 0;
+      }
     }
     return null;
   }

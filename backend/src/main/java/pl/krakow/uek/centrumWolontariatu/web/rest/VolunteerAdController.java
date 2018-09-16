@@ -124,5 +124,12 @@ public class VolunteerAdController {
         return new ResponseEntity<>(volunteerAds, HttpStatus.OK);
     }
 
+    @GetMapping("mineId")
+    @ResponseBody
+    public ResponseEntity<List<Long>> findAllMineIds(Pageable pageable) {
+        List<Long> volunteerAdsIds = volunteerAdService.findAllMineIdsByUserId(pageable);
+        return new ResponseEntity<>(volunteerAdsIds, HttpStatus.OK);
+    }
+
 
 }

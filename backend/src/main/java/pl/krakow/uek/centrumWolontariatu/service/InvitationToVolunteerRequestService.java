@@ -16,6 +16,7 @@ import pl.krakow.uek.centrumWolontariatu.repository.DTO.InvitationToVolunteerReq
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
+import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InvitationVolunteerResponsesPermissionException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.ResponseAcceptException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.VolunteerRequestResponsesPermissionException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.InvitationToVolunteerRequestVM;
@@ -56,6 +57,7 @@ public class InvitationToVolunteerRequestService {
             invitationToVolunteerRequest.setDescription(invitationToVolunteerRequestVM.getDescription());
             invitationToVolunteerRequest.setUserInvited(user);
             invitationToVolunteerRequest.setVolunteerRequest(volunteerRequestRepository.getOne(invitationToVolunteerRequestVM.getVolunteerRequestId()));
+            invitationToVolunteerRequest.setVolunteerAd(volunteerAdRepository.getOne(invitationToVolunteerRequestVM.getVolunteerAdId()));
 
             ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
             long epochMillis = utc.toEpochSecond() * 1000;
@@ -80,12 +82,38 @@ public class InvitationToVolunteerRequestService {
         Page<InvitationToVolunteerRequestDTO> page;
         long userId=volunteerAdRepository.findById(adId).get().getUser().getId();
         if(userService.getUserWithAuthorities().get().getId()==userId){
-            page = invitationToVolunteerRequestRepository.findAllByUserInvitedId(pageable, userId);
-            //setSeenFlag(page);
+            page = invitationToVolunteerRequestRepository.findAllByVolunteerAdId(pageable, adId);
+            setSeenFlag(page);
             return page;
         }
         else throw new BadRequestAlertException("You cannot see not your own invitations", "invitationVolunteerRequestManagement", "cannotseenotowninvitations");
     }
+
+    public long getAllUnseen(long adId){
+        if(isUserOwnerOfVolunteerAd(adId) ){
+
+            return invitationToVolunteerRequestRepository.countByVolunteerAdIdAndSeen(adId, (byte)0);
+        }
+
+        else throw new InvitationVolunteerResponsesPermissionException();
+    }
+
+
+    private void setSeenFlag(Page<InvitationToVolunteerRequestDTO> pageInvitation){
+        for(InvitationToVolunteerRequestDTO invitationToVolunteerRequestDTO: pageInvitation.getContent()){
+            invitationToVolunteerRequestRepository.findById(invitationToVolunteerRequestDTO.getId()).map(invitationToVolunteerRequest -> {
+                invitationToVolunteerRequest.setSeen((byte)1);
+                return invitationToVolunteerRequestRepository.save(invitationToVolunteerRequest);
+            });
+        }
+    }
+
+    private boolean isUserOwnerOfVolunteerAd(long adId){
+        return volunteerAdRepository.findById(adId).map(invitationToVolunteerRequest -> {
+            return invitationToVolunteerRequest.getUser().getId()==userService.getUserId();
+        }).orElseThrow(InvitationVolunteerResponsesPermissionException::new);
+    }
+
 
     public void acceptInvitation(long invitationId){
         if(isUserOwnerOfVolunteerAdByInvitation(invitationId))

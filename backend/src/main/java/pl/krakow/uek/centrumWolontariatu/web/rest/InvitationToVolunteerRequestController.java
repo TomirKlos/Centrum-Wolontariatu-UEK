@@ -44,4 +44,9 @@ public class InvitationToVolunteerRequestController {
     public void disableAcceptedInvitationRequest(@RequestBody IdVM idVM) {
         invitationToVolunteerRequestService.disableAcceptedInvitation(idVM.getId());
     }
+
+    @GetMapping("unseen")
+    public long getAllInvitationsUnseen(@RequestParam long adId){
+        return invitationToVolunteerRequestService.getAllUnseen(adId);
+    }
 }

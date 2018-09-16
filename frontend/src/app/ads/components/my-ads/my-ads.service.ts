@@ -14,11 +14,10 @@ export class MyAdsService extends ServerResourceService<responseVolunteerRequest
 
   constructor(_http: HttpClient, _snackBar: SnackBarService) {
     super(_http, _snackBar);
-    this._url = this._url + '/responseVr';
   }
 
   loadApplications(id: number) {
-    return this._http.get(this._url + id).pipe(
+    return this._http.get(this._url + '/vrequest/' + id).pipe(
       catchError(err => {
         this._snackBar.warning();
         return err;
@@ -27,15 +26,28 @@ export class MyAdsService extends ServerResourceService<responseVolunteerRequest
   }
 
   getBadgeCount(id: number) {
-    return this._http.get(this._url + "unseen/" + id).pipe(
+    return this._http.get(this._url + "/vrequest/unseen/" + id).pipe(
       catchError(err => {
         this._snackBar.warning();
         return err;
       })
     );
   }
-  get(id: number){
+  /*get(id: number){
     return this._http.get(this._url + "/unseen"+ id);
+  } */
+
+  get(id: number){
+    return this._http.get(this._url + "/vrequest/invite/unseen?adId="+ id);
+  }
+
+  getIDs() {
+    return this._http.get(this._url + "/vAd/mineId").pipe(
+      catchError(err => {
+        this._snackBar.warning();
+        return err;
+      })
+    );
   }
 
 }

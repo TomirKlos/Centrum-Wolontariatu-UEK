@@ -18,6 +18,7 @@ import pl.krakow.uek.centrumWolontariatu.converter.VolunteerAdConverter;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.solr.VolunteerAdSearchDao;
 import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
@@ -217,6 +218,16 @@ public class VolunteerAdService {
     @Transactional
     public Page<VolunteerAdDTO> findAllByUserId(Pageable pageable) {
          return volunteerAdRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
+    }
+
+    @Transactional
+    public List<Long> findAllMineIdsByUserId(Pageable pageable) {
+
+        List<Long> idList = new ArrayList<>();
+        for(VolunteerAdDTO volunteerAdDTO: volunteerAdRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId())){
+            idList.add(volunteerAdDTO.getId());
+        }
+        return idList;
     }
 
     public void deleteType(String name){

@@ -1,7 +1,5 @@
 package pl.krakow.uek.centrumWolontariatu.web.rest.vm;
 
-import pl.krakow.uek.centrumWolontariatu.domain.User;
-
 public class InvitationToVolunteerRequestVM {
 
     private String description;

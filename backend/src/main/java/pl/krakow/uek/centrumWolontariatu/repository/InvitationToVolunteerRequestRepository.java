@@ -8,6 +8,8 @@ import pl.krakow.uek.centrumWolontariatu.domain.InvitationToVolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.InvitationToVolunteerRequestDTO;
 
 public interface InvitationToVolunteerRequestRepository extends JpaRepository<InvitationToVolunteerRequest, Long>, JpaSpecificationExecutor<InvitationToVolunteerRequest> {
-    Page<InvitationToVolunteerRequestDTO> findAllByVolunteerRequestId(Pageable pageable, long id);
-    Page<InvitationToVolunteerRequestDTO> findAllByUserInvitedId(Pageable pageable, long id);
+    Page<InvitationToVolunteerRequestDTO> findAllByVolunteerRequestId(Pageable pageable, Long id);
+    Page<InvitationToVolunteerRequestDTO> findAllByUserInvitedId(Pageable pageable, Long id);
+    Page<InvitationToVolunteerRequestDTO> findAllByVolunteerAdId(Pageable pageable, Long id);
+    Long countByVolunteerAdIdAndSeen(Long id, byte seen);
 }
