@@ -8,18 +8,18 @@
             <mat-table [dataSource]="dataSource" matSort>
 
               <ng-container matColumnDef="id">
-                <mat-header-cell *matHeaderCellDef fxFlex="50px" mat-sort-header>id</mat-header-cell>
-                <mat-cell *matCellDef="let element" fxFlex="50px"> {{ element.id }}</mat-cell>
+                <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="5%" mat-sort-header>id</mat-header-cell>
+                <mat-cell *matCellDef="let element" fxFlex.lt-sm="5%"> {{ element.id }}</mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="title">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>tytuł</mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element.title }}</mat-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex.lt-sm="50%">tytuł</mat-header-cell>
+                <mat-cell *matCellDef="let element" fxFlex.lt-sm="50%"> {{ element.title }}</mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="accepted">
-                <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="120px">Aktywny</mat-header-cell>
-                <mat-cell *matCellDef="let element" fxFlex="120px">
+                <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="120px" fxFlex.lt-sm="28%">Aktywny</mat-header-cell>
+                <mat-cell *matCellDef="let element" fxFlex="120px" fxFlex.lt-sm="28%">
 
                   <button mat-button [color]="(element.accepted ? 'primary' : 'warn')" (click)="changeAccepted(element.id)">
                     {{ (element.accepted ? 'Aktywny' : 'Nieaktywny') }}
@@ -29,8 +29,8 @@
               </ng-container>
 
               <ng-container matColumnDef="delete">
-                <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
-                <mat-cell *matCellDef="let element" fxFlex="100px">
+                <mat-header-cell *matHeaderCellDef fxFlex="100px" fxFlex.lt-sm="15%"></mat-header-cell>
+                <mat-cell *matCellDef="let element" fxFlex="100px" fxFlex.lt-sm="15%">
                   <button mat-button color="warn" (click)="deleteAd(element.id)">
                     <mat-icon>delete</mat-icon>
                     Usuń
@@ -39,8 +39,8 @@
               </ng-container>
 
               <ng-container matColumnDef="editVr">
-                <mat-header-cell *matHeaderCellDef fxFlex="100px"></mat-header-cell>
-                <mat-cell *matCellDef="let element" fxFlex="100px">
+                <mat-header-cell *matHeaderCellDef fxFlex="100px" fxFlex.lt-sm="15%"></mat-header-cell>
+                <mat-cell *matCellDef="let element" fxFlex="100px" fxFlex.lt-sm="15%">
                   <button mat-button color="primary" (click)="openDialog(element)">
                     <!--<button mat-button color="primary" [routerLink]="['/requests/', element.id]">-->
 
