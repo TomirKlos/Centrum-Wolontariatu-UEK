@@ -50,23 +50,28 @@ public class VolunteerRequestService {
     private final UserService userService;
     private final MailService mailService;
     private final VolunteerRequestRepository volunteerRequestRepository;
+    private final VolunteerAdRepository volunteerAdRepository;
     private final VolunteerRequestPictureRepository volunteerRequestPictureRepository;
     private final VolunteerRequestCategoryRepository volunteerRequestCategoryRepository;
+    private final VolunteerAdCategoryRepository volunteerAdCategoryRepository;
     private final VolunteerRequestTypeRepository volunteerRequestTypeRepository;
     private final VolunteerRequestSearchDao volunteerRequestSearchDao;
     private final PictureService<VolunteerRequest> pictureService;
 
-
-    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository, VolunteerRequestSearchDao volunteerRequestSearchDao, PictureService<VolunteerRequest> pictureService) {
+    public VolunteerRequestService(UserService userService, MailService mailService, VolunteerRequestRepository volunteerRequestRepository, VolunteerAdRepository volunteerAdRepository, VolunteerRequestPictureRepository volunteerRequestPictureRepository, VolunteerRequestCategoryRepository volunteerRequestCategoryRepository, VolunteerAdCategoryRepository volunteerAdCategoryRepository, VolunteerRequestTypeRepository volunteerRequestTypeRepository, VolunteerRequestSearchDao volunteerRequestSearchDao, PictureService<VolunteerRequest> pictureService) {
         this.userService = userService;
         this.mailService = mailService;
         this.volunteerRequestRepository = volunteerRequestRepository;
+        this.volunteerAdRepository = volunteerAdRepository;
         this.volunteerRequestPictureRepository = volunteerRequestPictureRepository;
         this.volunteerRequestCategoryRepository = volunteerRequestCategoryRepository;
+        this.volunteerAdCategoryRepository = volunteerAdCategoryRepository;
         this.volunteerRequestTypeRepository = volunteerRequestTypeRepository;
         this.volunteerRequestSearchDao = volunteerRequestSearchDao;
         this.pictureService = pictureService;
     }
+
+
     /*
      * don't refactor!!,
      * split creating process into 2 methods:GenerateVolunteerRequest + createVolunteerRequest
@@ -178,6 +183,10 @@ public class VolunteerRequestService {
         VolunteerRequestCategory volunteerRequestCategory = new VolunteerRequestCategory();
         volunteerRequestCategory.setName(name);
         volunteerRequestCategoryRepository.save(volunteerRequestCategory);
+
+        VolunteerAdCategory volunteerAdCategory = new VolunteerAdCategory();
+        volunteerAdCategory.setName(name);
+        volunteerAdCategoryRepository.save(volunteerAdCategory);
     }
 
     public List<VolunteerRequestCategory> getAllCategories() {
@@ -225,6 +234,7 @@ public class VolunteerRequestService {
         } else return volunteerRequestRepository.findAllBy(pageable);
     }
 
+    @Cacheable(value = "volunteerRequestsByRsqlWithCategories")
     @Transactional
     public Page<VolunteerRequestDTO> findAllByRsqlWithCategories(Pageable pageable, com.google.common.base.Optional<String> search, Set<VolunteerRequestCategory> categorySet) {
         Page<VolunteerRequest> volunteerRequests;
@@ -234,14 +244,16 @@ public class VolunteerRequestService {
 
             if(!categorySet.isEmpty()){
                 volunteerRequests = volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte)1, categorySet);
+            } else if(categorySet.isEmpty()) {
+                return volunteerRequestRepository.findAllByAcceptedIs((byte)1, pageable);
+                //return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
             } else {
                 volunteerRequests = volunteerRequestRepository.findAll(spec, pageable);
             }
             return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequests);
-        } else if(!search.isPresent() && !categorySet.isEmpty()){
-            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte)1, categorySet));
-        }else return volunteerRequestRepository.findAllBy(pageable);
+        } else return volunteerRequestRepository.findAllByAcceptedIs((byte)1, pageable);
     }
+
 
     @Transactional
     public Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable) {
@@ -267,7 +279,7 @@ public class VolunteerRequestService {
         volunteerRequestCategoryRepository.deleteById(name);
     }
 
-    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
+    @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsByRsqlWithCategories"}, allEntries = true)
     public void acceptVolunteerRequest(long id){
         volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
             volunteerRequest.setAccepted(parse(true));
@@ -275,7 +287,7 @@ public class VolunteerRequestService {
         });
     }
 
-    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
+    @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsByRsqlWithCategories"}, allEntries = true)
     public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}
 
     public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){

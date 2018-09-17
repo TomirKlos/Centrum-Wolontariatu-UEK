@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAdCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAdType;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.VolunteerAdPictureRepository;
 import pl.krakow.uek.centrumWolontariatu.service.MailService;
 import pl.krakow.uek.centrumWolontariatu.service.UserService;
@@ -129,6 +131,19 @@ public class VolunteerAdController {
     public ResponseEntity<List<Long>> findAllMineIds(Pageable pageable) {
         List<Long> volunteerAdsIds = volunteerAdService.findAllMineIdsByUserId(pageable);
         return new ResponseEntity<>(volunteerAdsIds, HttpStatus.OK);
+    }
+
+    @GetMapping("v2/")
+    @ResponseBody
+    public ResponseEntity<Page<VolunteerAdDTO>> findAllByRsqWithCategories(@RequestParam(value = "search") Optional<String> search, Pageable pageable, String[] categories) {
+        Set<VolunteerAdCategory> categorySet = new HashSet<>();
+        if(categories!=null)
+            for(String cat: categories){
+                categorySet.add(new VolunteerAdCategory(cat));
+            }
+
+        Page<VolunteerAdDTO> volunteerAdDTOS = volunteerAdService.findAllByRsqlWithCategories(pageable, parseGuavaOptional(search), categorySet);
+        return new ResponseEntity<>(volunteerAdDTOS, HttpStatus.OK);
     }
 
 

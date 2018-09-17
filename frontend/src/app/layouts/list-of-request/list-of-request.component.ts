@@ -37,11 +37,12 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   categoriesData: String[] = [];
   formGroupRequests: FormGroup;
+  formGroupAds: FormGroup;
 
   //paginator
   length = 0;
   pageIndex = 0;
-  pageSize = 2;
+  pageSize = 5;
 
   pageEvent: PageEvent;
 
@@ -113,7 +114,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   this.dataSourceAds = new ServerDataSource<VolunteerAdVM>(this._adService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
   this.dataSourceAds.relativePathToServerResource = '';
-  this.dataSourceAds.loadAcceptedVrPage();
+  this.dataSourceAds.loadAcceptedVrPageWithCategories('');
 
    this.dataSourceAds.connectToSourceElementsNumber().subscribe(d => {
      if (this.length < d) {
@@ -125,7 +126,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
      categories: [ ],
    });
 
-   // this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG"];
+   this.formGroupAds = this._fb.group({
+     categories: [ ],
+   });
+
     this.carouselBanner = {
       grid: { xs: 1, sm: 1, md: 1, lg: 1, all: 0 },
       slide: 1,
@@ -180,7 +184,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   searchContent(){
     if (this.searchValue == ""){
-      this.dataSource.loadAcceptedVrPage();
+      this.dataSource.loadAcceptedVrPageWithCategories('');
     }
     else if(this.searchValue != ""){
       this.dataSource.generateFilteredSearchPage(this.searchTerm$);
@@ -191,7 +195,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   searchAdContent(){
     if(this.searchAdValue == "")
-      this.dataSourceAds.loadAcceptedVrPage();
+      this.dataSourceAds.loadAcceptedVrPageWithCategories('');
     else if(this.searchAdValue != ""){
       this.dataSourceAds.generateFilteredSearchPage(this.searchAdTerm$);
       this.resultsAd = null;
@@ -207,11 +211,11 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   }
 
   onClickResetSearchButton(){
-    this.dataSource.loadAcceptedVrPage();
+    this.dataSource.loadAcceptedVrPageWithCategories('');
   }
 
   onClickResetSearchButtonAd(){
-    this.dataSourceAds.loadAcceptedVrPage();
+    this.dataSourceAds.loadAcceptedVrPageWithCategories('');
   }
 
   getCategoriesFromVolunteerRequest(categories: Category[]): string{
@@ -224,11 +228,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
       return userCategories.substr(0,userCategories.length-2);
   }
 
-  updateCategories(){
+  updateRequestCategories(){
     let query: string = '';
     const categoriesPath: string = 'categories=';
     this.formGroupRequests.get('categories').value.forEach(category => {
-      console.log(category);
       query = query + categoriesPath + category + '&';
     });
     this.dataSource.loadAcceptedVrPageWithCategories(query);
@@ -236,14 +239,33 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     this.dataSource.connectToSourceElementsNumber().subscribe(d => {
         this.length = d;
     });
-
   }
 
-  clearSelectedCategories(){
+  updateAdCategories(){
+    let query: string = '';
+    const categoriesPath: string = 'categories=';
+    this.formGroupAds.get('categories').value.forEach(category => {
+      query = query + categoriesPath + category + '&';
+    });
+    this.dataSourceAds.loadAcceptedVrPageWithCategories(query);
+
+    this.dataSourceAds.connectToSourceElementsNumber().subscribe(d => {
+      this.length = d;
+    });
+  }
+
+  clearSelectedRequestsCategories(){
     this.formGroupRequests.setValue({
       categories: [ ],
-    })
+    });
   }
+
+  clearSelectedAdsCategories(){
+    this.formGroupAds.setValue({
+      categories: [ ],
+    });
+  }
+
 
   getSelectedCategories(){
     console.log(this.formGroupRequests.get('categories').value);

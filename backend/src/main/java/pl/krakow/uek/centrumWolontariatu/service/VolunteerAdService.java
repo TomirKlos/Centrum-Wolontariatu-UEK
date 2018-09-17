@@ -15,6 +15,7 @@ import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerAdConverter;
+import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
@@ -215,6 +216,26 @@ public class VolunteerAdService {
         } else return volunteerAdRepository.findAllBy(pageable);
     }
 
+    @Cacheable(value = "volunteerAdsByRsqlWithCategories")
+    @Transactional
+    public Page<VolunteerAdDTO> findAllByRsqlWithCategories(Pageable pageable, com.google.common.base.Optional<String> search, Set<VolunteerAdCategory> categorySet) {
+        Page<VolunteerAd> volunteerAds;
+        if(search.isPresent()) {
+            final Node rootNode = new RSQLParser().parse(search.get());
+            Specification<VolunteerAd> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerAd>());
+
+            if(!categorySet.isEmpty()){
+                volunteerAds = volunteerAdRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte)1, categorySet);
+            } else if(categorySet.isEmpty()) {
+                return volunteerAdRepository.findAllByAcceptedIs((byte)1, pageable);
+                //return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
+            } else {
+                volunteerAds = volunteerAdRepository.findAll(spec, pageable);
+            }
+            return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAds);
+        } else return volunteerAdRepository.findAllByAcceptedIs((byte)1, pageable);
+    }
+
     @Transactional
     public Page<VolunteerAdDTO> findAllByUserId(Pageable pageable) {
          return volunteerAdRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
@@ -238,7 +259,7 @@ public class VolunteerAdService {
         volunteerAdCategoryRepository.deleteById(name);
     }
 
-    @CacheEvict(value = "volunteerAdsByRsql", allEntries = true)
+    @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsByRsqlWithCategories"}, allEntries = true)
     public void acceptVolunteerAd(long id){
         volunteerAdRepository.findById(id).ifPresent(volunteerAd -> {
             volunteerAd.setAccepted(parse(true));
@@ -246,7 +267,7 @@ public class VolunteerAdService {
         });
     }
 
-    @CacheEvict(value = "volunteerAdsByRsql", allEntries = true)
+    @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsByRsqlWithCategories"}, allEntries = true)
     public void deleteVolunteerAd(long id){ volunteerAdRepository.deleteById(id);}
 
     public List<VolunteerAdDTO> getVolunteerAdBySolr(String text){

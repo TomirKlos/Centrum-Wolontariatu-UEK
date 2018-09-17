@@ -27,7 +27,7 @@
                   <mat-icon class="form-icon">search</mat-icon>
                   Szukaj wolontariatu
               </mat-placeholder>
-              <input (keyup)="$event.keyCode == 13 ? searchContent() : null" type="text" aria-label="Number" #searchName matInput (keyup)="searchTerm$.next($event.target.value); clearSelectedCategories() " [matAutocomplete]="auto" (input)="searchValue = $event.target.value" >
+              <input (keyup)="$event.keyCode == 13 ? searchContent() : null" type="text" aria-label="Number" #searchName matInput (keyup)="searchTerm$.next($event.target.value); clearSelectedRequestsCategories() " [matAutocomplete]="auto" (input)="searchValue = $event.target.value" >
                 <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchName.value=''; searchValue=''; onClickResetSearchButton()">
                     <mat-icon>close</mat-icon>
                 </button>
@@ -39,10 +39,7 @@
                           <ng-template #elseTemplate>
                                 <img class="searchImage" aria-hidden src="https://i.imgur.com/0TdfLx8.jpg" height="25" /> {{result.title}} <a style="font-size: 10px;">{{result.description}}</a>
                           </ng-template>
-
-
-                     <!-- <img class="searchImage" aria-hidden src="https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg" height="25" /> {{result.title}} <a style="font-size: 10px;">{{result.description}}</a>
-                     -->
+                    
                     </mat-option>
               </mat-autocomplete>
           </mat-form-field>
@@ -58,7 +55,7 @@
                       </span>
 
               </mat-select-trigger>
-              <mat-option (click)="updateCategories(); searchValue=''; searchName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
+              <mat-option (click)="updateRequestCategories(); searchValue=''; searchName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
             </mat-select>
           </mat-form-field>
         </form>
@@ -119,7 +116,7 @@
                     <mat-icon class="form-icon">search</mat-icon>
                     Szukaj wolontariuszy
                 </mat-placeholder>
-                <input (keyup)="$event.keyCode == 13 ? searchAdContent() : null" type="text" aria-label="Number" #searchAdName matInput (keyup)="searchAdTerm$.next($event.target.value)" [matAutocomplete]="autoAd" (input)="searchAdValue = $event.target.value" >
+                <input (keyup)="$event.keyCode == 13 ? searchAdContent() : null" type="text" aria-label="Number" #searchAdName matInput (keyup)="searchAdTerm$.next($event.target.value); clearSelectedAdsCategories()" [matAutocomplete]="autoAd" (input)="searchAdValue = $event.target.value" >
                   <button mat-button *ngIf="searchAdValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchAdName.value=''; searchAdValue=''; onClickResetSearchButtonAd()">
                       <mat-icon>close</mat-icon>
                   </button>
@@ -135,6 +132,21 @@
                       </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+
+        <form [formGroup]="formGroupAds" #form="ngForm">
+          <mat-form-field>
+            <mat-select formControlName="categories" name="categories" id="categoriesAd" placeholder="Kategorie" multiple>
+              <mat-select-trigger>
+                {{formGroupAds.get('categories').value ? (formGroupAds.get('categories').value[0]==null ? '' : formGroupAds.get('categories').value[0]) : ''}}
+                <span *ngIf="formGroupAds.get('categories').value?.length > 1" class="example-additional-selection">
+                        (+{{formGroupAds.get('categories').value.length - 1}} inne)
+                      </span>
+
+              </mat-select-trigger>
+              <mat-option (click)="updateAdCategories(); searchAdValue=''; searchAdName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
 
           <mat-card *ngFor="let row of dataSourceAds.connectToSource() | async" class="box" (click)="openDialogAd(row)">
                 <div class="outter">

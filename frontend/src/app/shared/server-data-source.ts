@@ -10,6 +10,7 @@ import { ServerResourceService } from './server-resource.service';
 
 export class ServerDataSource<T> implements DataSource<T> {
   relativePathToServerResource = '';
+  private requestQueryWithCategories: string = '';
   private _data = new BehaviorSubject<T[]>([]);
   private _total = new BehaviorSubject<number>(0);
 
@@ -56,7 +57,7 @@ export class ServerDataSource<T> implements DataSource<T> {
     if(this.dataType=="volunteerRequestAcceptedOnly"){
       merge(this._sort.sortChange, this._paginator.page)
       .pipe(
-        tap(() => this.loadAcceptedVrPage())
+        tap(() => this.loadAcceptedVrPageWithCategories(this.requestQueryWithCategories))
       ).subscribe();
     }
   }
@@ -90,6 +91,7 @@ export class ServerDataSource<T> implements DataSource<T> {
       { name: 'size', value: this._paginator.pageSize },
       { name: 'sort', value: "id,desc" }
     ).subscribe(d => {
+      this.requestQueryWithCategories = queryPath;
       this._data.next(d.content);
       this._total.next(d.totalElements);
     });

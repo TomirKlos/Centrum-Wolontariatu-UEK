@@ -57,8 +57,9 @@ export class AddRequestComponent implements OnInit {
     );
   }
 
-  onFileSelected(event){
+  onFileSelected(event) {
     this.selectedFile = <File[]> event.target.files;
+    this.onUpload();
   }
 
   onUpload(){
