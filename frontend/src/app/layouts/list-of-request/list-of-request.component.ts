@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef} from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
 import {VolunteerRequestVM, Category, VolunteerAdVM, Banner} from '../../shared/interfaces';
@@ -14,6 +14,7 @@ import { AdService } from '../../ads/shared/ad.service';
 import { AdDialogService } from '../../ads/shared/ad-dialog.service';
 import {BannerService} from '../../admin/banner/banner.service';
 import {forEach} from '@angular/router/src/utils/collection';
+import {MediaMatcher} from '@angular/cdk/layout';
 
 
 @Component({
@@ -44,11 +45,18 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerRequestVM>;
   dataSourceAds: ServerDataSource<VolunteerAdVM>;
 
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: () => void;
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('searchName') input: ElementRef;
 
-  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService, private _bannerService: BannerService) {
+  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService, private _bannerService: BannerService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
+
     this.searchService.search(this.searchTerm$)
     .subscribe(results => {
       this.results = results;

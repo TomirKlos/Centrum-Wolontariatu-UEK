@@ -3,6 +3,11 @@
     width: 50%;
     min-width:240px;
 }
+.is-mobile .column {
+  float: left;
+  width: 100%;
+  min-width:240px;
+}
 
 .row:after {
     content: "";

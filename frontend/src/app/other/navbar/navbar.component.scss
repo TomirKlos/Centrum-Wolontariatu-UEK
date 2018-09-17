@@ -30,6 +30,16 @@
   flex: 1 0 auto;
 }
 
+@media (max-width:599px){
+  .mat-toolbar-multiple-rows{
+    min-height:64px
+  }
+  .mat-toolbar-row,.mat-toolbar-single-row{
+    height:64px
+  }
+}
+
+
 
 
 
