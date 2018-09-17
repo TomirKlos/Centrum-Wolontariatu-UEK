@@ -84,6 +84,17 @@ export class ServerDataSource<T> implements DataSource<T> {
     });
   }
 
+  loadAcceptedVrPageWithCategories(queryPath: string) {
+    this._serverResourceService.getPageFromRelativePath(this.relativePathToServerResource + 'v2/?' + queryPath,
+      { name: 'page', value: this._paginator.pageIndex },
+      { name: 'size', value: this._paginator.pageSize },
+      { name: 'sort', value: "id,desc" }
+    ).subscribe(d => {
+      this._data.next(d.content);
+      this._total.next(d.totalElements);
+    });
+  }
+
   loadApplicationPage(id: number) {
     this._serverResourceService.getPage(
       { name: 'volunteerRequestId', value: id },

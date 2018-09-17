@@ -6,6 +6,7 @@ import { ListOfRequestComponent } from '../layouts/list-of-request/list-of-reque
 import { LayoutModule } from '../shared/layout.module';
 import { RelativeDatePipe } from '../shared/relativeDate.pipe';
 import {
+  MatSelectModule,
   MatTooltipModule
 } from '@angular/material';
 
@@ -14,6 +15,7 @@ import {
     LayoutModule,
     HomeRoutingModule,
     MatTooltipModule,
+    MatSelectModule
 
   ],
   declarations: [

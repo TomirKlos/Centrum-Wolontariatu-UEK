@@ -15,6 +15,7 @@ import { AdDialogService } from '../../ads/shared/ad-dialog.service';
 import {BannerService} from '../../admin/banner/banner.service';
 import {forEach} from '@angular/router/src/utils/collection';
 import {MediaMatcher} from '@angular/cdk/layout';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
 @Component({
@@ -34,10 +35,13 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   searchValue: string;
   searchAdValue: string;
 
+  categoriesData: String[] = [];
+  formGroupRequests: FormGroup;
+
   //paginator
   length = 0;
   pageIndex = 0;
-  pageSize = 5;
+  pageSize = 2;
 
   pageEvent: PageEvent;
 
@@ -52,7 +56,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('searchName') input: ElementRef;
 
-  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService, private _bannerService: BannerService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(private searchService: SearchService, private _dialogService: RequestDialogService, private _adDialogService: AdDialogService, private _requestService: RequestService, private _adService: AdService, private _bannerService: BannerService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private _fb: FormBuilder) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -79,7 +83,6 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
      data.forEach( element => {
        console.log(element.referenceToPicture);
        this.carouselBanerItems.push('http://localhost:8080/static/' + element.referenceToPicture);
-
      });
    });
 
@@ -90,10 +93,17 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
      });
    });
 
-  this.paginator.pageSize=this.pageSize;
+   this._requestService.getGroups()
+     .subscribe((data: Category[]) => {
+       data.forEach(element => {
+         this.categoriesData.push(element.name);
+       });
+     });
+
+  this.paginator.pageSize = this.pageSize;
   this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, new MatSort, "volunteerRequestAcceptedOnly");
   this.dataSource.relativePathToServerResource = '';
-  this.dataSource.loadAcceptedVrPage();
+  this.dataSource.loadAcceptedVrPageWithCategories('');
 
    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
      if (this.length < d) {
@@ -109,6 +119,10 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
      if (this.length < d) {
        this.length = d;
      }
+   });
+
+   this.formGroupRequests = this._fb.group({
+     categories: [ ],
    });
 
    // this.carouselBanerItems = ["https://sheikalthaf.github.io/ngx-carousel/assets/canberra.jpg","http://uekwww.uek.krakow.pl/files/common/uczelnia/rus/2013/1.JPG","https://upload.wikimedia.org/wikipedia/commons/f/f8/Krakow_univesity_of_economics_main_building.JPG"];
@@ -165,11 +179,13 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   }
 
   searchContent(){
-    if (this.searchValue == "")
+    if (this.searchValue == ""){
       this.dataSource.loadAcceptedVrPage();
+    }
     else if(this.searchValue != ""){
       this.dataSource.generateFilteredSearchPage(this.searchTerm$);
       this.results = null;
+      this.clearSelectedCategories();
     }
   }
 
@@ -206,6 +222,31 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
         userCategories = userCategories + category.name + ", ";
       })
       return userCategories.substr(0,userCategories.length-2);
+  }
+
+  updateCategories(){
+    let query: string = '';
+    const categoriesPath: string = 'categories=';
+    this.formGroupRequests.get('categories').value.forEach(category => {
+      console.log(category);
+      query = query + categoriesPath + category + '&';
+    });
+    this.dataSource.loadAcceptedVrPageWithCategories(query);
+
+    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+        this.length = d;
+    });
+
+  }
+
+  clearSelectedCategories(){
+    this.formGroupRequests.setValue({
+      categories: [ ],
+    })
+  }
+
+  getSelectedCategories(){
+    console.log(this.formGroupRequests.get('categories').value);
   }
 
 }

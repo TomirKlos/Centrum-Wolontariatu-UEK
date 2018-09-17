@@ -19,7 +19,7 @@ import { RequestsModule } from './requests/requests.module';
 import { HomeModule } from './home/home.module';
 import { ListOfRequestModule } from './layouts/list-of-request/list-of-request.module';
 import { NguCarouselModule } from '@ngu/carousel';
-import { MatAutocompleteModule } from '@angular/material';
+import {MatAutocompleteModule, MatSelectModule} from '@angular/material';
 import { SearchService } from './shared/search-service.service';
 import { AdsModule } from './ads/ads.module';
 import { FooterComponent } from './other/footer/footer.component';
@@ -54,7 +54,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
     OtherModule,
     AppRoutingModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatSelectModule
   ],
   providers: [
     LoadingBarService,

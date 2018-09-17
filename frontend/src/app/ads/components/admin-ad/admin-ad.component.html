@@ -8,13 +8,13 @@
             <mat-table [dataSource]="dataSource" matSort>
 
               <ng-container matColumnDef="id">
-                <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="5%" mat-sort-header>id</mat-header-cell>
-                <mat-cell *matCellDef="let element" fxFlex.lt-sm="5%"> {{ element.id }}</mat-cell>
+                <mat-header-cell *matHeaderCellDef fxFlex="50px" fxFlex.lt-sm="5%" mat-sort-header>id</mat-header-cell>
+                <mat-cell *matCellDef="let element" fxFlex="50px" fxFlex.lt-sm="5%"> {{ element.id }}</mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="title">
-                <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex.lt-sm="50%">tytuł</mat-header-cell>
-                <mat-cell *matCellDef="let element" fxFlex.lt-sm="50%"> {{ element.title }}</mat-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex.lt-sm="40%">tytuł</mat-header-cell>
+                <mat-cell *matCellDef="let element" fxFlex.lt-sm="40%"> {{ element.title }}</mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="accepted">

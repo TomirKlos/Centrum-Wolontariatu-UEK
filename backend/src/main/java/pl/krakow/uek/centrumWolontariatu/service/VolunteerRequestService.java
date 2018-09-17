@@ -18,6 +18,7 @@ import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.solr.VolunteerRequestSearchDao;
 import pl.krakow.uek.centrumWolontariatu.util.rsql.CustomRsqlVisitor;
+import pl.krakow.uek.centrumWolontariatu.util.rsql.GenericRsqlSpecification;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
@@ -73,7 +74,7 @@ public class VolunteerRequestService {
      * cw_volunteer_request. Without spliting into 2 methods, it was allowed to insert to database not permitted values in type/category fields.
      */
 
-    public long GenerateVolunteerRequest() {
+    public long generateVolunteerRequest() {
         VolunteerRequest volunteerRequest = new VolunteerRequest();
         User user = userService.getUserWithAuthorities().get();
         volunteerRequest.setUser(user);
@@ -84,7 +85,7 @@ public class VolunteerRequestService {
 
     @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
     public VolunteerRequest createVolunteerRequest(VolunteerRequestVM volunteerRequestVM) {
-        long id = GenerateVolunteerRequest();
+        long id = generateVolunteerRequest();
         try {
             return volunteerRequestRepository.findById(id)
                 .map(volunteerRequest -> {
@@ -222,6 +223,24 @@ public class VolunteerRequestService {
             Page<VolunteerRequest> volunteerRequests = volunteerRequestRepository.findAll(spec, pageable);
             return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequests);
         } else return volunteerRequestRepository.findAllBy(pageable);
+    }
+
+    @Transactional
+    public Page<VolunteerRequestDTO> findAllByRsqlWithCategories(Pageable pageable, com.google.common.base.Optional<String> search, Set<VolunteerRequestCategory> categorySet) {
+        Page<VolunteerRequest> volunteerRequests;
+        if(search.isPresent()) {
+            final Node rootNode = new RSQLParser().parse(search.get());
+            Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());
+
+            if(!categorySet.isEmpty()){
+                volunteerRequests = volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte)1, categorySet);
+            } else {
+                volunteerRequests = volunteerRequestRepository.findAll(spec, pageable);
+            }
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequests);
+        } else if(!search.isPresent() && !categorySet.isEmpty()){
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte)1, categorySet));
+        }else return volunteerRequestRepository.findAllBy(pageable);
     }
 
     @Transactional

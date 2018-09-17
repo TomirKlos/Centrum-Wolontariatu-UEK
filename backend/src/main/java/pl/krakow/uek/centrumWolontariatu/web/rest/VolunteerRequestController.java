@@ -17,6 +17,7 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.vm.IdVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.TypeVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.VolunteerRequestVM;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -120,6 +121,19 @@ public class VolunteerRequestController {
     public ResponseEntity<List<Long>> findAllMineIds(Pageable pageable) {
         List<Long> volunteerAdsIds = volunteerRequestService.findAllMineIdsByUserId(pageable);
         return new ResponseEntity<>(volunteerAdsIds, HttpStatus.OK);
+    }
+
+    @GetMapping("/vrequest/v2/")
+    @ResponseBody
+    public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsqWithCategories(@RequestParam(value = "search") Optional<String> search, Pageable pageable, String[] categories) {
+        Set<VolunteerRequestCategory> categorySet = new HashSet<>();
+        if(categories!=null)
+        for(String cat: categories){
+            categorySet.add(new VolunteerRequestCategory(cat));
+        }
+
+        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsqlWithCategories(pageable, parseGuavaOptional(search), categorySet);
+        return new ResponseEntity<>(volunteerRequests, HttpStatus.OK);
     }
 
 

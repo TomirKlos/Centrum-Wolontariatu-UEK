@@ -21,13 +21,13 @@
   <div class="column">
       <h1 class="sectionTitle">Wolontariat</h1>
       <mat-card class="outer">
-        <!-- To je szukajka, zostaw mi do podpięcia -->
+
           <mat-form-field class="example-full-width">
               <mat-placeholder>
                   <mat-icon class="form-icon">search</mat-icon>
                   Szukaj wolontariatu
               </mat-placeholder>
-              <input (keyup)="$event.keyCode == 13 ? searchContent() : null" type="text" aria-label="Number" #searchName matInput (keyup)="searchTerm$.next($event.target.value)" [matAutocomplete]="auto" (input)="searchValue = $event.target.value" >
+              <input (keyup)="$event.keyCode == 13 ? searchContent() : null" type="text" aria-label="Number" #searchName matInput (keyup)="searchTerm$.next($event.target.value); clearSelectedCategories() " [matAutocomplete]="auto" (input)="searchValue = $event.target.value" >
                 <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchName.value=''; searchValue=''; onClickResetSearchButton()">
                     <mat-icon>close</mat-icon>
                 </button>
@@ -46,6 +46,22 @@
                     </mat-option>
               </mat-autocomplete>
           </mat-form-field>
+
+        <form [formGroup]="formGroupRequests" #form="ngForm">
+          <mat-form-field>
+            <!--         <mat-select [(ngModel)]="user.groups" name="groups" id="groups" placeholder="Groups" [formControl]="groupsForm" multiple> -->
+            <mat-select formControlName="categories" name="categories" id="categories" placeholder="Kategorie" multiple>
+              <mat-select-trigger>
+                {{formGroupRequests.get('categories').value ? (formGroupRequests.get('categories').value[0]==null ? '' : formGroupRequests.get('categories').value[0]) : ''}}
+                <span *ngIf="formGroupRequests.get('categories').value?.length > 1" class="example-additional-selection">
+                        (+{{formGroupRequests.get('categories').value.length - 1}} inne)
+                      </span>
+
+              </mat-select-trigger>
+              <mat-option (click)="updateCategories(); searchValue=''; searchName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
 
           <mat-card *ngFor="let row of dataSource.connectToSource() | async" class="box" (click)="openDialog(row)">
               <div class="outter">
