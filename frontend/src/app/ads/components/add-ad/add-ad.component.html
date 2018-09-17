@@ -17,6 +17,21 @@
                         matAutosizeMaxRows="20" formControlName="description"></textarea>
             </mat-form-field>
 
+            <div class="form-group">
+              <mat-form-field>
+                <!--         <mat-select [(ngModel)]="user.groups" name="groups" id="groups" placeholder="Groups" [formControl]="groupsForm" multiple> -->
+                <mat-select formControlName="categories" name="categories" id="categories" placeholder="Kategorie" multiple>
+                  <mat-select-trigger>
+                    {{formGroup.get('categories').value ? (formGroup.get('categories').value[0]==null ? '' : formGroup.get('categories').value[0]) : ''}}
+                    <span *ngIf="formGroup.get('categories').value?.length > 1" class="example-additional-selection">
+                      (+{{formGroup.get('categories').value.length - 1}} inne)
+                    </span>
+                  </mat-select-trigger>
+                  <mat-option *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
              <input style="display: none" type="file" multiple (change)="onFileSelected($event)" #fileInput>
 
              <button mat-button color="primary" (click)="fileInput.click()">Dodaj zdjęcie<mat-icon>add_photo_alternate</mat-icon></button>

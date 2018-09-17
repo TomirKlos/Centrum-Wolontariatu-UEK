@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { SnackBarService } from '../../../shared/snack-bar.service';
 
 import { RequestService } from '../../../requests/shared/request.service';
+import {Category} from '../../../shared/interfaces';
 
 
 @Component({
@@ -29,16 +30,17 @@ export class AddAdComponent implements OnInit {
 
   ngOnInit() {
 
-   /* this._requestService.getGroups()
+    this._requestService.getGroups()
       .subscribe((data: Category[]) => {
         data.forEach(element => {
           this.categoriesData.push(element.name);
         });
-      }); */
+      });
       this.formGroup = this._fb.group({
         title: [ '', [ Validators.required ] ],
         description: [ '', [ Validators.required ] ],
         images: [ this.fileHash ],
+        categories: [ ],
       });
   }
 
