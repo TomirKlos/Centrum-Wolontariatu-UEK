@@ -23,6 +23,7 @@ import { MatAutocompleteModule } from '@angular/material';
 import { SearchService } from './shared/search-service.service';
 import { AdsModule } from './ads/ads.module';
 import { FooterComponent } from './other/footer/footer.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import { FooterComponent } from './other/footer/footer.component';
 
     OtherModule,
     AppRoutingModule,
+    FlexLayoutModule
   ],
   providers: [
     LoadingBarService,

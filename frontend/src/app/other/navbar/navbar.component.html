@@ -3,36 +3,70 @@
 
   <mat-toolbar color="primary" id="toolbar" fxLayout="row" fxLayoutAlign="space-between center">
     <div>
-      <button routerLink="/" mat-button>
+      <button fxFlex fxShow=”true” fxHide.gt-xs=”true” mat-icon-button (click)="snav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <button fxFlex fxShow=”true” fxHide.gt-xs=”true” routerLink="/" mat-button>
         <mat-icon>home</mat-icon>
       </button>
 
-      <!--<button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['ROLE_ADMIN']">-->
-      <!--Admin-->
-      <!--</button>-->
-      <!--<mat-menu #menu2="matMenu">-->
-      <!--<div>-->
-      <!--<button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
-      <!--<button mat-menu-item routerLink="/requests/admin">Zgłoszenia</button>-->
-      <!--</div>-->
-      <!--</mat-menu>-->
 
-      <button mat-button [matMenuTriggerFor]="menu3" *appHasAnyRole="['ROLE_ADMIN']">
-      Admin <mat-icon>keyboard_arrow_down</mat-icon>
+      <mat-sidenav-container class="sidenav-container"
+                             [style.marginTop.px]="0">
+        <mat-sidenav #snav [mode]="'over'"
+                     [fixedInViewport]="true" fixedTopGap="56">
+          <mat-nav-list style="margin-left:10px">
+            <div *appHasAnyRole="['ROLE_ADMIN']">
+              Admin:
+              <mat-icon>keyboard_arrow_down</mat-icon>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/admin/users">Użytkownicy</a>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/requests/admin">Ogłoszenia</a>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/ads/admin">Wolontariusze</a>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/admin/categories">Kategorie</a>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/admin/certificates">Certyfikaty</a>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/admin/banners">Banery</a>
+            </div>
+            <div *appHasAnyRole="['authenticated']">
+              Moje:
+              <mat-icon>keyboard_arrow_down</mat-icon>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/ads/mine">Wolontariusz</a>
+              <a mat-list-item (click)="snav.toggle()" routerLink="/requests/mine">Ogłoszenia</a>
+            </div>
+            <div>
+              Dodaj:
+              <mat-icon>keyboard_arrow_down</mat-icon>
+              <a mat-list-item (click)="snav.toggle()" routerLink="requests/add">Ogłoszenie</a>
+              <a mat-list-item (click)="snav.toggle()" routerLink="ads/add">Wolontariusza</a>
+            </div>
+          </mat-nav-list>
+        </mat-sidenav>
+      </mat-sidenav-container>
+
+      <button fxFlex fxShow=”true” fxHide.lt-sm=”true” routerLink="/" mat-button>
+        <mat-icon>home</mat-icon>
+      </button>
+
+      <button fxFlex fxShow=”true” fxHide.lt-sm=”true” mat-button [matMenuTriggerFor]="menu3"
+              *appHasAnyRole="['ROLE_ADMIN']">
+        Admin
+        <mat-icon>keyboard_arrow_down</mat-icon>
       </button>
       <mat-menu #menu3="matMenu">
-      <div>
-      <button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
-      <button mat-menu-item routerLink="/requests/admin">Ogłoszenia</button>
-      <button mat-menu-item routerLink="/ads/admin">Wolontariusze</button>
-      <button mat-menu-item routerLink="/admin/categories">Kategorie</button>
-        <button mat-menu-item routerLink="/admin/certificates">Certyfikaty</button>
-        <button mat-menu-item routerLink="/admin/banners">Banery</button>
-      </div>
+        <div>
+          <button mat-menu-item routerLink="/admin/users">Użytkownicy</button>
+          <button mat-menu-item routerLink="/requests/admin">Ogłoszenia</button>
+          <button mat-menu-item routerLink="/ads/admin">Wolontariusze</button>
+          <button mat-menu-item routerLink="/admin/categories">Kategorie</button>
+          <button mat-menu-item routerLink="/admin/certificates">Certyfikaty</button>
+          <button mat-menu-item routerLink="/admin/banners">Banery</button>
+        </div>
       </mat-menu>
 
-      <button mat-button [matMenuTriggerFor]="menu2" *appHasAnyRole="['authenticated']">
-        Ogłoszenia<mat-icon>keyboard_arrow_down</mat-icon>
+      <button fxFlex fxShow=”true” fxHide.lt-sm=”true” mat-button [matMenuTriggerFor]="menu2"
+              *appHasAnyRole="['authenticated']">
+        Ogłoszenia
+        <mat-icon>keyboard_arrow_down</mat-icon>
       </button>
       <mat-menu #menu2="matMenu">
         <div>
@@ -41,23 +75,39 @@
         </div>
       </mat-menu>
 
-      <button mat-button [matMenuTriggerFor]="menu4" *appHasAnyRole="['authenticated']">
-          Wolontariusz<mat-icon>keyboard_arrow_down</mat-icon>
-        </button>
-        <mat-menu #menu4="matMenu">
-          <div>
-            <button mat-menu-item routerLink="/ads/admin">Wolontariusze admin</button>
-            <button mat-menu-item routerLink="/ads/mine">Moje ogłoszenia</button>
-          </div>
-        </mat-menu>
+      <button fxFlex fxShow=”true” fxHide.lt-sm=”true” mat-button [matMenuTriggerFor]="menu4"
+              *appHasAnyRole="['authenticated']">
+        Wolontariusz
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+      <mat-menu #menu4="matMenu">
+        <div>
+          <button mat-menu-item routerLink="/ads/admin">Wolontariusze admin</button>
+          <button mat-menu-item routerLink="/ads/mine">Moje ogłoszenia</button>
+        </div>
+      </mat-menu>
 
-      <button routerLink="requests/add" mat-button>
+      <button fxFlex fxShow=”true” fxHide.lt-md=”true” fxFlex fxShow=”true” fxHide.lt-sm=”true”
+              routerLink="requests/add" mat-button>
         Dodaj ogłoszenie
       </button>
 
-      <button routerLink="ads/add" mat-button>
+      <button fxFlex fxShow=”true” fxHide.lt-md=”true” fxFlex fxShow=”true” fxHide.lt-sm=”true” routerLink="ads/add"
+              mat-button>
         Dodaj wolontariusza
       </button>
+
+      <button fxFlex fxShow=”true” fxHide.gt-sm=”true” fxFlex fxShow=”true” fxHide.lt-sm=”true” mat-button
+              [matMenuTriggerFor]="menu5">
+        Dodaj
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+      <mat-menu #menu5="matMenu">
+        <div>
+          <button mat-menu-item routerLink="requests/add">Ogłoszenie</button>
+          <button mat-menu-item routerLink="ads/add">Wolontariusza</button>
+        </div>
+      </mat-menu>
 
     </div>
 
