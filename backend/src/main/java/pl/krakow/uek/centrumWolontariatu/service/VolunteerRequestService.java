@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
@@ -244,8 +245,8 @@ public class VolunteerRequestService {
             for (String cat : categories) {
                 categorySet.add(new VolunteerRequestCategory(cat));
             }
-            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, 0, categorySet));
-        } else { return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndVolunteersAmountGreaterThan((byte)1, 0, pageable)); }
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, (byte) 0 , 0, categorySet));
+        } else { return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan((byte)1, (byte) 0, 0, pageable)); }
     }
 
 
@@ -304,6 +305,20 @@ public class VolunteerRequestService {
 
         }
         return null;
+    }
+
+    @Scheduled(fixedRate = 60000, initialDelay = 20000)
+    public void testForExpired() {
+        ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+        long epochMillis = utc.toEpochSecond() * 1000;
+        System.out.println("XXX executing task scheduled" + epochMillis);
+        volunteerRequestRepository.findAllByExpiredIs((byte)0).forEach(volunteerRequest -> {
+            if(volunteerRequest.getExpirationDate()<epochMillis){
+                volunteerRequest.setExpired((byte)1);
+                volunteerRequestRepository.save(volunteerRequest);
+            }
+        });
+
     }
 
 

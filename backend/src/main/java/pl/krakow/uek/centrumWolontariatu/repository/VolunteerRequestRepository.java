@@ -19,6 +19,8 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
 
     Optional<VolunteerRequest> findByUser(User user);
 
+    List<VolunteerRequest> findAllByExpiredIs(byte expired);
+
     Optional<VolunteerRequest> findById(long id);
 
     Page<VolunteerRequestDTO> findAllBy(Pageable pageable);
@@ -27,8 +29,8 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
 
     Page<VolunteerRequest> findAllByAcceptedIsAndCategoriesIn(Pageable pageable, byte accepted, Set<VolunteerRequestCategory> categories);
 
-    Page<VolunteerRequest> findAllByAcceptedIsAndVolunteersAmountGreaterThan(byte accepted, Integer volunteersAmount, Pageable pageable);
+    Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan(byte accepted, byte expired, Integer volunteersAmount, Pageable pageable);
 
-    Page<VolunteerRequest> findAllByAcceptedIsAndVolunteersAmountGreaterThanAndCategoriesIn(Pageable pageable, byte accepted, Integer volunteersAmount, Set<VolunteerRequestCategory> categories);
+    Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThanAndCategoriesIn(Pageable pageable, byte accepted, byte expired, Integer volunteersAmount, Set<VolunteerRequestCategory> categories);
 
 }
