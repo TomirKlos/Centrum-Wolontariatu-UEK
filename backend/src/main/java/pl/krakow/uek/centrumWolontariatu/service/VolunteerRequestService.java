@@ -244,8 +244,8 @@ public class VolunteerRequestService {
             for (String cat : categories) {
                 categorySet.add(new VolunteerRequestCategory(cat));
             }
-            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
-        } else { return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIs((byte)1, pageable)); }
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, 0, categorySet));
+        } else { return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndVolunteersAmountGreaterThan((byte)1, 0, pageable)); }
     }
 
 

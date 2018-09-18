@@ -104,7 +104,7 @@ public class ResponseVolunteerRequestService {
     }
 
     //should be CacheEvict cuz it changes
-    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
+    @CacheEvict(value = "volunteerRequestsWithCategories", allEntries = true)
     public void acceptResponse(long responseId){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
             responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {
@@ -122,7 +122,7 @@ public class ResponseVolunteerRequestService {
         else throw new ResponseAcceptException();
     }
 
-    @CacheEvict(value = "volunteerRequestsByRsql", allEntries = true)
+    @CacheEvict(value = "volunteerRequestsWithCategories", allEntries = true)
     public void disableAcceptedResponse(long responseId){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
             responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {

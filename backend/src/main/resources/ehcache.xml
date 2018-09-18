@@ -25,6 +25,4 @@
         <persistence strategy="localTempSwap" />
     </cache>
     <cache name="pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory" maxElementsInMemory="1000" />
-
-
 </ehcache>
