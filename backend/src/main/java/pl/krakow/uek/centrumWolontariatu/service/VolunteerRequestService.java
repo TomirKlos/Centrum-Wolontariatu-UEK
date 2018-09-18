@@ -176,6 +176,7 @@ public class VolunteerRequestService {
         }
     }
 
+    @CacheEvict(value = "categories", allEntries = true)
     public void createVolunteerRequestCategory(String name) {
         if(volunteerRequestCategoryRepository.findById(name).isPresent()){
             throw new BadRequestAlertException("category already exist in database", "categoryManagement", "categoryexistindatabase");
@@ -189,6 +190,7 @@ public class VolunteerRequestService {
         volunteerAdCategoryRepository.save(volunteerAdCategory);
     }
 
+    @Cacheable(value = "categories")
     public List<VolunteerRequestCategory> getAllCategories() {
         return volunteerRequestCategoryRepository.findAll();
     }
@@ -269,6 +271,7 @@ public class VolunteerRequestService {
         volunteerRequestTypeRepository.deleteById(name);
     }
 
+    @CacheEvict(value = "categories", allEntries = true)
     public void deleteCategory(String name){
         volunteerRequestCategoryRepository.deleteById(name);
     }

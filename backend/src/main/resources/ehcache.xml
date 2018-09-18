@@ -20,4 +20,11 @@
         <persistence strategy="localTempSwap" />
     </cache>
     <cache name="pl.krakow.uek.centrumWolontariatu.domain.CarouselBanner" maxElementsInMemory="1000" />
+
+    <cache name="categories" maxEntriesLocalHeap="1000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20" timeToIdleSeconds="2800" timeToLiveSeconds="3000" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    <cache name="pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory" maxElementsInMemory="1000" />
+
+
 </ehcache>
