@@ -86,7 +86,8 @@
                   </div>
                   <mat-card-actions>
                       <mat-card-footer>
-                          {{row.timestamp | relativeDatePipe}}
+                          dodano: {{row.timestamp | relativeDatePipe}},
+                         wygasa {{row.expirationDate | relativeDatePipeExpiration}}
                       </mat-card-footer>
                       <div class="footer-left">
                           Dodano przez: student |

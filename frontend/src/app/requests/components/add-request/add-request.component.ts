@@ -23,6 +23,8 @@ export class AddRequestComponent implements OnInit {
   pathToStaticContent = "http://localhost:8080/static/";
   selectedFile: File[];
   fileHash: any[] = [];
+  expirationTimestamp = 0;
+  minDate = new Date();
 
 
   constructor(private _fb: FormBuilder, private _http: HttpClient, private _sb: SnackBarService, private _requestService: RequestService) {
@@ -41,6 +43,7 @@ export class AddRequestComponent implements OnInit {
         description: [ '', [ Validators.required ] ],
         forStudents: [ false ],
         forTutors: [ false ],
+        expirationDate: [ ],
         images: [ this.fileHash ],
         volunteersAmount: [ ],
         categories: [ ],
@@ -49,6 +52,11 @@ export class AddRequestComponent implements OnInit {
 
   submit() {
     this.submitButtonDisabled = true;
+    this.expirationTimestamp = new Date(this.formGroup.get("expirationDate").value.toString().replace('-','/')).getTime();
+    this.formGroup.patchValue({
+      expirationDate: this.expirationTimestamp,
+    });
+
     this._http.post(environment.apiEndpoint + '/vrequest', this.formGroup.value).subscribe(
       () => {
         this._sb.open('Oferta została dodana');

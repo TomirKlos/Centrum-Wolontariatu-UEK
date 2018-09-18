@@ -16,7 +16,7 @@ import { ApplyRequestComponent } from './apply-request/apply-request.component';
 import { ViewApplyRequestDialogComponent } from './components/my-requests/view-apply-request/view-apply-request-dialog.component';
 import { MyRequestsService } from './components/my-requests/my-requests.service';
 import { ApplyService } from './components/my-requests/view-apply-request/apply-request.service';
-import { MatSelectModule } from '@angular/material';
+import {MatDatepickerModule, MatNativeDateModule, MatSelectModule} from '@angular/material';
 
 
 
@@ -25,7 +25,9 @@ import { MatSelectModule } from '@angular/material';
   imports: [
     LayoutModule,
     RequestsRoutingModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
 
   ],
   declarations: [

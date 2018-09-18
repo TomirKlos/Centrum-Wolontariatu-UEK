@@ -41,6 +41,12 @@
               </mat-form-field>
           </div>
 
+      <mat-form-field class="example-full-width">
+        <input matInput [min]="minDate" [matDatepicker]="picker" formControlName="expirationDate" placeholder="Wybierz date wygasniecia ogloszenia">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi="true" #picker> </mat-datepicker>
+      </mat-form-field>
+
       <input style="display: none" type="file" multiple (change)="onFileSelected($event)" #fileInput>
 
       <button mat-button color="primary" (click)="fileInput.click()">Dodaj zdjęcie<mat-icon>add_photo_alternate</mat-icon></button>

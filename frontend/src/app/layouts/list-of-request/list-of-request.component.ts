@@ -82,14 +82,6 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
  ngOnInit() {
    this._bannerService.getBanners().subscribe((data: Banner[]) => {
      data.forEach( element => {
-       console.log(element.referenceToPicture);
-       this.carouselBanerItems.push('http://localhost:8080/static/' + element.referenceToPicture);
-     });
-   });
-
-   this._bannerService.getBanners().subscribe((data: Banner[]) => {
-     data.forEach( element => {
-       console.log(element.referenceToPicture);
        this.carouselBannerItems.push(element);
      });
    });
@@ -267,10 +259,6 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     });
   }
 
-
-  getSelectedCategories(){
-    console.log(this.formGroupRequests.get('categories').value);
-  }
 
 }
 
