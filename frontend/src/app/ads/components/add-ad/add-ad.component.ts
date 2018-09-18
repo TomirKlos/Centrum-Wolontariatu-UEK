@@ -22,6 +22,8 @@ export class AddAdComponent implements OnInit {
   pathToStaticContent = "http://localhost:8080/static/";
   selectedFile: File[];
   fileHash: any[] = [];
+  expirationTimestamp = 0;
+  minDate = new Date();
 
 
   constructor(private _fb: FormBuilder, private _http: HttpClient, private _sb: SnackBarService, private _requestService: RequestService) {
@@ -39,6 +41,7 @@ export class AddAdComponent implements OnInit {
       this.formGroup = this._fb.group({
         title: [ '', [ Validators.required ] ],
         description: [ '', [ Validators.required ] ],
+        expirationDate: [ ],
         images: [ this.fileHash ],
         categories: [ ],
       });
@@ -46,6 +49,11 @@ export class AddAdComponent implements OnInit {
 
   submit() {
     this.submitButtonDisabled = true;
+    this.expirationTimestamp = new Date(this.formGroup.get("expirationDate").value.toString().replace('-','/')).getTime();
+    this.formGroup.patchValue({
+      expirationDate: this.expirationTimestamp,
+    });
+
     this._http.post(environment.apiEndpoint + '/vAd/', this.formGroup.value).subscribe(
       () => {
         this._sb.open('Oferta została dodana');

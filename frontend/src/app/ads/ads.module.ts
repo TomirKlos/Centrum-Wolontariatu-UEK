@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 
 import { LayoutModule } from '../shared/layout.module';
 
-import { MatSelectModule } from '@angular/material';
+import {MatDatepickerModule, MatSelectModule} from '@angular/material';
 import { AdsComponent } from './ads.component';
 import { AdService } from './shared/ad.service';
 import { AdsRoutingModule } from './ads-routing.module';
@@ -27,7 +27,8 @@ import { InvitationService } from './components/view-volunteer-invitation/invita
     AdsRoutingModule,
     LayoutModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    MatDatepickerModule
 
   ],
   declarations: [

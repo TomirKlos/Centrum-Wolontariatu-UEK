@@ -11,6 +11,7 @@ import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerAdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,10 +21,12 @@ public interface VolunteerAdRepository extends JpaRepository<VolunteerAd, Long>,
 
     Page<VolunteerAdDTO> findAllBy(Pageable pageable);
 
+    List<VolunteerAd> findAllByExpiredIs(byte expired);
+
     Page<VolunteerAdDTO> findAllByUserId(Pageable pageable, long id);
 
-    Page<VolunteerAd> findAllByAcceptedIs(byte accepted, Pageable pageable);
+    Page<VolunteerAd> findAllByAcceptedIsAndExpiredIs(byte accepted, byte expired, Pageable pageable);
 
-    Page<VolunteerAd> findAllByAcceptedIsAndCategoriesIn(Pageable pageable, byte accepted, Set<VolunteerAdCategory> categories);
+    Page<VolunteerAd> findAllByAcceptedIsAndExpiredIsAndCategoriesIn(Pageable pageable, byte accepted, byte expired, Set<VolunteerAdCategory> categories);
 
 }

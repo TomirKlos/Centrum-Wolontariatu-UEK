@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerAdConverter;
@@ -224,8 +225,8 @@ public class VolunteerAdService {
             for (String cat : categories) {
                 categorySet.add(new VolunteerAdCategory(cat));
             }
-            return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
-        } else { return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIs((byte)1, pageable)); }
+            return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIsAndExpiredIsAndCategoriesIn(pageable, (byte) 1, (byte) 0, categorySet));
+        } else { return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIsAndExpiredIs((byte)1, (byte)0, pageable)); }
     }
 
     @Transactional
@@ -279,6 +280,19 @@ public class VolunteerAdService {
 
         }
         return null;
+    }
+
+    @Scheduled(fixedRate = 60000, initialDelay = 20000)
+    public void testForExpired() {
+        ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+        long epochMillis = utc.toEpochSecond() * 1000;
+        volunteerAdRepository.findAllByExpiredIs((byte)0).forEach(volunteerAd -> {
+            if(volunteerAd.getExpirationDate()<epochMillis){
+                volunteerAd.setExpired((byte)1);
+                volunteerAdRepository.save(volunteerAd);
+            }
+        });
+
     }
 
 }
