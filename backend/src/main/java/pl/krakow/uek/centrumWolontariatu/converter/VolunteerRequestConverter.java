@@ -7,8 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.UserIdAuthorityDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.UserIdDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.VolunteerRequestDTOImpl;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdAuthorityDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
@@ -54,9 +56,10 @@ public class VolunteerRequestConverter {
         return dto;
     }
 
-    static UserIdDTO mapEntityIntoUserDTO(User entity) {
-        UserIdDTOImpl dto = new UserIdDTOImpl();
+    static UserIdAuthorityDTO mapEntityIntoUserDTO(User entity) {
+        UserIdAuthorityDTOImpl dto = new UserIdAuthorityDTOImpl();
         dto.setId(entity.getId());
+        dto.setAuthorities(entity.getAuthorities());
         return dto;
     }
 

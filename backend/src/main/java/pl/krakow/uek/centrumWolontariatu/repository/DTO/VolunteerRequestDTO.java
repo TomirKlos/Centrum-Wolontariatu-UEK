@@ -28,7 +28,7 @@ public interface VolunteerRequestDTO {
 
     byte getAccepted();
 
-    UserIdDTO getUser();
+    UserIdAuthorityDTO getUser();
 
     Set<VolunteerRequestCategory> getCategories();
 

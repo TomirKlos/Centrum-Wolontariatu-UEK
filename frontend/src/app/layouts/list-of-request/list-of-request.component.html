@@ -90,7 +90,7 @@
                          wygasa {{row.expirationDate | relativeDatePipeExpiration}}
                       </mat-card-footer>
                       <div class="footer-left">
-                          Dodano przez: student |
+                          Dodano przez: {{testIfLecturer(row.user)}} |
                           <ng-container *ngIf="row.categories==0; else elseTemplateCategories">
                                 -
                                 </ng-container>
@@ -179,7 +179,7 @@
                               wygasa {{row.expirationDate | relativeDatePipeExpiration}}
                             </mat-card-footer>
                             <div class="footer-left">
-                                Dodano przez: x |
+                              Dodano przez: {{testIfLecturer(row.user)}} |
                                 <ng-container *ngIf="row.categories==0; else elseTemplateCategories">
                                       -
                                       </ng-container>

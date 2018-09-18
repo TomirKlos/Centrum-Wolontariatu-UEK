@@ -5,6 +5,7 @@ import lombok.Setter;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestPicture;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestType;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdAuthorityDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.UserIdDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
@@ -34,7 +35,7 @@ public class VolunteerRequestDTOImpl implements VolunteerRequestDTO, Serializabl
 
     byte accepted;
 
-    UserIdDTO user;
+    UserIdAuthorityDTO user;
 
     Set<VolunteerRequestCategory> categories;
 

@@ -9,11 +9,15 @@ export interface JWTToken {
 
 export interface User {
   activated: boolean;
-  authorities: string[];
+  authorities: Authority[];
   email: string;
   firstName: string;
   lastName: string;
   // resetDate:
+}
+
+export interface Authority {
+  name: string;
 }
 
 export interface VolunteerRequestVM {

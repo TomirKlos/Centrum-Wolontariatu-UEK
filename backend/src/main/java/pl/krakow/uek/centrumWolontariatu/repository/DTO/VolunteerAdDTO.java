@@ -22,7 +22,7 @@ public interface VolunteerAdDTO {
 
     byte getAccepted();
 
-    UserIdDTO getUser();
+    UserIdAuthorityDTO getUser();
 
     Set<VolunteerAdCategory> getCategories();
 

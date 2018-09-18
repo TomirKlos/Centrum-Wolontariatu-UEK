@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef} from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
-import {VolunteerRequestVM, Category, VolunteerAdVM, Banner} from '../../shared/interfaces';
+import {VolunteerRequestVM, Category, VolunteerAdVM, Banner, User} from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
 import { MatPaginator, PageEvent, MatSort } from '@angular/material';
@@ -221,7 +221,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
       return userCategories.substr(0,userCategories.length-2);
   }
 
-  updateRequestCategories(){
+  updateRequestCategories() {
     let query: string = '';
     const categoriesPath: string = 'categories=';
     this.formGroupRequests.get('categories').value.forEach(category => {
@@ -234,7 +234,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     });
   }
 
-  updateAdCategories(){
+  updateAdCategories() {
     let query: string = '';
     const categoriesPath: string = 'categories=';
     this.formGroupAds.get('categories').value.forEach(category => {
@@ -247,16 +247,26 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     });
   }
 
-  clearSelectedRequestsCategories(){
+  clearSelectedRequestsCategories() {
     this.formGroupRequests.setValue({
       categories: [ ],
     });
   }
 
-  clearSelectedAdsCategories(){
+  clearSelectedAdsCategories() {
     this.formGroupAds.setValue({
       categories: [ ],
     });
+  }
+
+  testIfLecturer(user: User) {
+    let role: string = 'student';
+    user.authorities.forEach( authority => {
+      if (authority.name === 'ROLE_LECTURER') {
+        role = 'pracownik';
+      }
+    });
+    return role;
   }
 
 
