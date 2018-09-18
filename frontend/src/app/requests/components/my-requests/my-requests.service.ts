@@ -45,4 +45,8 @@ export class MyRequestsService extends ServerResourceService<responseVolunteerRe
     );
   }
 
+  expire(id: number) {
+    return this._http.post(this._url + '/vrequest/expire', { id });
+  }
+
 }

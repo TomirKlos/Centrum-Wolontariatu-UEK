@@ -98,6 +98,11 @@ public class VolunteerAdController {
         volunteerAdService.acceptVolunteerAd(idVM.getId());
     }
 
+    @PostMapping("expire")
+    public void expireVolunteerAd(@RequestBody IdVM idVM){
+        volunteerAdService.setExpired(idVM.getId());
+    }
+
     @DeleteMapping("{id}")
     public void deleteVolunteerAd(@PathVariable Integer id) {
         volunteerAdService.deleteVolunteerAd(id);

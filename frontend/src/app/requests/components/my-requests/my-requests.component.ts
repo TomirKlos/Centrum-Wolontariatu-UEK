@@ -1,26 +1,25 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatSortable} from '@angular/material';
 
-import { VolunteerRequestVM, responseVolunteerRequestVM, Page } from '../../../shared/interfaces';
-import { RequestService } from '../../shared/request.service';
-import { ServerDataSource } from '../../../shared/server-data-source';
-import { RequestDialogService } from '../../shared/request-dialog.service';
+import {VolunteerRequestVM} from '../../../shared/interfaces';
+import {RequestService} from '../../shared/request.service';
+import {ServerDataSource} from '../../../shared/server-data-source';
+import {RequestDialogService} from '../../shared/request-dialog.service';
 
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { MyRequestsService } from './my-requests.service';
+import {HttpClient} from '@angular/common/http';
+import {MyRequestsService} from './my-requests.service';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ApplyService } from './view-apply-request/apply-request.service';
+import {ApplyService} from './view-apply-request/apply-request.service';
+import {SnackBarService} from '../../../shared/snack-bar.service';
 
 @Component({
   selector: 'app-my-requests',
   templateUrl: './my-requests.component.html',
-  styleUrls: [ './my-requests.component.scss' ]
+  styleUrls: ['./my-requests.component.scss']
 })
 export class MyRequestsComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerRequestVM>;
-  columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr' ];
+  columnsToDisplay = ['id', 'accepted', 'title', 'application', 'editVr', 'expire'];
 
   totalElements: number;
 
@@ -32,18 +31,17 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(
-    private _requestService: RequestService,
-    private _applyService: ApplyService,
-    private _dialogService: RequestDialogService,
-    private _http: HttpClient,
-    private _myRequestsService: MyRequestsService,
-  ) {
+  constructor(private _requestService: RequestService,
+              private _applyService: ApplyService,
+              private _dialogService: RequestDialogService,
+              private _http: HttpClient,
+              private _myRequestsService: MyRequestsService,
+              private _sb: SnackBarService) {
   }
 
   ngOnInit() {
     this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
-    this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort, "volunteerRequest");
+    this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort, 'volunteerRequest');
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
 
@@ -70,12 +68,12 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
 
   getBadgeCount(id: any) {
     this._myRequestsService.get(id).debounceTime(10000).subscribe((data) => {
-      this.badgeTemp.push(data as string)
+      this.badgeTemp.push(data as string);
       return data;
     });
   }
 
-  getIds(){
+  getIds() {
     this._myRequestsService.getIDs().subscribe((data) => {
       (data as number[]).forEach(element => {
 
@@ -91,9 +89,9 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
 
   getBadgeById(id: number) {
     for (var i = 0; i < this.badgeData.length; i++) {
-        if (this.badgeData[i]['id'] === id) {
-            return this.badgeData[i];
-        }
+      if (this.badgeData[i]['id'] === id) {
+        return this.badgeData[i];
+      }
     }
     return null;
   }
@@ -108,6 +106,16 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
     return null;
   }
 
+  setExpired(id: number) {
+    this._myRequestsService.expire(id).subscribe(
+      () => {
+        this._sb.open('Ogloszenie zostalo przedawnione');
+        this.dataSource.loadPage();
+      },
+      () => this._sb.warning()
+    );
+  }
+
 }
 
 export class BadgeData {
@@ -115,7 +123,7 @@ export class BadgeData {
   private text: string;
 
   constructor(id, text) {
-      this.id = id;
-      this.text = text;
+    this.id = id;
+    this.text = text;
   }
 }

@@ -261,6 +261,14 @@ public class VolunteerAdService {
     }
 
     @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsWithCategories"}, allEntries = true)
+    public void setExpired(long id){
+        volunteerAdRepository.findById(id).ifPresent(volunteerAd -> {
+            volunteerAd.setExpired(parse(true));
+            volunteerAdRepository.save(volunteerAd);
+        });
+    }
+
+    @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsWithCategories"}, allEntries = true)
     public void deleteVolunteerAd(long id){ volunteerAdRepository.deleteById(id);}
 
     public List<VolunteerAdDTO> getVolunteerAdBySolr(String text){

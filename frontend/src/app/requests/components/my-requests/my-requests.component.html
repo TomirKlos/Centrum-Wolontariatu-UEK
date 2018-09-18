@@ -13,30 +13,29 @@
         </ng-container>
 
         <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="50%" mat-sort-header>tytuł</mat-header-cell>
-          <mat-cell *matCellDef="let element" fxFlex.lt-sm="50%" > {{ element.title }}</mat-cell>
+          <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="35%" mat-sort-header>tytuł</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex.lt-sm="35%" > {{ element.title }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="accepted">
-          <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="120px" fxFlex.lt-sm="28%">Aktywny</mat-header-cell>
-          <mat-cell *matCellDef="let element" fxFlex="120px" fxFlex.lt-sm="28%">
-            <mat-chip-list>
-              <mat-chip [color]="(element.accepted ? 'primary' : 'warn')" selected="true">
-                {{ (element.accepted ? 'Aktywny' : 'Nieaktywny') }}
+          <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="120px" fxFlex.lt-sm="17%">Aktywny</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="120px" fxFlex.lt-sm="17%">
+
+            <mat-chip-list fxFlex fxShow=”true” fxHide.lt-sm=”true” >
+              <mat-chip [color]="(element.accepted && !element.expired ? 'primary' : 'warn')" selected="true">
+                {{ (element.accepted && !element.expired ? 'Aktywny' : 'Nieaktywny') }}
               </mat-chip>
             </mat-chip-list>
+
+            <mat-chip-list fxFlex fxShow=”true” fxHide.gt-xs=”true”>
+              <mat-chip  [color]="(element.accepted && !element.expired ? 'primary' : 'warn')" selected="true">
+                {{ (element.accepted && !element.expired ? 'Tak' : 'Nie') }}
+              </mat-chip>
+            </mat-chip-list>
+
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="delete">
-          <mat-header-cell *matHeaderCellDef fxFlex="100px" fxFlex.lt-sm="15%"></mat-header-cell>
-          <mat-cell *matCellDef="let element" fxFlex="100px" fxFlex.lt-sm="15%">
-            <button mat-button color="warn" (click)="deleteVr(element.id)">
-              <mat-icon>delete</mat-icon>
-              Usuń
-            </button>
-          </mat-cell>
-        </ng-container>
 
         <ng-container matColumnDef="application">
             <mat-header-cell *matHeaderCellDef fxFlex="100px" fxFlex.lt-sm="25%">Aplikacje</mat-header-cell>
@@ -50,21 +49,27 @@
                       <ng-template #elseTemplate>
                           <span class="badge" *ngIf="getBadgeById(element.id).text > 0">{{getBadgeById(element.id).text}}</span>
                       </ng-template>
-                     <!-- <span class="badge" *ngIf="badgeCount > 0" ng-init="getBadgeCount(element.id)">{{getBadgeCount(element.id)}}</span>
-                     -->
                   </button>
               </button>
             </mat-cell>
           </ng-container>
 
         <ng-container matColumnDef="editVr">
-          <mat-header-cell *matHeaderCellDef fxFlex="100px" fxFlex.lt-sm="14%">Podgląd</mat-header-cell>
-          <mat-cell *matCellDef="let element" fxFlex="100px" fxFlex.lt-sm="14%">
+          <mat-header-cell *matHeaderCellDef fxFlex="100px" fxFlex.lt-sm="19%">Podgląd</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="100px" fxFlex.lt-sm="19%">
             <button mat-button color="primary" (click)="openDialog(element)">
-              <!--<button mat-button color="primary" [routerLink]="['/requests/', element.id]">-->
 
               <mat-icon>edit</mat-icon>
-              podgląd
+              <a fxFlex fxShow=”true” fxHide.lt-sm=”true”>podgląd</a>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="expire">
+          <mat-header-cell *matHeaderCellDef fxFlex="100px" fxFlex.lt-sm="20%">Przedawnij</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="100px" fxFlex.lt-sm="20%">
+            <button mat-button color="primary" (click)="setExpired(element.id)" [disabled]="(element.expired==1 || element.accepted==0)">
+
+              <mat-icon>delete</mat-icon>
             </button>
           </mat-cell>
         </ng-container>

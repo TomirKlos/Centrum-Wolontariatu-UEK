@@ -7,6 +7,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { AdService } from '../../shared/ad.service';
 import { MyAdsService } from './my-ads.service';
 import { AdDialogService } from '../../shared/ad-dialog.service';
+import {SnackBarService} from '../../../shared/snack-bar.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { AdDialogService } from '../../shared/ad-dialog.service';
 })
 export class MyAdssComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerAdVM>;
-  columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr' ];
+  columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr', 'expire' ];
   totalElements: number;
 
   badgeData: BadgeData[] = [];
@@ -30,6 +31,7 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
     private _dialogService: AdDialogService,
     private _http: HttpClient,
     private _myAdsService: MyAdsService,
+    private _sb: SnackBarService
   ) {
   }
 
@@ -89,6 +91,16 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
       }
     }
     return null;
+  }
+
+  setExpired(id: number) {
+    this._myAdsService.expire(id).subscribe(
+      () => {
+        this._sb.open('Ogloszenie zostalo przedawnione');
+        this.dataSource.loadPage();
+      },
+      () => this._sb.warning()
+    );
   }
 
 }

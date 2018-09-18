@@ -286,6 +286,16 @@ public class VolunteerRequestService {
     }
 
     @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
+    public void setExpired(long id){
+        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
+            volunteerRequest.setExpired(parse(true));
+            volunteerRequestRepository.save(volunteerRequest);
+        });
+    }
+
+
+
+    @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
     public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}
 
     public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){

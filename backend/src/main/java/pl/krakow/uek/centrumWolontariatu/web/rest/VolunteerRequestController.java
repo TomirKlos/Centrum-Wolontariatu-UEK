@@ -89,6 +89,11 @@ public class VolunteerRequestController {
         volunteerRequestService.acceptVolunteerRequest(idVM.getId());
     }
 
+    @PostMapping("/vrequest/expire")
+    public void expireVolunteerRequest(@RequestBody IdVM idVM) {
+        volunteerRequestService.setExpired(idVM.getId());
+    }
+
     @DeleteMapping("/vrequest/{id}")
     public void deleteVolunteerRequest(@PathVariable Integer id) {
         volunteerRequestService.deleteVolunteerRequest(id);

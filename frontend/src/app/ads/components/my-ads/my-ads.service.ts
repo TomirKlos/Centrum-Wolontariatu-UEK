@@ -50,4 +50,8 @@ export class MyAdsService extends ServerResourceService<responseVolunteerRequest
     );
   }
 
+  expire(id: number) {
+    return this._http.post(this._url + '/vAd/expire', { id });
+  }
+
 }
