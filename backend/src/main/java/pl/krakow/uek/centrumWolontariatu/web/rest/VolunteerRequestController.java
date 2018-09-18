@@ -2,6 +2,7 @@ package pl.krakow.uek.centrumWolontariatu.web.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -125,14 +126,8 @@ public class VolunteerRequestController {
 
     @GetMapping("/vrequest/v2/")
     @ResponseBody
-    public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsqWithCategories(@RequestParam(value = "search") Optional<String> search, Pageable pageable, String[] categories) {
-        Set<VolunteerRequestCategory> categorySet = new HashSet<>();
-        if(categories!=null)
-        for(String cat: categories){
-            categorySet.add(new VolunteerRequestCategory(cat));
-        }
-
-        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsqlWithCategories(pageable, parseGuavaOptional(search), categorySet);
+    public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsqWithCategories(Pageable pageable, String[] categories) {
+        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsqlWithCategories(pageable, categories);
         return new ResponseEntity<>(volunteerRequests, HttpStatus.OK);
     }
 

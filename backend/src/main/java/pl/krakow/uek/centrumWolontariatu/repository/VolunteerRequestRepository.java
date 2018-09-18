@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
+import pl.krakow.uek.centrumWolontariatu.repository.DTO.Impl.VolunteerRequestDTOImpl;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
 
     Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable, long id);
 
-    Page<VolunteerRequestDTO> findAllByAcceptedIs(byte accepted, Pageable pageable);
+    Page<VolunteerRequest> findAllByAcceptedIs(byte accepted, Pageable pageable);
 
     Page<VolunteerRequest> findAllByAcceptedIsAndCategoriesIn(Pageable pageable, byte accepted, Set<VolunteerRequestCategory> categories);
 

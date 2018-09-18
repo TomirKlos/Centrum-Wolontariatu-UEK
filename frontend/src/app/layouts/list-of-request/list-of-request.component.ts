@@ -189,7 +189,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     else if(this.searchValue != ""){
       this.dataSource.generateFilteredSearchPage(this.searchTerm$);
       this.results = null;
-      this.clearSelectedCategories();
+      this.clearSelectedRequestsCategories();
     }
   }
 
@@ -199,6 +199,7 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     else if(this.searchAdValue != ""){
       this.dataSourceAds.generateFilteredSearchPage(this.searchAdTerm$);
       this.resultsAd = null;
+      this.clearSelectedAdsCategories();
     }
   }
 

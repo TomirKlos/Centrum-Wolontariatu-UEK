@@ -135,14 +135,8 @@ public class VolunteerAdController {
 
     @GetMapping("v2/")
     @ResponseBody
-    public ResponseEntity<Page<VolunteerAdDTO>> findAllByRsqWithCategories(@RequestParam(value = "search") Optional<String> search, Pageable pageable, String[] categories) {
-        Set<VolunteerAdCategory> categorySet = new HashSet<>();
-        if(categories!=null)
-            for(String cat: categories){
-                categorySet.add(new VolunteerAdCategory(cat));
-            }
-
-        Page<VolunteerAdDTO> volunteerAdDTOS = volunteerAdService.findAllByRsqlWithCategories(pageable, parseGuavaOptional(search), categorySet);
+    public ResponseEntity<Page<VolunteerAdDTO>> findAllByRsqWithCategories( Pageable pageable, String[] categories) {
+        Page<VolunteerAdDTO> volunteerAdDTOS = volunteerAdService.findAllWithCategories(pageable, categories);
         return new ResponseEntity<>(volunteerAdDTOS, HttpStatus.OK);
     }
 

@@ -22,7 +22,7 @@ public interface VolunteerAdRepository extends JpaRepository<VolunteerAd, Long>,
 
     Page<VolunteerAdDTO> findAllByUserId(Pageable pageable, long id);
 
-    Page<VolunteerAdDTO> findAllByAcceptedIs(byte accepted, Pageable pageable);
+    Page<VolunteerAd> findAllByAcceptedIs(byte accepted, Pageable pageable);
 
     Page<VolunteerAd> findAllByAcceptedIsAndCategoriesIn(Pageable pageable, byte accepted, Set<VolunteerAdCategory> categories);
 

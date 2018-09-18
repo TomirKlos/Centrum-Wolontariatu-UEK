@@ -216,24 +216,16 @@ public class VolunteerAdService {
         } else return volunteerAdRepository.findAllBy(pageable);
     }
 
-    @Cacheable(value = "volunteerAdsByRsqlWithCategories")
+    @Cacheable(value = "volunteerAdsWithCategories")
     @Transactional
-    public Page<VolunteerAdDTO> findAllByRsqlWithCategories(Pageable pageable, com.google.common.base.Optional<String> search, Set<VolunteerAdCategory> categorySet) {
-        Page<VolunteerAd> volunteerAds;
-        if(search.isPresent()) {
-            final Node rootNode = new RSQLParser().parse(search.get());
-            Specification<VolunteerAd> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerAd>());
-
-            if(!categorySet.isEmpty()){
-                volunteerAds = volunteerAdRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte)1, categorySet);
-            } else if(categorySet.isEmpty()) {
-                return volunteerAdRepository.findAllByAcceptedIs((byte)1, pageable);
-                //return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
-            } else {
-                volunteerAds = volunteerAdRepository.findAll(spec, pageable);
+    public Page<VolunteerAdDTO> findAllWithCategories(Pageable pageable, String[] categories) {
+        Set<VolunteerAdCategory> categorySet = new HashSet<>();
+        if(categories!=null) {
+            for (String cat : categories) {
+                categorySet.add(new VolunteerAdCategory(cat));
             }
-            return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAds);
-        } else return volunteerAdRepository.findAllByAcceptedIs((byte)1, pageable);
+            return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
+        } else { return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIs((byte)1, pageable)); }
     }
 
     @Transactional
@@ -259,7 +251,7 @@ public class VolunteerAdService {
         volunteerAdCategoryRepository.deleteById(name);
     }
 
-    @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsByRsqlWithCategories"}, allEntries = true)
+    @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsWithCategories"}, allEntries = true)
     public void acceptVolunteerAd(long id){
         volunteerAdRepository.findById(id).ifPresent(volunteerAd -> {
             volunteerAd.setAccepted(parse(true));
@@ -267,7 +259,7 @@ public class VolunteerAdService {
         });
     }
 
-    @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsByRsqlWithCategories"}, allEntries = true)
+    @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsWithCategories"}, allEntries = true)
     public void deleteVolunteerAd(long id){ volunteerAdRepository.deleteById(id);}
 
     public List<VolunteerAdDTO> getVolunteerAdBySolr(String text){

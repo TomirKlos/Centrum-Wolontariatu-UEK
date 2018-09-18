@@ -234,38 +234,32 @@ public class VolunteerRequestService {
         } else return volunteerRequestRepository.findAllBy(pageable);
     }
 
-    @Cacheable(value = "volunteerRequestsByRsqlWithCategories")
+    @Cacheable(value = "volunteerRequestsWithCategories")
     @Transactional
-    public Page<VolunteerRequestDTO> findAllByRsqlWithCategories(Pageable pageable, com.google.common.base.Optional<String> search, Set<VolunteerRequestCategory> categorySet) {
-        Page<VolunteerRequest> volunteerRequests;
-        if(search.isPresent()) {
-            final Node rootNode = new RSQLParser().parse(search.get());
-            Specification<VolunteerRequest> spec = rootNode.accept(new CustomRsqlVisitor<VolunteerRequest>());
-
-            if(!categorySet.isEmpty()){
-                volunteerRequests = volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte)1, categorySet);
-            } else if(categorySet.isEmpty()) {
-                return volunteerRequestRepository.findAllByAcceptedIs((byte)1, pageable);
-                //return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
-            } else {
-                volunteerRequests = volunteerRequestRepository.findAll(spec, pageable);
+    public Page<VolunteerRequestDTO> findAllByRsqlWithCategories(Pageable pageable, String[] categories) {
+        Set<VolunteerRequestCategory> categorySet = new HashSet<>();
+        if(categories!=null) {
+            for (String cat : categories) {
+                categorySet.add(new VolunteerRequestCategory(cat));
             }
-            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequests);
-        } else return volunteerRequestRepository.findAllByAcceptedIs((byte)1, pageable);
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndCategoriesIn(pageable, (byte) 1, categorySet));
+        } else { return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIs((byte)1, pageable)); }
     }
 
 
     @Transactional
     public Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable) {
-        return volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
+        Long id = userService.getUserWithAuthorities().get().getId();
+        return volunteerRequestRepository.findAllByUserId(pageable, id);
     }
 
 
     @Transactional
     public List<Long> findAllMineIdsByUserId(Pageable pageable) {
+        Long id = userService.getUserWithAuthorities().get().getId();
 
         List<Long> idList = new ArrayList<>();
-        for(VolunteerRequestDTO volunteerRequestDTO: volunteerRequestRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId())){
+        for(VolunteerRequestDTO volunteerRequestDTO: volunteerRequestRepository.findAllByUserId(pageable, id)){
             idList.add(volunteerRequestDTO.getId());
         }
         return idList;
@@ -279,7 +273,7 @@ public class VolunteerRequestService {
         volunteerRequestCategoryRepository.deleteById(name);
     }
 
-    @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsByRsqlWithCategories"}, allEntries = true)
+    @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
     public void acceptVolunteerRequest(long id){
         volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
             volunteerRequest.setAccepted(parse(true));
@@ -287,7 +281,7 @@ public class VolunteerRequestService {
         });
     }
 
-    @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsByRsqlWithCategories"}, allEntries = true)
+    @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
     public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}
 
     public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){

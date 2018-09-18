@@ -3,7 +3,7 @@
     <cache name="volunteerRequestsByRsql" maxEntriesLocalHeap="5000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20" timeToIdleSeconds="280" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
-    <cache name="volunteerRequestsByRsqlWithCategories" maxEntriesLocalHeap="5000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20" timeToIdleSeconds="280" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
+    <cache name="volunteerRequestsWithCategories" maxEntriesLocalHeap="5000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20" timeToIdleSeconds="280" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
     <cache name="pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest" maxElementsInMemory="1000" />
@@ -11,7 +11,7 @@
     <cache name="volunteerAdsByRsql" maxEntriesLocalHeap="5000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20" timeToIdleSeconds="280" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
-    <cache name="volunteerAdsByRsqlWithCategories" maxEntriesLocalHeap="5000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20" timeToIdleSeconds="280" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
+    <cache name="volunteerAdsWithCategories" maxEntriesLocalHeap="5000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20" timeToIdleSeconds="280" timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap" />
     </cache>
     <cache name="pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd" maxElementsInMemory="1000" />
