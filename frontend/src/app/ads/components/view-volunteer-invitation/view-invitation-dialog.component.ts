@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator } from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator, MatSortable} from '@angular/material';
 import {InvitationVolunteerRequestVM, responseVolunteerRequestVM, VolunteerRequestVM} from '../../../shared/interfaces';
 import { ServerDataSource } from '../../../shared/server-data-source';
 import { InvitationService } from './invitation.service';
@@ -47,6 +47,7 @@ export class ViewInvitationDialogComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit() {
+    this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
     this.paginator.pageSize = this.pageSize;
     this.dataSource = new ServerDataSource<InvitationVolunteerRequestVM>(this._invitationService, this.paginator, this.sort, "invitations");
     this.dataSource.relativePathToServerResource = '';

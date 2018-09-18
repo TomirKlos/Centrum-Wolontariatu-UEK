@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator, PageEvent} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator, PageEvent, MatSortable} from '@angular/material';
 
 import { responseVolunteerRequestVM } from '../../../../shared/interfaces';
 import { ServerDataSource } from '../../../../shared/server-data-source';
@@ -48,6 +48,7 @@ export class ViewApplyRequestDialogComponent implements OnInit, AfterViewInit {
     });
   }
   ngOnInit() {
+    this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
     this.paginator.pageSize = this.pageSize;
     this.dataSource = new ServerDataSource<responseVolunteerRequestVM>(this._applyService, this.paginator, this.sort, "applications");
     this.dataSource.relativePathToServerResource = '';

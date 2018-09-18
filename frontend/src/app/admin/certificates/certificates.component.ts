@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import {MatPaginator, MatSort, MatSortable} from '@angular/material';
 import { tap } from 'rxjs/operators';
 import { merge } from 'rxjs/observable/merge';
 
@@ -33,6 +33,7 @@ export class CertificatesComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
     this.certificatesData = new GenericDataSource(this._certificatesService);
     this._loadCategoryPage();
 

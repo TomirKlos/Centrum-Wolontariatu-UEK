@@ -28,6 +28,7 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
     this.dataSource = new ServerDataSource(this._adminRequestService, this.paginator, this.sort, "volunteerRequest");
     this.dataSource.loadPage();
 

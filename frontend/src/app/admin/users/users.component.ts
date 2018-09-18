@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import {MatPaginator, MatSort, MatSortable} from '@angular/material';
 import { tap } from 'rxjs/operators';
 import { merge } from 'rxjs/observable/merge';
 
@@ -29,6 +29,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
     this.usersData = new GenericDataSource(this._usersService);
     this._loadUsersPage();
 

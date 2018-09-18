@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import {MatPaginator, MatSort, MatSortable} from '@angular/material';
 
 import {  VolunteerAdVM } from '../../../shared/interfaces';
 import { ServerDataSource } from '../../../shared/server-data-source';
@@ -34,6 +34,7 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
     this.dataSource = new ServerDataSource<VolunteerAdVM>(this._adService, this.paginator, this.sort, 'volunteerAd');
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();

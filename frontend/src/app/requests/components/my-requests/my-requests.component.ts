@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import {MatPaginator, MatSort, MatSortable} from '@angular/material';
 
 import { VolunteerRequestVM, responseVolunteerRequestVM, Page } from '../../../shared/interfaces';
 import { RequestService } from '../../shared/request.service';
@@ -42,6 +42,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
     this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort, "volunteerRequest");
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();
