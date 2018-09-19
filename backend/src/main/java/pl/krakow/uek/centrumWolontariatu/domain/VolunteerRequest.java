@@ -41,6 +41,7 @@ public class VolunteerRequest implements Serializable {
     private String title;
 
     @Column(name = "volunteers_amount")
+    @Field(termVector = TermVector.YES)
     private int volunteersAmount;
 
     @Column(name= "timestamp")
@@ -52,6 +53,7 @@ public class VolunteerRequest implements Serializable {
     private byte accepted;
 
     @Column(name = "expired")
+    @Field(termVector = TermVector.YES)
     private byte expired;
 
     @Column(name = "expiration_date")

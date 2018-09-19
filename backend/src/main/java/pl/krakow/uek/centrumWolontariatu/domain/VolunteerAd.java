@@ -48,6 +48,7 @@ public class VolunteerAd implements Serializable {
     private byte accepted;
 
     @Column(name = "expired")
+    @Field(termVector = TermVector.YES)
     private byte expired;
 
     @Column(name = "expiration_date")

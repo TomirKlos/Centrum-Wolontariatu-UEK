@@ -50,11 +50,15 @@ public class VolunteerAdSearchDao {
         Query filterQuery = getQueryBuilder().keyword()
             .onField("accepted").matching(1)
             .createQuery();
+        Query filterQueryExpired = getQueryBuilder().keyword()
+            .onField("expired").matching(0)
+            .createQuery();
 
         Query finalQuery = getQueryBuilder()
             .bool()
             .must(combinedQuery)
             .must(filterQuery)
+            .must(filterQueryExpired)
             .createQuery();
 
 

@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class VolunteerRequestSearchDao {
@@ -47,14 +49,22 @@ public class VolunteerRequestSearchDao {
                 .createQuery())
             .createQuery();
 
-        Query filterQuery = getQueryBuilder().keyword()
+        Query filterQueryAccepted = getQueryBuilder().keyword()
             .onField("accepted").matching(1)
+            .createQuery();
+        Query filterQueryExpired = getQueryBuilder().keyword()
+            .onField("expired").matching(0)
+            .createQuery();
+        Query filterQueryAmount = getQueryBuilder().keyword()
+            .onField("volunteersAmount").matching(0)
             .createQuery();
 
         Query finalQuery = getQueryBuilder()
             .bool()
             .must(combinedQuery)
-            .must(filterQuery)
+            .must(filterQueryAccepted)
+            .must(filterQueryExpired)
+            .must(filterQueryAmount).not()
             .createQuery();
 
         List<VolunteerRequestDTO> results = VolunteerRequestConverter.mapEntityListIntoDTOList(getJpaQuery(finalQuery).setProjection().getResultList());
