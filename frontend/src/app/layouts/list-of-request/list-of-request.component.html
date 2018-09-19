@@ -20,7 +20,7 @@
 <div class="row" [class.is-mobile]="mobileQuery.matches">
   <div class="column">
       <h1 class="sectionTitle">Wolontariat</h1>
-      <mat-card class="outer" style="min-height:150px">
+      <mat-card class="outer" style="min-height:120px">
 
           <mat-form-field class="example-full-width">
               <mat-placeholder>
@@ -62,19 +62,19 @@
           </form>
 
           <div style="float:left; margin-left:5%">
-            <h6 style="margin-bottom: 0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dla<br>studentow</h6>
+            <h6 style="margin-bottom: 0; line-height: 1.4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dla<br>studentow</h6>
             <mat-slide-toggle [(ngModel)]="forStudents" color="primary" (change)="changeForStudents()">  </mat-slide-toggle>
           </div>
 
           <div style="float:left; margin-left: 5%">
-            <h6 style="margin-bottom: 0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dla<br>pracownikow</h6>
+            <h6 style="margin-bottom: 0; line-height: 1.4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dla<br>pracownikow</h6>
             <mat-slide-toggle [(ngModel)]="forLecturers" color="primary" (change)="changeForLecturers()">  </mat-slide-toggle>
           </div>
 
         </div>
 
           <mat-card *ngFor="let row of dataSource.connectToSource() | async" class="box" (click)="openDialog(row)">
-              <div class="outter">
+              <div class="outter" >
                   <div class="inner">
                       <ng-container *ngIf="row.pictures[0]!=null; else elseTemplate">
                             <div class="parentAdvertImage">
@@ -123,7 +123,7 @@
 
   <div class="column">
       <h1 class="sectionTitle">Wolontariusze</h1>
-      <mat-card class="outer">
+      <mat-card class="outer" style="min-height:120px">
 
           <mat-form-field class="example-full-width">
                 <mat-placeholder>
@@ -146,21 +146,33 @@
                       </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+        <div style="width: 100%;">
+          <form [formGroup]="formGroupAds" #form="ngForm">
+            <mat-form-field fxFlex="65%"    fxFlex.md="55%" fxFlex.sm="45%" fxFlex.xs="50%" style="float:left;margin-left:7.5%;">
+              <mat-select formControlName="categories" name="categories" id="categoriesAd" placeholder="Kategorie" multiple>
+                <mat-select-trigger>
+                  {{formGroupAds.get('categories').value ? (formGroupAds.get('categories').value[0]==null ? '' : formGroupAds.get('categories').value[0]) : ''}}
+                  <span *ngIf="formGroupAds.get('categories').value?.length > 1" class="example-additional-selection">
+                          (+{{formGroupAds.get('categories').value.length - 1}} inne)
+                        </span>
 
-        <form [formGroup]="formGroupAds" #form="ngForm">
-          <mat-form-field>
-            <mat-select formControlName="categories" name="categories" id="categoriesAd" placeholder="Kategorie" multiple>
-              <mat-select-trigger>
-                {{formGroupAds.get('categories').value ? (formGroupAds.get('categories').value[0]==null ? '' : formGroupAds.get('categories').value[0]) : ''}}
-                <span *ngIf="formGroupAds.get('categories').value?.length > 1" class="example-additional-selection">
-                        (+{{formGroupAds.get('categories').value.length - 1}} inne)
-                      </span>
+                </mat-select-trigger>
+                <mat-option (click)="updateAdsWithCategoriesAndBool(); searchAdValue=''; searchAdName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
 
-              </mat-select-trigger>
-              <mat-option (click)="updateAdCategories(); searchAdValue=''; searchAdName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </form>
+
+          <div style="float:left; margin-left:5%">
+            <h6 style="margin-bottom: 0; line-height: 1.4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Studenci</h6>
+            <mat-slide-toggle [(ngModel)]="byStudents" color="primary" (change)="changeByStudents()">  </mat-slide-toggle>
+          </div>
+
+          <div style="float:left; margin-left: 5%">
+            <h6 style="margin-bottom: 0; line-height: 1.4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Pracownicy</h6>
+            <mat-slide-toggle [(ngModel)]="byLecturers" color="primary" (change)="changeByLecturers()">  </mat-slide-toggle>
+        </div>
+        </div>
 
           <mat-card *ngFor="let row of dataSourceAds.connectToSource() | async" class="box" (click)="openDialogAd(row)">
                 <div class="outter">

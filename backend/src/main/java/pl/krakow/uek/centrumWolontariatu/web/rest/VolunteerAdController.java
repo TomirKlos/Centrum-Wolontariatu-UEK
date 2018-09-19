@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAd;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAdCategory;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerAdType;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequestCategory;
@@ -140,8 +141,8 @@ public class VolunteerAdController {
 
     @GetMapping("v2/")
     @ResponseBody
-    public ResponseEntity<Page<VolunteerAdDTO>> findAllByRsqWithCategories( Pageable pageable, String[] categories) {
-        Page<VolunteerAdDTO> volunteerAdDTOS = volunteerAdService.findAllWithCategories(pageable, categories);
+    public ResponseEntity<Page<VolunteerAdDTO>> findAllByRsqWithCategories(Pageable pageable, String[] categories, boolean isByStudents, boolean isByLecturers) {
+        Page<VolunteerAdDTO> volunteerAdDTOS = volunteerAdService.findAllWithCategoriesAndAuthorities(pageable, categories, isByStudents, isByLecturers);
         return new ResponseEntity<>(volunteerAdDTOS, HttpStatus.OK);
     }
 

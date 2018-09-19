@@ -219,15 +219,37 @@ public class VolunteerAdService {
 
     @Cacheable(value = "volunteerAdsWithCategories")
     @Transactional
-    public Page<VolunteerAdDTO> findAllWithCategories(Pageable pageable, String[] categories) {
+    public Page<VolunteerAdDTO> findAllWithCategoriesAndAuthorities(Pageable pageable, String[] categories, boolean isByStudent, boolean isByLecturer) {
+        Set<Authority> authoritySet = new HashSet<>();
         Set<VolunteerAdCategory> categorySet = new HashSet<>();
         if(categories!=null) {
             for (String cat : categories) {
                 categorySet.add(new VolunteerAdCategory(cat));
             }
+            if(isByStudent == true && isByLecturer == false){
+                authoritySet.add(new Authority("ROLE_USER"));
+                return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findDistinctByAcceptedIsAndExpiredIsAndCategoriesInAndUserAuthoritiesIn(pageable, (byte) 1, (byte) 0, categorySet, authoritySet));
+            }
+            if(isByStudent == false && isByLecturer == true){
+                authoritySet.add(new Authority("ROLE_LECTURER"));
+                return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findDistinctByAcceptedIsAndExpiredIsAndCategoriesInAndUserAuthoritiesIn(pageable, (byte) 1, (byte) 0, categorySet, authoritySet));
+            }
             return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIsAndExpiredIsAndCategoriesIn(pageable, (byte) 1, (byte) 0, categorySet));
-        } else { return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIsAndExpiredIs((byte)1, (byte)0, pageable)); }
+
+        } else {
+            if(isByStudent == true && isByLecturer == false){
+                authoritySet.add(new Authority("ROLE_USER"));
+                return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findDistinctByAcceptedIsAndExpiredIsAndUserAuthoritiesIn(pageable, (byte) 1, (byte) 0, authoritySet));
+            }
+            if(isByStudent == false && isByLecturer == true){
+                authoritySet.add(new Authority("ROLE_LECTURER"));
+                return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findDistinctByAcceptedIsAndExpiredIsAndUserAuthoritiesIn(pageable, (byte) 1, (byte) 0, authoritySet));
+            }
+            return VolunteerAdConverter.mapEntityPageIntoDTOPage(pageable, volunteerAdRepository.findAllByAcceptedIsAndExpiredIs(pageable, (byte)1, (byte)0));
+        }
     }
+
+
 
     @Transactional
     public Page<VolunteerAdDTO> findAllByUserId(Pageable pageable) {

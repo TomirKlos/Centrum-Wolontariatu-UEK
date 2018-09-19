@@ -1,6 +1,8 @@
 package pl.krakow.uek.centrumWolontariatu.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -13,6 +15,8 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "cw_authorities")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Authority implements Serializable {
     private static final long serialVersionUID = 1L;
 

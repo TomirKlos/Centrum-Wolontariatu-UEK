@@ -37,6 +37,8 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
 
   forStudents = true;
   forLecturers = true;
+  byStudents = true;
+  byLecturers = true;
 
   @Output()
   change: EventEmitter<MatSlideToggleChange>
@@ -255,6 +257,22 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     });
   }
 
+  updateAdsWithCategoriesAndBool() {
+    let query: string = 'isByStudents=' + this.byStudents + '&isByLecturers=' + this.byLecturers ;
+    if(this.formGroupAds.get('categories').value != null){
+      const categoriesPath: string = 'categories=';
+      this.formGroupAds.get('categories').value.forEach(category => {
+        query = query + '&' +  categoriesPath + category;
+      });
+    }
+    this.dataSourceAds.loadAcceptedVrPageWithCategories(query);
+
+    this.dataSourceAds.connectToSourceElementsNumber().subscribe(d => {
+      this.length = d;
+    });
+  }
+
+
   updateAdCategories() {
     let query: string = '';
     const categoriesPath: string = 'categories=';
@@ -302,6 +320,20 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
       this.forStudents = true;
     }
     this.updateRequestWithCategoriesAndBooleans();
+  }
+
+  changeByStudents() {
+    if (this.byStudents === false && this.byLecturers === false) {
+      this.byLecturers = true;
+    }
+    this.updateAdsWithCategoriesAndBool();
+  }
+
+  changeByLecturers() {
+    if (this.byLecturers === false && this.byStudents === false) {
+      this.byStudents = true;
+    }
+    this.updateAdsWithCategoriesAndBool();
   }
 
 
