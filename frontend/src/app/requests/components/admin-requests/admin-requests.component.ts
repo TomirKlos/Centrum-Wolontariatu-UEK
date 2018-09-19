@@ -17,6 +17,7 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
   columnsToDisplay = [ 'id', 'accepted', 'title', 'delete', 'editVr' ];
 
   totalElements: number;
+  pageSize = 5;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -29,6 +30,7 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
+    this.paginator.pageSize = this.pageSize;
     this.dataSource = new ServerDataSource(this._adminRequestService, this.paginator, this.sort, "volunteerRequest");
     this.dataSource.loadPage();
 

@@ -22,6 +22,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
   columnsToDisplay = ['id', 'accepted', 'title', 'application', 'editVr', 'expire'];
 
   totalElements: number;
+  pageSize = 5;
 
   badgeTemp: String[] = [];
   badgeData: BadgeData[] = [];
@@ -41,6 +42,7 @@ export class MyRequestsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
+    this.paginator.pageSize = this.pageSize;
     this.dataSource = new ServerDataSource<VolunteerRequestVM>(this._requestService, this.paginator, this.sort, 'volunteerRequest');
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();

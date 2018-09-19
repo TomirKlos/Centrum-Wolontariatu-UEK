@@ -21,6 +21,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   usersData: GenericDataSource<User>;
   columnsToDisplay = [ 'id', 'activated', 'email', 'delete' ];
   totalElements = 0;
+  pageSize = 5;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -30,6 +31,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
+    this.paginator.pageSize = this.pageSize;
     this.usersData = new GenericDataSource(this._usersService);
     this._loadUsersPage();
 

@@ -22,6 +22,7 @@ export class CertificatesComponent implements OnInit, AfterViewInit {
 
   columnsToDisplay = [ 'id', 'certified', 'user.firstName', 'user.lastName', 'email', 'volunteerRequest.id', 'volunteerRequest.user.email'];
   totalElements: number;
+  pageSize = 5;
 
   certificates: Certificate[] = [];
 
@@ -34,6 +35,7 @@ export class CertificatesComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
+    this.paginator.pageSize = this.pageSize;
     this.certificatesData = new GenericDataSource(this._certificatesService);
     this._loadCategoryPage();
 

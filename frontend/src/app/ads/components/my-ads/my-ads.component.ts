@@ -19,6 +19,7 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
   dataSource: ServerDataSource<VolunteerAdVM>;
   columnsToDisplay = [ 'id', 'accepted', 'title', 'application', 'editVr', 'expire' ];
   totalElements: number;
+  pageSize = 5;
 
   badgeData: BadgeData[] = [];
   badgePrepared: boolean = false;
@@ -37,6 +38,7 @@ export class MyAdssComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.sort.sort(<MatSortable>({id: 'id', start: 'desc'}));
+    this.paginator.pageSize = this.pageSize;
     this.dataSource = new ServerDataSource<VolunteerAdVM>(this._adService, this.paginator, this.sort, 'volunteerAd');
     this.dataSource.relativePathToServerResource = 'mine';
     this.dataSource.loadPage();

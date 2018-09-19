@@ -20,6 +20,7 @@ import { CategoriesService } from './categories.service';
 export class CategoriesComponent implements OnInit, AfterViewInit {
   columnsToDisplay = [ 'name', 'delete' ];
   totalElements: number;
+  pageSize = 5;
   addCategoryShow: boolean = false;
 
   categoryToAdd: CategoryImpl = new CategoryImpl;
@@ -32,6 +33,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.paginator.pageSize = this.pageSize;
     this._loadCategoryPage();
 
     this._categoriesService.getPage().subscribe(d => {
