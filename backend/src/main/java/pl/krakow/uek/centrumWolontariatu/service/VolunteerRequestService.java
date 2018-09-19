@@ -239,14 +239,36 @@ public class VolunteerRequestService {
 
     @Cacheable(value = "volunteerRequestsWithCategories")
     @Transactional
-    public Page<VolunteerRequestDTO> findAllByRsqlWithCategories(Pageable pageable, String[] categories) {
+    public Page<VolunteerRequestDTO> findAllByRsqlWithCategories(Pageable pageable, String[] categories, boolean isForStudents, boolean isForTutors) {
         Set<VolunteerRequestCategory> categorySet = new HashSet<>();
         if(categories!=null) {
             for (String cat : categories) {
                 categorySet.add(new VolunteerRequestCategory(cat));
             }
-            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, (byte) 0 , 0, categorySet));
-        } else { return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan((byte)1, (byte) 0, 0, pageable)); }
+            if(isForStudents == true && isForTutors == true){
+                return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findDistinctByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, (byte) 0 , 0, categorySet));
+            }
+            if(isForStudents == true && isForTutors == false){
+                return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findDistinctByAcceptedIsAndExpiredIsAndIsForStudentsIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, (byte) 0 , parse(true), 0, categorySet));
+            }
+            if(isForTutors == true && isForStudents == false){
+                return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findDistinctByAcceptedIsAndExpiredIsAndIsForTutorsIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, (byte) 0 , parse(true), 0, categorySet));
+            }
+                return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findDistinctByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThanAndCategoriesIn(pageable, (byte) 1, (byte) 0 , 0, categorySet));
+        } else {
+            if(isForStudents == true && isForTutors == true){
+                return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan((byte)1, (byte) 0, 0, pageable));
+            }
+            if(isForStudents == true && isForTutors == false){
+                return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndIsForStudentsIsAndVolunteersAmountGreaterThan(pageable, (byte) 1, (byte) 0 , parse(true), 0));
+            }
+            if(isForTutors == true && isForStudents == false){
+                return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndIsForTutorsIsAndVolunteersAmountGreaterThan(pageable, (byte) 1, (byte) 0 , parse(true), 0));
+            }
+            return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan((byte)1, (byte) 0, 0, pageable));
+
+        }
+
     }
 
 
@@ -292,8 +314,6 @@ public class VolunteerRequestService {
             volunteerRequestRepository.save(volunteerRequest);
         });
     }
-
-
 
     @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
     public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}

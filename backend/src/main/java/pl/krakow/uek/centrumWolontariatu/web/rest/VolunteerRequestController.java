@@ -131,8 +131,8 @@ public class VolunteerRequestController {
 
     @GetMapping("/vrequest/v2/")
     @ResponseBody
-    public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsqWithCategories(Pageable pageable, String[] categories) {
-        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsqlWithCategories(pageable, categories);
+    public ResponseEntity<Page<VolunteerRequestDTO>> findAllByRsqWithCategories(Pageable pageable, String[] categories, boolean isForStudents, boolean isForTutors) {
+        Page<VolunteerRequestDTO> volunteerRequests = volunteerRequestService.findAllByRsqlWithCategories(pageable, categories, isForStudents, isForTutors);
         return new ResponseEntity<>(volunteerRequests, HttpStatus.OK);
     }
 

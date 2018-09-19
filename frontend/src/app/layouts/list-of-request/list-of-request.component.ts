@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Output, EventEmitter} from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
 import {VolunteerRequestVM, Category, VolunteerAdVM, Banner, User} from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
-import { MatPaginator, PageEvent, MatSort } from '@angular/material';
+import {MatPaginator, PageEvent, MatSort, MatSlideToggleChange} from '@angular/material';
 
 import { RequestDialogService } from '../../requests/shared/request-dialog.service';
 
@@ -34,6 +34,12 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   searchAdTerm$ = new Subject<string>();
   searchValue: string;
   searchAdValue: string;
+
+  forStudents = true;
+  forLecturers = true;
+
+  @Output()
+  change: EventEmitter<MatSlideToggleChange>
 
   categoriesData: String[] = [];
   formGroupRequests: FormGroup;
@@ -234,11 +240,26 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
     });
   }
 
+  updateRequestWithCategoriesAndBooleans() {
+    let query: string = 'isForStudents=' + this.forStudents + '&isForTutors=' + this.forLecturers ;
+    if(this.formGroupRequests.get('categories').value != null){
+      const categoriesPath: string = 'categories=';
+      this.formGroupRequests.get('categories').value.forEach(category => {
+        query = query + '&' +  categoriesPath + category;
+      });
+    }
+    this.dataSource.loadAcceptedVrPageWithCategories(query);
+
+    this.dataSource.connectToSourceElementsNumber().subscribe(d => {
+      this.length = d;
+    });
+  }
+
   updateAdCategories() {
     let query: string = '';
     const categoriesPath: string = 'categories=';
     this.formGroupAds.get('categories').value.forEach(category => {
-      query = query + categoriesPath + category + '&';
+      query = query + categoriesPath + category ;
     });
     this.dataSourceAds.loadAcceptedVrPageWithCategories(query);
 
@@ -267,6 +288,20 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
       }
     });
     return role;
+  }
+
+  changeForStudents() {
+    if (this.forStudents === false && this.forLecturers === false) {
+      this.forLecturers = true;
+    }
+    this.updateRequestWithCategoriesAndBooleans();
+  }
+
+  changeForLecturers() {
+    if (this.forLecturers === false && this.forStudents === false) {
+      this.forStudents = true;
+    }
+    this.updateRequestWithCategoriesAndBooleans();
   }
 
 

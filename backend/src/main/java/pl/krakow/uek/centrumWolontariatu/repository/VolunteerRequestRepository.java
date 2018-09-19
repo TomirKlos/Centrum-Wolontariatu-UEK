@@ -31,6 +31,17 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
 
     Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan(byte accepted, byte expired, Integer volunteersAmount, Pageable pageable);
 
-    Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThanAndCategoriesIn(Pageable pageable, byte accepted, byte expired, Integer volunteersAmount, Set<VolunteerRequestCategory> categories);
+    Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndIsForStudentsIsAndVolunteersAmountGreaterThan(Pageable pageable, byte accepted, byte expired, byte isForStudents, Integer volunteersAmount);
+
+    Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndIsForTutorsIsAndVolunteersAmountGreaterThan(Pageable pageable, byte accepted, byte expired, byte isForTutors, Integer volunteersAmount);
+
+    Page<VolunteerRequest> findDistinctByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThanAndCategoriesIn(Pageable pageable, byte accepted, byte expired,  Integer volunteersAmount, Set<VolunteerRequestCategory> categories);
+
+    Page<VolunteerRequest> findDistinctByAcceptedIsAndExpiredIsAndIsForStudentsIsAndVolunteersAmountGreaterThanAndCategoriesIn(Pageable pageable, byte accepted, byte expired, byte isForStudents, Integer volunteersAmount, Set<VolunteerRequestCategory> categories);
+
+    Page<VolunteerRequest> findDistinctByAcceptedIsAndExpiredIsAndIsForTutorsIsAndVolunteersAmountGreaterThanAndCategoriesIn(Pageable pageable, byte accepted, byte expired, byte isForTutors, Integer volunteersAmount, Set<VolunteerRequestCategory> categories);
+
+    Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndIsForStudentsOrIsForTutorsAndVolunteersAmountGreaterThanAndCategoriesIn(Pageable pageable, byte accepted, byte expired, byte isForStudents, byte isForTutors, Integer volunteersAmount, Set<VolunteerRequestCategory> categories);
+
 
 }

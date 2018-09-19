@@ -6,16 +6,19 @@ import { ListOfRequestComponent } from '../layouts/list-of-request/list-of-reque
 import { LayoutModule } from '../shared/layout.module';
 import {RelativeDatePipe, RelativeDatePipeExpiration} from '../shared/relativeDate.pipe';
 import {
-  MatSelectModule,
+  MatSelectModule, MatSlideToggleModule,
   MatTooltipModule
 } from '@angular/material';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   imports: [
     LayoutModule,
     HomeRoutingModule,
     MatTooltipModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSlideToggleModule,
+    FormsModule
 
   ],
   declarations: [

@@ -20,7 +20,7 @@
 <div class="row" [class.is-mobile]="mobileQuery.matches">
   <div class="column">
       <h1 class="sectionTitle">Wolontariat</h1>
-      <mat-card class="outer">
+      <mat-card class="outer" style="min-height:150px">
 
           <mat-form-field class="example-full-width">
               <mat-placeholder>
@@ -44,21 +44,34 @@
               </mat-autocomplete>
           </mat-form-field>
 
-        <form [formGroup]="formGroupRequests" #form="ngForm">
-          <mat-form-field>
-            <!--         <mat-select [(ngModel)]="user.groups" name="groups" id="groups" placeholder="Groups" [formControl]="groupsForm" multiple> -->
-            <mat-select formControlName="categories" name="categories" id="categories" placeholder="Kategorie" multiple>
-              <mat-select-trigger>
-                {{formGroupRequests.get('categories').value ? (formGroupRequests.get('categories').value[0]==null ? '' : formGroupRequests.get('categories').value[0]) : ''}}
-                <span *ngIf="formGroupRequests.get('categories').value?.length > 1" class="example-additional-selection">
-                        (+{{formGroupRequests.get('categories').value.length - 1}} inne)
-                      </span>
+        <div style="width: 100%;">
+          <form [formGroup]="formGroupRequests" #form="ngForm" >
+            <mat-form-field fxFlex="65%"    fxFlex.md="55%" fxFlex.sm="45%" fxFlex.xs="50%" style="float:left;margin-left:7.5%;">
+              <!--         <mat-select [(ngModel)]="user.groups" name="groups" id="groups" placeholder="Groups" [formControl]="groupsForm" multiple> -->
+              <mat-select  formControlName="categories" name="categories" id="categories" placeholder="Kategorie" multiple>
+                <mat-select-trigger>
+                  {{formGroupRequests.get('categories').value ? (formGroupRequests.get('categories').value[0]==null ? '' : formGroupRequests.get('categories').value[0]) : ''}}
+                  <span *ngIf="formGroupRequests.get('categories').value?.length > 1" class="example-additional-selection">
+                          (+{{formGroupRequests.get('categories').value.length - 1}} inne)
+                        </span>
 
-              </mat-select-trigger>
-              <mat-option (click)="updateRequestCategories(); searchValue=''; searchName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </form>
+                </mat-select-trigger>
+                <mat-option (click)="updateRequestWithCategoriesAndBooleans(); searchValue=''; searchName.value=''" *ngFor="let category of categoriesData" [value]="category">{{category}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+
+          <div style="float:left; margin-left:5%">
+            <h6 style="margin-bottom: 0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dla<br>studentow</h6>
+            <mat-slide-toggle [(ngModel)]="forStudents" color="primary" (change)="changeForStudents()">  </mat-slide-toggle>
+          </div>
+
+          <div style="float:left; margin-left: 5%">
+            <h6 style="margin-bottom: 0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dla<br>pracownikow</h6>
+            <mat-slide-toggle [(ngModel)]="forLecturers" color="primary" (change)="changeForLecturers()">  </mat-slide-toggle>
+          </div>
+
+        </div>
 
           <mat-card *ngFor="let row of dataSource.connectToSource() | async" class="box" (click)="openDialog(row)">
               <div class="outter">
