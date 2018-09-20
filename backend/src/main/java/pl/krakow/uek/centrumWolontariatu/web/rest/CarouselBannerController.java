@@ -42,4 +42,16 @@ public class CarouselBannerController {
     public void deleteBanner(@PathVariable Long id){
         carouselBannerService.deleteBanner(id);
     }
+
+    @PostMapping("/up/{id}")
+    @ResponseBody
+    public void upCarouselInList(@PathVariable Long id) {
+        carouselBannerService.makeUpInList(id);
+    }
+
+    @PostMapping("/down/{id}")
+    @ResponseBody
+    public void downCarouselInList(@PathVariable Long id) {
+        carouselBannerService.makeDownInList(id);
+    }
 }

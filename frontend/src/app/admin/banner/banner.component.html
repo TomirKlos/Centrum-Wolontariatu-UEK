@@ -43,11 +43,29 @@
           <mat-cell *matCellDef="let element" fxFlex="200px"><img [src]="pathToStaticContent+element.referenceToPicture" height="50"> </mat-cell>
         </ng-container>
 
+        <ng-container matColumnDef="up">
+          <mat-header-cell *matHeaderCellDef fxFlex="50px">W gore</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="50px">
+            <button mat-button color="warn" (click)="makeBannerUp(element.id)">
+              <mat-icon>arrow_drop_up</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="down">
+          <mat-header-cell *matHeaderCellDef fxFlex="50px">W dol</mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="50px">
+            <button mat-button color="warn" (click)="makeBannerDown(element.id)">
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
         <ng-container matColumnDef="delete">
           <mat-header-cell *matHeaderCellDef fxFlex="100px">Usuń</mat-header-cell>
           <mat-cell *matCellDef="let element" fxFlex="100px">
             <button mat-button color="warn" (click)="deleteCategory(element.id)">
-              <mat-icon>delete</mat-icon>
+             <mat-icon style="align: left;">delete</mat-icon>
               Usuń
             </button>
           </mat-cell>

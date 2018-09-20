@@ -70,7 +70,7 @@
       </button>
       <mat-menu #menu2="matMenu">
         <div>
-          <button mat-menu-item routerLink="/requests/admin">Ogłoszenia admin</button>
+          <button mat-menu-item routerLink="/requests/admin" *appHasAnyRole="['ROLE_ADMIN']">Ogłoszenia admin</button>
           <button mat-menu-item routerLink="/requests/mine">Moje ogłoszenia</button>
         </div>
       </mat-menu>
@@ -82,7 +82,7 @@
       </button>
       <mat-menu #menu4="matMenu">
         <div>
-          <button mat-menu-item routerLink="/ads/admin">Wolontariusze admin</button>
+          <button mat-menu-item routerLink="/ads/admin" *appHasAnyRole="['ROLE_ADMIN']">Wolontariusze admin</button>
           <button mat-menu-item routerLink="/ads/mine">Moje ogłoszenia</button>
         </div>
       </mat-menu>

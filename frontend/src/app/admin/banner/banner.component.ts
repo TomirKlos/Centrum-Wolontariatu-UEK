@@ -19,7 +19,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
   ]
 })
 export class BannerComponent implements OnInit, AfterViewInit {
-  columnsToDisplay = [ 'title', 'thumbnail', 'delete' ];
+  columnsToDisplay = [ 'title', 'thumbnail', 'up', 'down', 'delete' ];
   formGroup: FormGroup;
   totalElements: number;
   addBannerShow: boolean = false;
@@ -122,6 +122,14 @@ export class BannerComponent implements OnInit, AfterViewInit {
     this.fileHash.forEach( (item, index) => {
       if(item === doc) this.fileHash.splice(index,1);
     });
+  }
+
+  makeBannerUp(id: number) {
+    this._bannerService.makeBannerUp(id).subscribe( () => this._loadBannerPage());
+  }
+
+  makeBannerDown(id: number) {
+    this._bannerService.makeBannerDown(id).subscribe( () => this._loadBannerPage());
   }
 
 }

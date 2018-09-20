@@ -3,6 +3,7 @@ package pl.krakow.uek.centrumWolontariatu.service;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.domain.CarouselBanner;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
@@ -83,8 +84,69 @@ public class CarouselBannerService {
         }
         return hashPicturesWithReferences;
     }
+
+    @Transactional
+    public void saveNewBannersTransaction(CarouselBanner carouselBanner1, CarouselBanner carouselBanner2){
+        this.carouselBannerRepository.save(carouselBanner1);
+        this.carouselBannerRepository.save(carouselBanner2);
+    }
+
+
     @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
     public void deleteBanner(Long id){
         carouselBannerRepository.deleteById(id);
+    }
+
+    @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
+    public void makeUpInList(Long id){
+        List<CarouselBanner> carouselBannerList = carouselBannerRepository.findAll();
+
+        CarouselBanner lastIterationBanner = carouselBannerRepository.findFirstByIdGreaterThan(0L);
+        for(CarouselBanner carouselBanner: carouselBannerList){
+            if(lastIterationBanner==carouselBanner) continue;
+            if(carouselBanner.getId()==id){
+                exchangePlace(carouselBanner, lastIterationBanner);
+            }
+            lastIterationBanner = carouselBanner;
+        }
+    }
+
+    @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
+    public void makeDownInList(Long id){
+        List<CarouselBanner> carouselBannerList = carouselBannerRepository.findAllByOrderByIdDesc();
+
+        CarouselBanner lastIterationBanner = carouselBannerRepository.findFirstByOrderByIdDesc();
+        for(CarouselBanner carouselBanner: carouselBannerList){
+            if(lastIterationBanner==carouselBanner) continue;
+            if(carouselBanner.getId()==id){
+                exchangePlace(carouselBanner, lastIterationBanner);
+            }
+            lastIterationBanner = carouselBanner;
+        }
+    }
+
+    private void exchangePlace(CarouselBanner carouselBannerOld, CarouselBanner carouselBannerNew){
+        CarouselBanner carouselBannerTemp = createTempCarousel(carouselBannerNew);
+        carouselBannerNew = exchangeVariablesInCarousel(carouselBannerNew, carouselBannerOld);
+        carouselBannerOld = exchangeVariablesInCarousel(carouselBannerOld, carouselBannerTemp);
+        this.saveNewBannersTransaction(carouselBannerNew, carouselBannerOld);
+
+    }
+
+    private CarouselBanner exchangeVariablesInCarousel(CarouselBanner carouselBannerNew, CarouselBanner carouselBannerOld){
+        carouselBannerNew.setUser(carouselBannerOld.getUser());
+        carouselBannerNew.setTitle(carouselBannerOld.getTitle());
+        carouselBannerNew.setReferenceToPicture(carouselBannerOld.getReferenceToPicture());
+        carouselBannerNew.setDescription(carouselBannerOld.getDescription());
+        return carouselBannerNew;
+    }
+
+    private CarouselBanner createTempCarousel(CarouselBanner carouselBanner){
+        CarouselBanner carouselBannerTemp = new CarouselBanner();
+        carouselBannerTemp.setUser(carouselBanner.getUser());
+        carouselBannerTemp.setTitle(carouselBanner.getTitle());
+        carouselBannerTemp.setReferenceToPicture(carouselBanner.getReferenceToPicture());
+        carouselBannerTemp.setDescription(carouselBanner.getDescription());
+        return carouselBannerTemp;
     }
 }

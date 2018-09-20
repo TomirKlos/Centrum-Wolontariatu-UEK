@@ -23,4 +23,12 @@ export class BannerService extends GenericService<Banner> {
   createBanner(banner: Banner) {
     return this._http.post(this._url + '/', { banner });
   }
+
+  makeBannerUp(id: number) {
+    return this._http.post(this._url + '/up/' + id, { });
+  }
+
+  makeBannerDown(id: number) {
+    return this._http.post(this._url + '/down/' + id, { });
+  }
 }
