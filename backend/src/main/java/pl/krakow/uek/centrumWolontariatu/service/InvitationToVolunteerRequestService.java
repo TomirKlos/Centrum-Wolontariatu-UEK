@@ -7,10 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import pl.krakow.uek.centrumWolontariatu.domain.InvitationToVolunteerRequest;
-import pl.krakow.uek.centrumWolontariatu.domain.ResponseVolunteerRequest;
-import pl.krakow.uek.centrumWolontariatu.domain.User;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
+import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.InvitationToVolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequestDTO;
@@ -24,6 +21,8 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.vm.ResponseVolunteerRequestVM;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
@@ -51,6 +50,9 @@ public class InvitationToVolunteerRequestService {
     public void invite(InvitationToVolunteerRequestVM invitationToVolunteerRequestVM){
         if(userService.getUserWithAuthorities().get().getId()==volunteerRequestRepository.findById(invitationToVolunteerRequestVM.getVolunteerRequestId()).get().getUser().getId()
             && userService.getUserWithAuthorities().get().getId()!= userRepository.findOneById(volunteerAdRepository.findById(invitationToVolunteerRequestVM.getVolunteerAdId()).get().getUser().getId()).get().getId()) {
+            if(!canInviteToVolunteerRequest(invitationToVolunteerRequestVM)){
+                throw new BadRequestAlertException("You cannot invite user to Volunteer Request because user doesnt have required status", "volunteerRequestInvitation", "cannotinvitetovolunteerrequestduetostatus");
+            }
             User user = userRepository.findOneById(volunteerAdRepository.findById(invitationToVolunteerRequestVM.getVolunteerAdId()).get().getUser().getId()).get();
 
             InvitationToVolunteerRequest invitationToVolunteerRequest = new InvitationToVolunteerRequest();
@@ -65,7 +67,7 @@ public class InvitationToVolunteerRequestService {
             invitationToVolunteerRequestRepository.save(invitationToVolunteerRequest);
 
             log.debug("User id={} invited to Volunteer Request id={}", user.getId(), invitationToVolunteerRequest.getVolunteerRequest().getId());
-        } else throw new BadRequestAlertException("You cannot invite yourself for your own Volunteer Request", "volunteerRequestManagement", "cannotaplyforownvolunteerrequest");
+        } else throw new BadRequestAlertException("You cannot invite yourself for your own Volunteer Request", "volunteerRequestManagement", "cannotinviteyourselforyouownvolunteerrequest");
     }
 
     public Page<InvitationToVolunteerRequestDTO> getAllByUserId(long userId, Pageable pageable){
@@ -161,6 +163,24 @@ public class InvitationToVolunteerRequestService {
         responseVolunteerRequestVM.setDescription("Potwierdzam chęć udzialu w wolontariacie! | " + description);
 
         responseVolunteerRequestService.apply(responseVolunteerRequestVM);
+    }
+
+    private boolean canInviteToVolunteerRequest(InvitationToVolunteerRequestVM invitationToVolunteerRequestVM){
+        Set<Authority> authoritySet = volunteerAdRepository.findById(invitationToVolunteerRequestVM.getVolunteerAdId()).get().getUser().getAuthorities();
+        return doHaveRequiredAuthorities(authoritySet, invitationToVolunteerRequestVM.getVolunteerRequestId());
+    }
+
+    private boolean doHaveRequiredAuthorities(Set<Authority> authoritySet, Long id){
+        Predicate<Authority> userPredicate = e -> e.getName().equals("ROLE_USER");
+        Predicate<Authority> lecturerPredicate = e -> e.getName().equals("ROLE_LECTURER");
+
+        VolunteerRequest volunteerRequest = volunteerRequestRepository.findById(id).get();
+        if(authoritySet.stream().anyMatch(userPredicate) && volunteerRequest.getIsForStudents()==1)
+            return true;
+        if(authoritySet.stream().anyMatch(lecturerPredicate) && volunteerRequest.getIsForTutors()==1)
+            return true;
+
+        return false;
     }
 
 

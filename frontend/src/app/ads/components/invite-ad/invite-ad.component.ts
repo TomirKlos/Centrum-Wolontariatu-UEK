@@ -49,7 +49,13 @@ export class InviteAdComponent implements OnInit {
       () => {
         this._sb.open('Aplikacja została wysłana');
       },
-      () => this._sb.warning()
+      err => {
+        if ( err.error.errorKey === 'cannotinvitetovolunteerrequestduetostatus') {
+          this._sb.warning('Nie możesz zaprosic uzytkownika, ktory nie spelnia wymagan ogloszenia dotyczacego statusu studenta/pracownika!', { duration: 5000 });
+        } else if ( err.error.errorKey === 'cannotinviteyourselforyouownvolunteerrequest'){
+          this._sb.warning('Nie możesz zaprosić siebie do wlasnego ogloszenia', { duration: 5000 });
+        } else this._sb.warning();
+      }
     );
   }
 

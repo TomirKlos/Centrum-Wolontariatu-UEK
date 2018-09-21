@@ -2,13 +2,16 @@ package pl.krakow.uek.centrumWolontariatu.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import pl.krakow.uek.centrumWolontariatu.domain.Authority;
 import pl.krakow.uek.centrumWolontariatu.domain.ResponseVolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
+import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.ResponseVolunteerRequestRepository;
@@ -22,6 +25,8 @@ import pl.krakow.uek.centrumWolontariatu.web.rest.vm.ResponseVolunteerRequestVM;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
 
@@ -45,6 +50,9 @@ public class ResponseVolunteerRequestService {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_LECTURER')")
     public void apply(ResponseVolunteerRequestVM responseVolunteerRequestVM){
         if(userService.getUserWithAuthorities().get().getId()!=volunteerRequestRepository.findById(responseVolunteerRequestVM.getVolunteerRequestId()).get().getUser().getId() ) {
+           if(!canApplyForVolunteerRequest(userService.getUserWithAuthorities().get().getAuthorities(), responseVolunteerRequestVM.getVolunteerRequestId())){
+               throw new BadRequestAlertException("You cannot apply for Volunteer Request because dont have status wanted by Volunteer Request", "volunteerRequestManagement", "cannotaplyforvolunteerrequestbecauseofstatus");
+           }
             User user = userService.getUserWithAuthorities().get();
             ResponseVolunteerRequest responseVolunteerRequest = new ResponseVolunteerRequest();
             responseVolunteerRequest.setDescription(responseVolunteerRequestVM.getDescription());
@@ -59,7 +67,6 @@ public class ResponseVolunteerRequestService {
             log.debug("User id={} applied for Volunteer Request id={}", user.getId(), responseVolunteerRequest.getVolunteerRequest().getId());
         } else throw new BadRequestAlertException("You cannot apply for your own Volunteer Request", "volunteerRequestManagement", "cannotaplyforownvolunteerrequest");
     }
-
 
     public Page<ResponseVolunteerRequestDTO> getAllByVolunteerRequestId(long volunteerRequestId, Pageable pageable){
         Page<ResponseVolunteerRequestDTO> page;
@@ -151,6 +158,19 @@ public class ResponseVolunteerRequestService {
                 log.debug("User id={} confirmed and send to certification Volunteer Response id={} and user={}", userService.getUserId(), response.getId(), response.getUser().getId());
             });
         else throw new ResponseAcceptException();
+    }
+
+    private boolean canApplyForVolunteerRequest(Set<Authority> authoritySet, Long id){
+        Predicate<Authority> userPredicate = e -> e.getName().equals("ROLE_USER");
+        Predicate<Authority> lecturerPredicate = e -> e.getName().equals("ROLE_LECTURER");
+
+        VolunteerRequest volunteerRequest = volunteerRequestRepository.findById(id).get();
+        if(authoritySet.stream().anyMatch(userPredicate) && volunteerRequest.getIsForStudents()==1)
+            return true;
+        if(authoritySet.stream().anyMatch(lecturerPredicate) && volunteerRequest.getIsForTutors()==1)
+            return true;
+
+        return false;
     }
 
 

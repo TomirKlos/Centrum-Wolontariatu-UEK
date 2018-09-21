@@ -35,7 +35,15 @@ export class ApplyRequestComponent implements OnInit {
       () => {
         this._sb.open('Aplikacja została wysłana');
       },
-      () => this._sb.warning()
+      err => {
+        console.log(err.error.errorKey);
+        if ( err.error.errorKey === 'cannotaplyforownvolunteerrequest') {
+          this._sb.warning('Nie możesz dolaczyc do wlasnego ogloszenia!', { duration: 5000 });
+        } else if ( err.error.errorKey === 'cannotaplyforvolunteerrequestbecauseofstatus'){
+          this._sb.warning('Nie posiadasz wymaganego w ogloszeniu statusu pracownika/studenta!', { duration: 5000 });
+        } else this._sb.warning();
+
+      }
     );
   }
 
