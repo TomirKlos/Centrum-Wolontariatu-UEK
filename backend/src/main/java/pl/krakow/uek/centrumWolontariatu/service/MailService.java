@@ -5,11 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.retry.RetryOperations;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import pl.krakow.uek.centrumWolontariatu.domain.User;
+import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.EmailCouldNotBeSentException;
 
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
@@ -27,12 +32,14 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine springTemplateEngine;
     private final MessageSource messageSource;
+    private final RetryTemplate retryTemplate;
 
 
-    public MailService(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine, MessageSource messageSource) {
+    public MailService(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine, MessageSource messageSource, RetryTemplate retryTemplate) {
         this.javaMailSender = javaMailSender;
         this.springTemplateEngine = springTemplateEngine;
         this.messageSource = messageSource;
+        this.retryTemplate = retryTemplate;
     }
 
     @Async
@@ -40,7 +47,6 @@ public class MailService {
         log.debug("Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
             isMultipart, isHtml, to, subject, content);
 
-        // Prepare message using a Spring helper
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
@@ -53,8 +59,10 @@ public class MailService {
         } catch (Exception e) {
             if (log.isDebugEnabled()) {
                 log.warn("Email could not be sent to user '{}'", to, e);
+                throw new EmailCouldNotBeSentException();
             } else {
                 log.warn("Email could not be sent to user '{}': {}", to, e.getMessage());
+                throw new EmailCouldNotBeSentException();
             }
         }
     }
@@ -74,18 +82,30 @@ public class MailService {
     @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "activationEmail", "email.activation.title");
+        retryTemplate.execute(args0 -> {
+            sendEmailFromTemplate(user, "activationEmail", "email.activation.title");
+            return null;
+        });
     }
 
     @Async
     public void sendCreationEmail(User user) {
         log.debug("Sending creation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "creationEmail", "email.activation.title");
+        retryTemplate.execute(args0 -> {
+            sendEmailFromTemplate(user, "creationEmail", "email.activation.title");
+            return null;
+        });
+
     }
 
     @Async
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "passwordResetEmail", "email.reset.title");
+        retryTemplate.execute(args0 -> {
+            sendEmailFromTemplate(user, "passwordResetEmail", "email.reset.title");
+            return null;
+        });
+
     }
 }
+

@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.krakow.uek.centrumWolontariatu.configuration.AppProperties;
 
@@ -16,6 +17,7 @@ import pl.krakow.uek.centrumWolontariatu.configuration.AppProperties;
 @EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class, MultipartAutoConfiguration.class})
 @ComponentScan
 @EnableScheduling
+@EnableRetry
 @EnableConfigurationProperties(AppProperties.class)
 public class Application {
     public static void main(String[] args) {
