@@ -275,7 +275,7 @@ public class VolunteerRequestService {
     @Transactional
     public Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable) {
         Long id = userService.getUserWithAuthorities().get().getId();
-        return volunteerRequestRepository.findAllByUserId(pageable, id);
+        return volunteerRequestRepository.findAllByUserIdAndExpiredIsAndVolunteersAmountGreaterThan(pageable, id, parse(false), 0);
     }
 
 

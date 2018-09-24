@@ -27,6 +27,8 @@ public interface VolunteerRequestRepository extends JpaRepository<VolunteerReque
 
     Page<VolunteerRequestDTO> findAllByUserId(Pageable pageable, long id);
 
+    Page<VolunteerRequestDTO> findAllByUserIdAndExpiredIsAndVolunteersAmountGreaterThan(Pageable pageable, long id, byte expired, Integer volunteersAmount);
+
     Page<VolunteerRequest> findAllByAcceptedIsAndCategoriesIn(Pageable pageable, byte accepted, Set<VolunteerRequestCategory> categories);
 
     Page<VolunteerRequest> findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan(byte accepted, byte expired, Integer volunteersAmount, Pageable pageable);
