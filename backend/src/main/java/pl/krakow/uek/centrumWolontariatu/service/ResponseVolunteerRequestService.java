@@ -8,10 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import pl.krakow.uek.centrumWolontariatu.domain.Authority;
-import pl.krakow.uek.centrumWolontariatu.domain.ResponseVolunteerRequest;
-import pl.krakow.uek.centrumWolontariatu.domain.User;
-import pl.krakow.uek.centrumWolontariatu.domain.VolunteerRequest;
+import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.VolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.repository.ResponseVolunteerRequestRepository;
@@ -49,23 +46,27 @@ public class ResponseVolunteerRequestService {
     // @PreAuthorize("#responseVolunteerRequestVm.name == principal.name")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_LECTURER')")
     public void apply(ResponseVolunteerRequestVM responseVolunteerRequestVM){
-        if(userService.getUserWithAuthorities().get().getId()!=volunteerRequestRepository.findById(responseVolunteerRequestVM.getVolunteerRequestId()).get().getUser().getId() ) {
-           if(!canApplyForVolunteerRequest(userService.getUserWithAuthorities().get().getAuthorities(), responseVolunteerRequestVM.getVolunteerRequestId())){
-               throw new BadRequestAlertException("You cannot apply for Volunteer Request because dont have status wanted by Volunteer Request", "volunteerRequestManagement", "cannotaplyforvolunteerrequestbecauseofstatus");
-           }
-            User user = userService.getUserWithAuthorities().get();
-            ResponseVolunteerRequest responseVolunteerRequest = new ResponseVolunteerRequest();
-            responseVolunteerRequest.setDescription(responseVolunteerRequestVM.getDescription());
-            responseVolunteerRequest.setUser(user);
-            responseVolunteerRequest.setVolunteerRequest(volunteerRequestRepository.getOne(responseVolunteerRequestVM.getVolunteerRequestId()));
+        userService.getUserWithAuthorities().ifPresent(user -> {
+            volunteerRequestRepository.findById(responseVolunteerRequestVM.getVolunteerRequestId()).ifPresent(volunteerRequest -> {
+                    if(user.getId() != volunteerRequest.getUser().getId()){
+                        if(!canApplyForVolunteerRequest(user.getAuthorities(), volunteerRequest.getId())){
+                            throw new BadRequestAlertException("You cannot apply for Volunteer Request because don't have status wanted by Volunteer Request", "volunteerRequestManagement", "cannotaplyforvolunteerrequestbecauseofstatus");
+                        }
+                        ResponseVolunteerRequest responseVolunteerRequest = new ResponseVolunteerRequest();
+                        responseVolunteerRequest.setDescription(responseVolunteerRequestVM.getDescription());
+                        responseVolunteerRequest.setUser(user);
+                        responseVolunteerRequest.setVolunteerRequest(volunteerRequest);
 
-            ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-            long epochMillis = utc.toEpochSecond() * 1000;
-            responseVolunteerRequest.setTimestamp(epochMillis);
+                        ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+                        long epochMillis = utc.toEpochSecond() * 1000;
+                        responseVolunteerRequest.setTimestamp(epochMillis);
 
-            responseVolunteerRequestRepository.save(responseVolunteerRequest);
-            log.debug("User id={} applied for Volunteer Request id={}", user.getId(), responseVolunteerRequest.getVolunteerRequest().getId());
-        } else throw new BadRequestAlertException("You cannot apply for your own Volunteer Request", "volunteerRequestManagement", "cannotaplyforownvolunteerrequest");
+                        responseVolunteerRequestRepository.save(responseVolunteerRequest);
+                        log.debug("User id={} applied for Volunteer Request id={}", user.getId(), responseVolunteerRequest.getVolunteerRequest().getId());
+                    } else throw new BadRequestAlertException("You cannot apply for your own Volunteer Request", "volunteerRequestManagement", "cannotaplyforownvolunteerrequest");
+            });
+        });
+
     }
 
     public Page<ResponseVolunteerRequestDTO> getAllByVolunteerRequestId(long volunteerRequestId, Pageable pageable){
@@ -74,28 +75,23 @@ public class ResponseVolunteerRequestService {
             page = responseVolunteerRequestRepository.findAllByVolunteerRequestId(pageable, volunteerRequestId);
             setSeenFlag(page);
             return page;
-        }
-
-        else throw new VolunteerRequestResponsesPermissionException();
+        } else throw new VolunteerRequestResponsesPermissionException();
     }
 
     public long getAllUnseen(long volunteerRequestId){
         if(isUserOwnerOfVolunteerRequest(volunteerRequestId) ){
-
-            return responseVolunteerRequestRepository.countByVolunteerRequestIdAndSeen(volunteerRequestId, (byte)0);
-        }
-
-        else throw new VolunteerRequestResponsesPermissionException();
+            return responseVolunteerRequestRepository.countByVolunteerRequestIdAndSeen(volunteerRequestId, parse(false));
+        } else throw new VolunteerRequestResponsesPermissionException();
     }
 
 
     private void setSeenFlag(Page<ResponseVolunteerRequestDTO> pageResponseVr){
-        for(ResponseVolunteerRequestDTO responseVolunteerRequestDTO: pageResponseVr.getContent()){
+        pageResponseVr.getContent().forEach(responseVolunteerRequestDTO -> {
             responseVolunteerRequestRepository.findById(responseVolunteerRequestDTO.getId()).map(responseVolunteerRequest -> {
-                responseVolunteerRequest.setSeen((byte)1);
+                responseVolunteerRequest.setSeen(parse(true));
                 return responseVolunteerRequestRepository.save(responseVolunteerRequest);
             });
-        }
+        });
     }
 
     private boolean isUserOwnerOfVolunteerRequest(long volunteerRequestId){
@@ -115,16 +111,18 @@ public class ResponseVolunteerRequestService {
     public void acceptResponse(long responseId){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
             responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {
-                response.setAccepted(parse(true));
-                responseVolunteerRequestRepository.save(response);
+                if(response.getAccepted() == parse(false)){
+                    response.setAccepted(parse(true));
+                    responseVolunteerRequestRepository.save(response);
 
-                volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
-                    if(volunteerRequest.getVolunteersAmount()>0){
-                        volunteerRequest.setVolunteersAmount(volunteerRequest.getVolunteersAmount()-1);
-                        return volunteerRequestRepository.save(volunteerRequest);
-                    }else return null;
-                });
-                log.debug("User id={} accepted Volunteer Response id={} user={}", userService.getUserId(), response.getId(), response.getId());
+                    volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
+                        if(volunteerRequest.getVolunteersAmount()>0){
+                            volunteerRequest.setVolunteersAmount(volunteerRequest.getVolunteersAmount()-1);
+                            return volunteerRequestRepository.save(volunteerRequest);
+                        }else return null;
+                    });
+                    log.debug("User id={} accepted Volunteer Response id={} user={}", userService.getUserId(), response.getId(), response.getId());
+                }
             });
         else throw new ResponseAcceptException();
     }
@@ -133,15 +131,16 @@ public class ResponseVolunteerRequestService {
     public void disableAcceptedResponse(long responseId){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
             responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {
-                response.setAccepted(parse(false));
-                responseVolunteerRequestRepository.save(response);
+                if(response.getAccepted() == parse(true)){
+                    response.setAccepted(parse(false));
+                    responseVolunteerRequestRepository.save(response);
 
-                volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
+                    volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
                         volunteerRequest.setVolunteersAmount(volunteerRequest.getVolunteersAmount()+1);
                         return volunteerRequestRepository.save(volunteerRequest);
-
-                });
-                log.debug("User id={} disabled accepted Volunteer Response id={} user={}", userService.getUserId(), response.getId(), response.getId());
+                    });
+                    log.debug("User id={} disabled accepted Volunteer Response id={} user={}", userService.getUserId(), response.getId(), response.getId());
+                }
             });
         else throw new ResponseAcceptException();
     }
@@ -150,12 +149,17 @@ public class ResponseVolunteerRequestService {
     public void confirmResponse(long responseId, String feedback){
         if(isUserOwnerOfVolunteerRequestByResponse(responseId))
             responseVolunteerRequestRepository.findById(responseId).ifPresent(response -> {
-                response.setConfirmation(parse(true));
-                response.setFeedback(feedback);
-                responseVolunteerRequestRepository.save(response);
+                if(response.getConfirmation() != parse(true)){
+                    if(response.getAccepted() != parse(true)){
+                        acceptResponse(responseId);
+                    }
+                    response.setConfirmation(parse(true));
+                    response.setFeedback(feedback);
+                    responseVolunteerRequestRepository.save(response);
 
-                volunteerCertificateService.sendVolunteerToCertification(response);
-                log.debug("User id={} confirmed and send to certification Volunteer Response id={} and user={}", userService.getUserId(), response.getId(), response.getUser().getId());
+                    volunteerCertificateService.sendVolunteerToCertification(response);
+                    log.debug("User id={} confirmed and send to certification Volunteer Response id={} and user={}", userService.getUserId(), response.getId(), response.getUser().getId());
+                }
             });
         else throw new ResponseAcceptException();
     }

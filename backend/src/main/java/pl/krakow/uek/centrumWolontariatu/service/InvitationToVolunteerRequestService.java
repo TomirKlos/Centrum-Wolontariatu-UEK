@@ -2,7 +2,6 @@ package pl.krakow.uek.centrumWolontariatu.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,18 +9,17 @@ import org.springframework.stereotype.Service;
 import pl.krakow.uek.centrumWolontariatu.domain.*;
 import pl.krakow.uek.centrumWolontariatu.repository.*;
 import pl.krakow.uek.centrumWolontariatu.repository.DTO.InvitationToVolunteerRequestDTO;
-import pl.krakow.uek.centrumWolontariatu.repository.DTO.ResponseVolunteerRequestDTO;
 import pl.krakow.uek.centrumWolontariatu.web.rest.AuthenticationController;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.general.BadRequestAlertException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.InvitationVolunteerResponsesPermissionException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.ResponseAcceptException;
-import pl.krakow.uek.centrumWolontariatu.web.rest.errors.particular.VolunteerRequestResponsesPermissionException;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.InvitationToVolunteerRequestVM;
 import pl.krakow.uek.centrumWolontariatu.web.rest.vm.ResponseVolunteerRequestVM;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import static pl.krakow.uek.centrumWolontariatu.web.rest.util.ParserRSQLUtil.parse;
@@ -48,26 +46,30 @@ public class InvitationToVolunteerRequestService {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_LECTURER')")
     public void invite(InvitationToVolunteerRequestVM invitationToVolunteerRequestVM){
-        if(userService.getUserWithAuthorities().get().getId()==volunteerRequestRepository.findById(invitationToVolunteerRequestVM.getVolunteerRequestId()).get().getUser().getId()
-            && userService.getUserWithAuthorities().get().getId()!= userRepository.findOneById(volunteerAdRepository.findById(invitationToVolunteerRequestVM.getVolunteerAdId()).get().getUser().getId()).get().getId()) {
-            if(!canInviteToVolunteerRequest(invitationToVolunteerRequestVM)){
-                throw new BadRequestAlertException("You cannot invite user to Volunteer Request because user doesnt have required status", "volunteerRequestInvitation", "cannotinvitetovolunteerrequestduetostatus");
-            }
-            User user = userRepository.findOneById(volunteerAdRepository.findById(invitationToVolunteerRequestVM.getVolunteerAdId()).get().getUser().getId()).get();
 
-            InvitationToVolunteerRequest invitationToVolunteerRequest = new InvitationToVolunteerRequest();
-            invitationToVolunteerRequest.setDescription(invitationToVolunteerRequestVM.getDescription());
-            invitationToVolunteerRequest.setUserInvited(user);
-            invitationToVolunteerRequest.setVolunteerRequest(volunteerRequestRepository.getOne(invitationToVolunteerRequestVM.getVolunteerRequestId()));
-            invitationToVolunteerRequest.setVolunteerAd(volunteerAdRepository.getOne(invitationToVolunteerRequestVM.getVolunteerAdId()));
+        userService.getUserWithAuthorities().ifPresent(user -> {
+            volunteerRequestRepository.findById(invitationToVolunteerRequestVM.getVolunteerRequestId()).ifPresent(volunteerRequest -> {
+                volunteerAdRepository.findById(invitationToVolunteerRequestVM.getVolunteerAdId()).ifPresent(volunteerAd -> {
+                    if(user.getId() != volunteerAd.getUser().getId() && user.getId() == volunteerRequest.getUser().getId()){
+                        if(!canInviteToVolunteerRequest(invitationToVolunteerRequestVM)){
+                            throw new BadRequestAlertException("You cannot invite user to Volunteer Request because user doesnt have required status", "volunteerRequestInvitation", "cannotinvitetovolunteerrequestduetostatus");
+                        }
+                        InvitationToVolunteerRequest invitationToVolunteerRequest = new InvitationToVolunteerRequest();
+                        invitationToVolunteerRequest.setDescription(invitationToVolunteerRequestVM.getDescription());
+                        invitationToVolunteerRequest.setUserInvited(volunteerAd.getUser());
+                        invitationToVolunteerRequest.setVolunteerRequest(volunteerRequest);
+                        invitationToVolunteerRequest.setVolunteerAd(volunteerAd);
 
-            ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-            long epochMillis = utc.toEpochSecond() * 1000;
-            invitationToVolunteerRequest.setTimestamp(epochMillis);
-            invitationToVolunteerRequestRepository.save(invitationToVolunteerRequest);
+                        ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+                        long epochMillis = utc.toEpochSecond() * 1000;
+                        invitationToVolunteerRequest.setTimestamp(epochMillis);
+                        invitationToVolunteerRequestRepository.save(invitationToVolunteerRequest);
 
-            log.debug("User id={} invited to Volunteer Request id={}", user.getId(), invitationToVolunteerRequest.getVolunteerRequest().getId());
-        } else throw new BadRequestAlertException("You cannot invite yourself for your own Volunteer Request", "volunteerRequestManagement", "cannotinviteyourselforyouownvolunteerrequest");
+                        log.debug("User id={} invited to Volunteer Request id={}", user.getId(), invitationToVolunteerRequest.getVolunteerRequest().getId());
+                    } else throw new BadRequestAlertException("You cannot invite yourself for your own Volunteer Request", "volunteerRequestManagement", "cannotinviteyourselforyouownvolunteerrequest");
+                });
+            });
+        });
     }
 
     public Page<InvitationToVolunteerRequestDTO> getAllByUserId(long userId, Pageable pageable){
@@ -81,23 +83,25 @@ public class InvitationToVolunteerRequestService {
     }
 
     public Page<InvitationToVolunteerRequestDTO> getAllByInvitationId(long adId, Pageable pageable){
-        Page<InvitationToVolunteerRequestDTO> page;
-        long userId=volunteerAdRepository.findById(adId).get().getUser().getId();
-        if(userService.getUserWithAuthorities().get().getId()==userId){
-            page = invitationToVolunteerRequestRepository.findAllByVolunteerAdId(pageable, adId);
-            setSeenFlag(page);
+        AtomicReference<Page<InvitationToVolunteerRequestDTO>> page = new AtomicReference<>();
+
+        userService.getUserWithAuthorities().map(user -> {
+            volunteerAdRepository.findById(adId).map(volunteerAd -> {
+                if(user.getId() == volunteerAd.getUser().getId()){
+                    page.set(invitationToVolunteerRequestRepository.findAllByVolunteerAdId(pageable, adId));
+                    setSeenFlag(page.get());
+                    return page;
+                } else throw new BadRequestAlertException("You cannot see not your own invitations", "invitationVolunteerRequestManagement", "cannotseenotowninvitations");
+            }).orElseThrow(() -> new BadRequestAlertException("Volunteer Ad not found", "invitationVolunteerRequestManagement", "volunteeradnotfound"));
             return page;
-        }
-        else throw new BadRequestAlertException("You cannot see not your own invitations", "invitationVolunteerRequestManagement", "cannotseenotowninvitations");
+        });
+        return page.get();
     }
 
     public long getAllUnseen(long adId){
         if(isUserOwnerOfVolunteerAd(adId) ){
-
             return invitationToVolunteerRequestRepository.countByVolunteerAdIdAndSeen(adId, (byte)0);
-        }
-
-        else throw new InvitationVolunteerResponsesPermissionException();
+        } else throw new InvitationVolunteerResponsesPermissionException();
     }
 
 
@@ -123,12 +127,6 @@ public class InvitationToVolunteerRequestService {
                 response.setAccepted(parse(true));
                 invitationToVolunteerRequestRepository.save(response);
 
-                volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
-                    if(volunteerRequest.getVolunteersAmount()>0){
-                        volunteerRequest.setVolunteersAmount(volunteerRequest.getVolunteersAmount()-1);
-                        return volunteerRequestRepository.save(volunteerRequest);
-                    }else return null;
-                });
                 log.debug("User id={} accepted Volunteer invitation id={} user={}", userService.getUserId(), response.getId(), response.getId());
                 resendInvitationAsApplication(response.getVolunteerRequest(), response.getDescription());
             });
@@ -141,11 +139,6 @@ public class InvitationToVolunteerRequestService {
                 response.setAccepted(parse(false));
                 invitationToVolunteerRequestRepository.save(response);
 
-                volunteerRequestRepository.findById(response.getVolunteerRequest().getId()).map(volunteerRequest -> {
-                    volunteerRequest.setVolunteersAmount(volunteerRequest.getVolunteersAmount()+1);
-                    return volunteerRequestRepository.save(volunteerRequest);
-
-                });
                 log.debug("User id={} disabled accepted Volunteer Invitation id={} user={}", userService.getUserId(), response.getId(), response.getId());
             });
         else throw new ResponseAcceptException();

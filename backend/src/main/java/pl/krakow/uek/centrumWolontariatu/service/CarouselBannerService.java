@@ -2,6 +2,7 @@ package pl.krakow.uek.centrumWolontariatu.service;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +42,8 @@ public class CarouselBannerService {
     public List<CarouselBanner> getAll(){
         return carouselBannerRepository.findAll();
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
     public void crateBanner(CarouselBannerVM carouselBannerVM){
         CarouselBanner carouselBanner = new CarouselBanner();
@@ -52,6 +55,7 @@ public class CarouselBannerService {
         carouselBannerRepository.save(carouselBanner);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Set<String> addPicturesToBanner(MultipartFile[] file) {
         for (MultipartFile multipartFile : file) {
             if (!multipartFile.getContentType().matches("^(image).*$")) {
@@ -86,17 +90,19 @@ public class CarouselBannerService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void saveNewBannersTransaction(CarouselBanner carouselBanner1, CarouselBanner carouselBanner2){
         this.carouselBannerRepository.save(carouselBanner1);
         this.carouselBannerRepository.save(carouselBanner2);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
     public void deleteBanner(Long id){
         carouselBannerRepository.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
     public void makeUpInList(Long id){
         List<CarouselBanner> carouselBannerList = carouselBannerRepository.findAll();
@@ -111,6 +117,7 @@ public class CarouselBannerService {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @CacheEvict(value = "carouselBannerGetAll", allEntries = true)
     public void makeDownInList(Long id){
         List<CarouselBanner> carouselBannerList = carouselBannerRepository.findAllByOrderByIdDesc();
