@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.krakow.uek.centrumWolontariatu.domain.ResponseVolunteerRequest;
 import pl.krakow.uek.centrumWolontariatu.domain.VolunteerCertificate;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class VolunteerCertificateService {
 
     private final Logger log = LoggerFactory.getLogger(AuthenticationController.class);

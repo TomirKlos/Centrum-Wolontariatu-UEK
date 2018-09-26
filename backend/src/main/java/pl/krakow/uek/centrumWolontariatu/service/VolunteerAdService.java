@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerAdConverter;
@@ -161,7 +162,7 @@ public class VolunteerAdService {
         }
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void createVolunteerAdCategory(String name) {
         if(volunteerAdCategoryRepository.findById(name).isPresent()){
             throw new BadRequestAlertException("category already exist in database", "categoryManagement", "categoryexistindatabase");
@@ -175,6 +176,7 @@ public class VolunteerAdService {
         return volunteerAdCategoryRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void createVolunteerAdType(String name) {
         if(volunteerAdTypeRepository.findById(name).isPresent()){
             throw new BadRequestAlertException("type already exist in database", "categoryManagement", "typeexistindatabase");
@@ -249,8 +251,6 @@ public class VolunteerAdService {
         }
     }
 
-
-
     @Transactional
     public Page<VolunteerAdDTO> findAllByUserId(Pageable pageable) {
          return volunteerAdRepository.findAllByUserId(pageable, userService.getUserWithAuthorities().get().getId());
@@ -266,32 +266,46 @@ public class VolunteerAdService {
         return idList;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteType(String name){
         volunteerAdTypeRepository.deleteById(name);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCategory(String name){
         volunteerAdCategoryRepository.deleteById(name);
     }
 
     @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsWithCategories"}, allEntries = true)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void acceptVolunteerAd(long id){
-        volunteerAdRepository.findById(id).ifPresent(volunteerAd -> {
+        volunteerAdRepository.findById(id).map(volunteerAd -> {
             volunteerAd.setAccepted(parse(true));
-            volunteerAdRepository.save(volunteerAd);
-        });
+            return volunteerAdRepository.save(volunteerAd);
+        }).orElseThrow(() -> new BadRequestAlertException("volunteer ad not found", "volunteerAdManagement", "volunteeradnotfound"));
     }
 
     @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsWithCategories"}, allEntries = true)
     public void setExpired(long id){
-        volunteerAdRepository.findById(id).ifPresent(volunteerAd -> {
-            volunteerAd.setExpired(parse(true));
-            volunteerAdRepository.save(volunteerAd);
-        });
+        volunteerAdRepository.findById(id)
+            .map(volunteerAd -> userService.getUserWithAuthorities()
+                .filter(user -> user.getId() == volunteerAd.getUser().getId())
+                .map(user -> {
+                    volunteerAd.setExpired(parse(true));
+                    return volunteerAdRepository.save(volunteerAd);
+                }).orElseThrow(() -> new BadRequestAlertException("cannot set expired not your own volunteer ad", "volunteerAdManagement", "cannotsetexpirednotyourownvolunteerad")))
+            .orElseThrow(() -> new BadRequestAlertException("volunteer ad not found", "volunteerAdManagement", "volunteeradnotfound"));
     }
 
     @CacheEvict(value = {"volunteerAdsByRsql", "volunteerAdsWithCategories"}, allEntries = true)
-    public void deleteVolunteerAd(long id){ volunteerAdRepository.deleteById(id);}
+    public void deleteVolunteerAd(long id){
+         volunteerAdRepository.findById(id).map(volunteerAd1 -> {
+            return userService.getUserWithAuthorities().filter(user -> (user.getId() == volunteerAd1.getUser().getId()) || user.getAuthorities().stream().anyMatch(e -> e.getName().equals("ROLE_ADMIN"))).map(user -> {
+                  volunteerAdRepository.deleteById(id);
+                  return id;
+             }).orElseThrow(() -> new BadRequestAlertException("cannot delete not your own volunteer ad","volunteerAdManagement", "cannotdeletenotyourownvolunteerad"));
+        }).orElseThrow(() -> new BadRequestAlertException("volunteer ad not found", "volunteerAdManagement", "volunteeradnotfound"));
+    }
 
     public List<VolunteerAdDTO> getVolunteerAdBySolr(String text){
         if(text.length()>=3)
@@ -312,17 +326,13 @@ public class VolunteerAdService {
         return null;
     }
 
-    @Scheduled(fixedRate = 60000, initialDelay = 20000)
+    @Scheduled(fixedRate = 60000, initialDelay = 30000)
     public void testForExpired() {
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         long epochMillis = utc.toEpochSecond() * 1000;
-        volunteerAdRepository.findAllByExpiredIs((byte)0).forEach(volunteerAd -> {
-            if(volunteerAd.getExpirationDate()<epochMillis){
-                volunteerAd.setExpired((byte)1);
+        volunteerAdRepository.findAllByExpiredIs(parse(false)).stream().filter(volunteerAd -> volunteerAd.getExpirationDate() < epochMillis).forEach(volunteerAd -> {
+                volunteerAd.setExpired(parse(true));
                 volunteerAdRepository.save(volunteerAd);
-            }
         });
-
     }
-
 }

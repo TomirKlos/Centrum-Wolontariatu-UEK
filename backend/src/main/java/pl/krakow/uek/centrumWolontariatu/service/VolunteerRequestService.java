@@ -11,6 +11,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.krakow.uek.centrumWolontariatu.converter.VolunteerRequestConverter;
@@ -178,6 +179,7 @@ public class VolunteerRequestService {
     }
 
     @CacheEvict(value = "categories", allEntries = true)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void createVolunteerRequestCategory(String name) {
         if(volunteerRequestCategoryRepository.findById(name).isPresent()){
             throw new BadRequestAlertException("category already exist in database", "categoryManagement", "categoryexistindatabase");
@@ -196,6 +198,7 @@ public class VolunteerRequestService {
         return volunteerRequestCategoryRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void createVolunteerRequestType(String name) {
         if(volunteerRequestTypeRepository.findById(name).isPresent()){
             throw new BadRequestAlertException("type already exist in database", "categoryManagement", "typeexistindatabase");
@@ -266,9 +269,7 @@ public class VolunteerRequestService {
                 return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndIsForTutorsIsAndVolunteersAmountGreaterThan(pageable, (byte) 1, (byte) 0 , parse(true), 0));
             }
             return VolunteerRequestConverter.mapEntityPageIntoDTOPage(pageable, volunteerRequestRepository.findAllByAcceptedIsAndExpiredIsAndVolunteersAmountGreaterThan((byte)1, (byte) 0, 0, pageable));
-
         }
-
     }
 
 
@@ -290,16 +291,19 @@ public class VolunteerRequestService {
         return idList;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteType(String name){
         volunteerRequestTypeRepository.deleteById(name);
     }
 
     @CacheEvict(value = "categories", allEntries = true)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCategory(String name){
         volunteerRequestCategoryRepository.deleteById(name);
     }
 
     @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void acceptVolunteerRequest(long id){
         volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
             volunteerRequest.setAccepted(parse(true));
@@ -309,14 +313,24 @@ public class VolunteerRequestService {
 
     @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
     public void setExpired(long id){
-        volunteerRequestRepository.findById(id).ifPresent(volunteerRequest -> {
-            volunteerRequest.setExpired(parse(true));
-            volunteerRequestRepository.save(volunteerRequest);
-        });
+        volunteerRequestRepository.findById(id)
+            .map(volunteerRequest -> userService.getUserWithAuthorities()
+                .filter(user -> user.getId() == volunteerRequest.getUser().getId())
+                .map(user -> {
+                    volunteerRequest.setExpired(parse(true));
+                    return volunteerRequestRepository.save(volunteerRequest);
+                }).orElseThrow(() -> new BadRequestAlertException("cannot set expired not your own volunteer request", "volunteerRequestManagement", "cannotsetexpirednotyourownvolunteerrequest")))
+            .orElseThrow(() -> new BadRequestAlertException("volunteer request not found", "volunteerRequestManagement", "volunteerrequestnotfound"));
     }
 
     @CacheEvict(value = {"volunteerRequestsByRsql", "volunteerRequestsWithCategories"}, allEntries = true)
-    public void deleteVolunteerRequest(long id){ volunteerRequestRepository.deleteById(id);}
+    public void deleteVolunteerRequest(long id){
+        volunteerRequestRepository.findById(id).map(volunteerRequest -> {
+            return userService.getUserWithAuthorities().filter(user -> (user.getId() == volunteerRequest.getUser().getId()) || user.getAuthorities().stream().anyMatch(e -> e.getName().equals("ROLE_ADMIN"))).map(user -> {
+                volunteerRequestRepository.deleteById(id);
+                return id;
+            }).orElseThrow(() -> new BadRequestAlertException("cannot delete not your own volunteer request","volunteerRequestManagement", "cannotdeletenotyourownvolunteerrequest"));
+        }).orElseThrow(() -> new BadRequestAlertException("volunteer request not found", "volunteerRequestManagement", "volunteerrequestnotfound"));}
 
     public List<VolunteerRequestDTO> getVolunteerRequestBySolr(String text){
         if(text.length()>=3)
@@ -341,15 +355,10 @@ public class VolunteerRequestService {
     public void testForExpired() {
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         long epochMillis = utc.toEpochSecond() * 1000;
-        System.out.println("XXX executing task scheduled" + epochMillis);
-        volunteerRequestRepository.findAllByExpiredIs((byte)0).forEach(volunteerRequest -> {
-            if(volunteerRequest.getExpirationDate()<epochMillis){
-                volunteerRequest.setExpired((byte)1);
-                volunteerRequestRepository.save(volunteerRequest);
-            }
+        volunteerRequestRepository.findAllByExpiredIs(parse(false)).stream().filter(volunteerRequest -> volunteerRequest.getExpirationDate() < epochMillis).forEach(volunteerRequest -> {
+            volunteerRequest.setExpired(parse(true));
+            volunteerRequestRepository.save(volunteerRequest);
         });
-
     }
-
 
 }
