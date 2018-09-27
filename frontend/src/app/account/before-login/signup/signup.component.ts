@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { SnackBarService } from '../../../shared/snack-bar.service';
 import { addValidator, matchValue } from '../../../shared/validators';
+import {TermDialogService} from '../../../other/term-dialog/term-dialog.service';
 
 @Component({
   selector: 'app-signup',
@@ -16,15 +17,17 @@ export class SignupComponent implements OnInit {
   buttonDisabled = false;
   private _emailValidators = [ Validators.required, Validators.email, Validators.pattern(/.*(uek.krakow.pl)$/) ];
   private _userDataValidators = [ Validators.required ];
+  private _termValidators = [ Validators.pattern('true') ];
 
-  constructor(private _fb: FormBuilder, private _http: HttpClient, private _sb: SnackBarService, private _router: Router) {
+  constructor(private _fb: FormBuilder, private _http: HttpClient, private _sb: SnackBarService, private _router: Router, private _termDialogService: TermDialogService) {
   }
 
   ngOnInit() {
     this.formGroup = this._fb.group({
       email: [ '', this._emailValidators ],
       firstName: ['', this._userDataValidators],
-      lastName: ['', this._userDataValidators]
+      lastName: ['', this._userDataValidators],
+      term: [false, this._termValidators]
     });
   }
 
@@ -64,5 +67,9 @@ export class SignupComponent implements OnInit {
     } else {
       this._sb.warning();
     }
+  }
+
+  openTermDialog() {
+    this._termDialogService.open();
   }
 }

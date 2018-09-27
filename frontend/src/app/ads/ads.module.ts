@@ -19,9 +19,6 @@ import { InviteChooseRequestDialogComponent } from './components/invite-ad/invit
 import { ViewInvitationDialogComponent } from './components/view-volunteer-invitation/view-invitation-dialog.component';
 import { InvitationService } from './components/view-volunteer-invitation/invitation.service';
 
-
-
-
 @NgModule({
   imports: [
     AdsRoutingModule,
@@ -47,16 +44,11 @@ import { InvitationService } from './components/view-volunteer-invitation/invita
     MyAdsService,
     AdDialogService,
     InvitationService,
-
-
   ],
   entryComponents: [
     ViewAdDialogComponent,
     InviteChooseRequestDialogComponent,
     ViewInvitationDialogComponent
-
-
-
   ]
 })
 export class AdsModule {

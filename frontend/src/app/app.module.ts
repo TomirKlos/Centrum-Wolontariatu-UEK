@@ -51,7 +51,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AdminModule,
     RequestsModule,
     AdsModule,
-
     OtherModule,
     AppRoutingModule,
     FlexLayoutModule,
