@@ -326,7 +326,7 @@ public class VolunteerAdService {
         return null;
     }
 
-    @Scheduled(fixedRate = 60000, initialDelay = 30000)
+    @Scheduled(cron = "0 0 0 1/1 * ?")
     public void testForExpired() {
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         long epochMillis = utc.toEpochSecond() * 1000;
