@@ -1,11 +1,14 @@
 import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator, MatSortable} from '@angular/material';
-import {InvitationVolunteerRequestVM, responseVolunteerRequestVM, VolunteerRequestVM} from '../../../shared/interfaces';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSort, MatPaginator, MatSortable, MatDialogConfig} from '@angular/material';
+import {DialogData, InvitationVolunteerRequestVM, Page, responseVolunteerRequestVM, VolunteerRequestVM} from '../../../shared/interfaces';
 import { ServerDataSource } from '../../../shared/server-data-source';
 import { InvitationService } from './invitation.service';
 import { SnackBarService } from '../../../shared/snack-bar.service';
 import {tap} from 'rxjs/operators';
 import {merge} from 'rxjs/observable/merge';
+import {RequestDialogService} from '../../../requests/shared/request-dialog.service';
+import {RequestService} from '../../../requests/shared/request.service';
+import {Observable} from 'rxjs/Observable';
 
 
 @Component({
@@ -25,7 +28,7 @@ export class ViewInvitationDialogComponent implements OnInit, AfterViewInit{
 
     //data source
     dataSource: ServerDataSource<InvitationVolunteerRequestVM>;
-    columnsToDisplay = [ 'id', 'accepted', 'description', 'showApply' ];
+    columnsToDisplay = [ 'id', 'accepted', 'description', 'volunteerRequest', 'showApply' ];
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
@@ -35,15 +38,13 @@ export class ViewInvitationDialogComponent implements OnInit, AfterViewInit{
     public dialogRef: MatDialogRef<ViewInvitationDialogComponent>,
     private _invitationService: InvitationService,
     public _snackBar: SnackBarService,
+    private _dialogService: RequestDialogService,
+    private _requestService: RequestService,
 
     @Inject(MAT_DIALOG_DATA) public data: number) {
       console.log(data.valueOf)
     this.application = data;
 
-  /*  this.dataSource = new ServerDataSource<InvitationVolunteerRequestVM>(this._invitationService, null, new MatSort, "invitations");
-    this.dataSource.relativePathToServerResource = '';
-    this.dataSource.loadInvitationPage(this.application);
-    console.log(this.dataSource) */
   }
 
   ngOnInit() {
@@ -94,15 +95,6 @@ export class ViewInvitationDialogComponent implements OnInit, AfterViewInit{
     });
   }
 
-  confirm(id: number) {
-    this._invitationService.confirm(id).subscribe(() => {
-      this.dataSource.loadInvitationPage(this.application),
-      this.prepareConfirm(id);
-      this.showApply = false;
-      this._snackBar.open('Wolontariat został potwierdzony');
-    });
-  }
-
   closeApplication(id: number) {
     this.showApply = false;
   }
@@ -110,4 +102,15 @@ export class ViewInvitationDialogComponent implements OnInit, AfterViewInit{
   prepareConfirm(id: number) {
     this.showConfirmApply = !this.showConfirmApply;
   }
+
+  openVolunteerRequest(data: number){
+    this._requestService.getById(data).subscribe((d: Page<VolunteerRequestVM>) => {
+      let dialogData = new DialogData();
+      dialogData.showApplyButton = false;
+      dialogData.volunteerRequest = d.content[0]
+
+      this._dialogService.open(dialogData);
+    });
+  }
+
 }

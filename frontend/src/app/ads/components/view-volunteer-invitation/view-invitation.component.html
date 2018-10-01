@@ -6,6 +6,7 @@
         </mat-card-header>
 
           <mat-card-content>
+
             <div *ngIf="showApply">
               <h2>Zgłoszenie (id: {{invitationToShow.id}})</h2>
              opis:  {{invitationToShow.description}}
@@ -28,13 +29,13 @@
               <mat-table [dataSource]="dataSource" matSort>
 
                 <ng-container matColumnDef="id">
-                  <mat-header-cell *matHeaderCellDef fxFlex="50px" mat-sort-header>id</mat-header-cell>
-                  <mat-cell *matCellDef="let element" fxFlex="50px"> {{ element.id }}</mat-cell>
+                  <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="7%" fxFlex="50px" mat-sort-header>id</mat-header-cell>
+                  <mat-cell *matCellDef="let element" fxFlex.lt-sm="7%" fxFlex="50px"> {{ element.id }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="accepted">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="120px">Zaakceptowany</mat-header-cell>
-                    <mat-cell *matCellDef="let element" fxFlex="120px">
+                    <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="38%" mat-sort-header fxFlex="120px">Zaakceptowany</mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxFlex.lt-sm="30%" fxFlex="120px">
                       <mat-chip-list>
                         <mat-chip [color]="(element.accepted ? 'primary' : 'warn')" selected="true">
                           {{ (element.accepted ? 'Tak' : 'Nie') }}
@@ -44,21 +45,30 @@
                   </ng-container>
 
                 <ng-container matColumnDef="description">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>description</mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{ element.description }}</mat-cell>
+                  <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="40%" mat-sort-header>opis</mat-header-cell>
+                  <mat-cell *matCellDef="let element" fxFlex.lt-sm="35%"> {{ element.description }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="volunteerRequest">
+                  <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="15%" fxFlex="100px" mat-sort-header  fxShow=”true” fxHide.lt-sm=”true”>Ogloszenie</mat-header-cell>
+                  <mat-cell *matCellDef="let element" fxFlex.lt-sm="15%" fxFlex="100px">
+                    <button style="padding:0;" mat-button color="primary" (click)="openVolunteerRequest(element.volunteerRequest.id)">
+                      <mat-icon style="float: left;">arrow_drop_down_circle</mat-icon>
+                      <a fxFlex fxShow=”true” fxHide.lt-sm=”true”>ogloszenie</a>
+                    </button>
+                  </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="showApply">
-                    <mat-header-cell *matHeaderCellDef fxFlex="100px">Podgląd</mat-header-cell>
-                    <mat-cell *matCellDef="let element" fxFlex="100px">
-                      <button mat-button color="primary" (click)="showApplication(element)">
-                        <!--<button mat-button color="primary" [routerLink]="['/requests/', element.id]">-->
-
-                        <mat-icon>edit</mat-icon>
-                        podgląd
+                    <mat-header-cell *matHeaderCellDef fxFlex.lt-sm="15%" fxFlex="100px" fxShow=”true” fxHide.lt-sm=”true”>Podgląd</mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxFlex.lt-sm="15%" fxFlex="100px">
+                      <button style="padding:0;" mat-button color="primary" (click)="showApplication(element)">
+                        <mat-icon style="float:left;">edit</mat-icon>
+                        <a fxFlex fxShow=”true” fxHide.lt-sm=”true”>podgląd</a>
                       </button>
                     </mat-cell>
                   </ng-container>
+
 
                 <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>

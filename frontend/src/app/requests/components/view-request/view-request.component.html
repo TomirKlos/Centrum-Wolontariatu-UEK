@@ -15,9 +15,12 @@
       </ng-template>
         <div [innerHTML]="replaceLineBreak(request.description)"></div>
     </div>
+    <div *ngIf="viewApplyButton">
       <button *appHasAnyRole="['authenticated']" mat-raised-button color="primary" type="submit" (click)="showApplyForm()">Zaaplikuj!</button>
       <div *ngIf="viewApplyForm">
-          <app-apply-request [id]="request.id"></app-apply-request>
+        <app-apply-request [id]="request.id"></app-apply-request>
       </div>
+    </div>
+
   </mat-card-content>
 </mat-card>

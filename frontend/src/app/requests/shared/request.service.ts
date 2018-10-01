@@ -21,4 +21,8 @@ export class RequestService extends ServerResourceService<VolunteerRequestVM> {
     return this._http.get(this._url + "/mine");
   }
 
+  public getById(id: number) {
+    return this._http.get(this._url + "?search=id==" + id);
+  }
+
 }

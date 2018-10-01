@@ -95,3 +95,8 @@ export interface Param {
   name: string;
   value: string | number;
 }
+
+export class DialogData {
+  volunteerRequest: VolunteerRequestVM;
+  showApplyButton: boolean;
+}

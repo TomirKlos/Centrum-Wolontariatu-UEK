@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Output, EventEmitter} from '@angular/core';
 import { SearchService } from '../../shared/search-service.service'
 
-import {VolunteerRequestVM, Category, VolunteerAdVM, Banner, User} from '../../shared/interfaces';
+import {VolunteerRequestVM, Category, VolunteerAdVM, Banner, User, DialogData} from '../../shared/interfaces';
 import { NguCarousel, NguCarouselStore } from '@ngu/carousel';
 import { Subject } from 'rxjs/Subject';
 import {MatPaginator, PageEvent, MatSort, MatSlideToggleChange} from '@angular/material';
@@ -204,7 +204,11 @@ export class ListOfRequestComponent implements OnInit, AfterViewInit {
   }
 
   openDialog(element: VolunteerRequestVM): void {
-    this._dialogService.open(element);
+    let dialogData = new DialogData();
+    dialogData.showApplyButton = true;
+    dialogData.volunteerRequest = element;
+
+    this._dialogService.open(dialogData);
   }
 
   openDialogAd(element: VolunteerAdVM): void {

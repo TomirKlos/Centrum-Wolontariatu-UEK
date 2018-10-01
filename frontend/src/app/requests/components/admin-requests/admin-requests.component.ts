@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {MatPaginator, MatSort, MatSortable} from '@angular/material';
 
-import { VolunteerRequestVM } from '../../../shared/interfaces';
+import {DialogData, VolunteerRequestVM} from '../../../shared/interfaces';
 
 import { AdminRequestsService } from './admin-requests.service';
 import { RequestDialogService } from '../../shared/request-dialog.service';
@@ -52,7 +52,11 @@ export class AdminRequestsComponent implements OnInit, AfterViewInit {
   }
 
   openDialog(request: VolunteerRequestVM): void {
-    this._dialogService.open(request);
+    let dialogData = new DialogData();
+    dialogData.showApplyButton = false;
+    dialogData.volunteerRequest = request;
+
+    this._dialogService.open(dialogData);
   }
 
 }
